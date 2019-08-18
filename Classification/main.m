@@ -2,7 +2,7 @@ clear
 addpath('..\\General Functions')
 reactor = 'A';
 delta = 0.01; %Between 0 and 1
-id = 'Classification_Try';
+id = 'all_data_intlinprog';
 file_name = sprintf('Classification_algorithm_%s',id);
 [t_obs,X,s_in,S1,S2,S3,dilution_rate] = load_biomass(reactor);
 [t_OTU,OTU_rel] = load_relative_abundance(reactor);
@@ -10,9 +10,10 @@ OTU_rel = diag(1./sum(OTU_rel,2))*OTU_rel;
 number_OTU = length(OTU_rel(1,:));
 minimal_abundance = 0;
 t_change = 183; % From dumont et al
-time_steps_index = find(t_obs > t_change & t_obs < t_change +50);
-time_steps_index_OTU = find(t_OTU > t_change & t_OTU < t_change +50);
-% timeStepsIndex = 1:length(tObs);
+delta_t = 50;
+% time_steps_index = find(t_obs > t_change & t_obs < t_change + delta_t);
+time_steps_index = 1:length(t_obs);
+time_steps_index_OTU = find(t_OTU > t_change & t_OTU < t_change + delta_t);
 OTU_series = timeseries(OTU_rel(time_steps_index_OTU,:),...
     t_OTU(time_steps_index_OTU));
 mean_abundance = mean(OTU_series,'Weighting','time')';

@@ -1,4 +1,4 @@
-function [a, b, y_AOB, y_NOB, error_AOB, error_NOB] = MIP_gurobi(partialWeights, xG1, xG2,yA_ref,yB_ref,delta)
+function [class_AOB, class_NOB, y_AOB, y_NOB, error_AOB, error_NOB] = MIP_gurobi(partialWeights, xG1, xG2,yA_ref,yB_ref,delta)
 n = length(partialWeights(:,1));
 T = length(partialWeights(1,:));
 M1 = 1/(yA_ref*(1-delta)); %Reference Parameter Table 3 Weissmann et al 1994
@@ -42,6 +42,6 @@ error_AOB = sol(1:T);
 error_NOB = sol(T+1:2*T);
 y_AOB = sol(2*T+1:2*T+n);
 y_NOB = sol(2*T+n+1:2*T+2*n);
-a = sol(2*T+2*n+1:2*T+3*n);
-b = sol(2*T+3*n+1:end);
+class_AOB = sol(2*T+2*n+1:2*T+3*n);
+class_NOB = sol(2*T+3*n+1:end);
 end
