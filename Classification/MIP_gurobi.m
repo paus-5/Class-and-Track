@@ -1,4 +1,4 @@
-function [a, b, y_AOB, y_NOB, error_AOB, error_NOB] = MIP_classification(partialWeights, xG1, xG2,yA_ref,yB_ref,delta)
+function [a, b, y_AOB, y_NOB, error_AOB, error_NOB] = MIP_gurobi(partialWeights, xG1, xG2,yA_ref,yB_ref,delta)
 n = length(partialWeights(:,1));
 T = length(partialWeights(1,:));
 M1 = 1/(yA_ref*(1-delta)); %Reference Parameter Table 3 Weissmann et al 1994
