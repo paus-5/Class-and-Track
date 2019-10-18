@@ -3,7 +3,7 @@ addpath('..\\General Functions')
 reactor = 'A';
 delta = 0.01; %Between 0 and 1
 id = 'all_data_intlinprog';
-file_name = sprintf('Classification_algorithm_%s',id);
+file_name = sprintf('Classification_%s',id);
 [t_obs,X,s_in,S1,S2,S3,dilution_rate] = load_biomass(reactor);
 [t_OTU,OTU_rel] = load_relative_abundance(reactor);
 OTU_rel = diag(1./sum(OTU_rel,2))*OTU_rel;
