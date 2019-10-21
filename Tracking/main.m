@@ -6,20 +6,20 @@ nameFile = '290919_Try1';
 nA = round(sum(a));
 nB = round(sum(b)); 
 n = nA+nB;
-index_tObs = find(tObs <300);
-indexSpan = timeStepsIndex(1):index_tObs(end);
-tS = tObs(indexSpan); 
-s1Interpol = @(t) interp1(tS,S1(indexSpan),t);
-s2Interpol = @(t) interp1(tS,S2(indexSpan),t);
-s3Interpol = @(t) interp1(tS,S3(indexSpan),t);
-indexAOB = find(classAOB);
-indexNOB = find(classNOB);
-biomass = x(:,[indexAOB; indexNOB]);
-minBiomass = min(biomass(biomass>0));
-biomass(biomass == 0) = minBiomass;
-z = @(t) interp1(tOTU,biomass,t)';
-kA = yieldsAOB(indexAOB);
-kB = yieldsNOB(indexNOB);
+index_t_obs = find(t_obs <300);
+index_span = time_steps_index(1):index_t_obs(end);
+tS = t_obs(index_span); 
+s1_interp = @(t) interp1(tS,S1(index_span),t);
+s2_interp = @(t) interp1(tS,S2(index_span),t);
+s3_interp = @(t) interp1(tS,S3(index_span),t);
+index_AOB = find(class_AOB);
+index_NOB = find(class_NOB);
+biomass_filtered = x(:,[index_AOB; index_NOB]);
+min_biomass = min(biomass_filtered(biomass_filtered>0));
+biomass_filtered(biomass_filtered == 0) = min_biomass;
+z = @(t) interp1(tOTU,biomass_filtered,t)';
+kA = yieldsAOB(index_AOB);
+kB = yieldsNOB(index_NOB);
 muARef = 0.77;
 muBRef = 1.07;
 kSARef = 0.7e-1;
@@ -49,7 +49,7 @@ legendTagsOTU = strsplit(strjoin({num2str(1:n)}));
 tF = tS(end);
 t0 = tS(1);
 %x0 = [z(t0)' s1Interpol(t0) s2Interpol(t0) s3Interpol(t0)]';
-x0 = [0.01*ones(1,n) s1Interpol(t0) s2Interpol(t0) s3Interpol(t0)]'; 
+x0 = [0.01*ones(1,n) s1_interp(t0) s2_interp(t0) s3_interp(t0)]'; 
 xFun = @(t) x0;
 B = @(t) Bx(xFun(t),nA,nB,kA,kB,muA,muB,kSA,kSB,kI);
 PtF = F;
@@ -80,10 +80,7 @@ xOld = X;
 csTolerance = 4; %cauchy sequence tolerance
 iter = 1;
 diff = norm(xOld - xNew);
-save(sprintf('mat_Files\\%s_iter_%.0f',nameFile,iter))
-csvwrite('..\\..\\Images\\Q_Matrix',Q)
-csvwrite('..\\..\\Images\\lambda',lambda)
-csvwrite('..\\..\\Images\\matrix_F',F)
+save(sprintf('MAT_files\\%s_iter_%.0f',nameFile,iter))
 while diff > csTolerance
     xFun = @(t) interp1(tNew,xNew,t)';    
     control = @(t) trackingControl(lambda,B(t),P(t),xFun(t),sfInterpol(t),n);
