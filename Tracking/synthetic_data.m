@@ -1,6 +1,6 @@
 close all
 clear
-name_file = 'no_noise';
+name_file = 'no_noise_2';
 nA = 10;
 nB = 5;
 n = nA + nB;
@@ -31,9 +31,4 @@ dynamic = @(t,X) [diag(growth1(X) - d_interp(t))*X(1:nA);
 S1 = Y(:,n+1);
 S2 = Y(:,n+2);
 S3 = Y(:,n+3);
-subplot(3,1,1), plot(t_obs, Y(:,1:nA))
-subplot(3,1,2), plot(t_obs, Y(:,nA+1:n))
-subplot(3,1,3), plot(t_obs, Y(:,n+1:n+3))
-
-
 save(sprintf('MAT_files\\synthetic_data_%s',name_file))
