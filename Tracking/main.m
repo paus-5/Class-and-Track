@@ -1,8 +1,8 @@
 %main: process and filter data to model.
 close all
 clear
-load('MAT_files\Classification_all_data_intlinprog')
-nameFile = '301019_Try1';
+load('MAT_files\synthetic_data_no_noise')
+name_file = '061119_Try1';
 nA = round(sum(a));
 nB = round(sum(b)); 
 n = nA+nB;
@@ -43,13 +43,12 @@ Q = [ones(nA,1); ones(nB,1)];
 F = zeros(n,1);
 colors = mat2cell([autumn(nA); winter(nB)], ones(1,n), 3);
 colors2 = mat2cell(hsv(3), ones(1,3),3);
-legend_tags = strsplit(strjoin({num2str(1:n),...
-    ' s_1 s_2 s_3'}));
+legend_tags = strsplit(strjoin({num2str(1:n),' s_1 s_2 s_3'}));
 legend_tags_OTU = strsplit(strjoin({num2str(1:n)}));
 tF = tS(end);
 t0 = tS(1);
 %x0 = [z(t0)' s1Interpol(t0) s2Interpol(t0) s3Interpol(t0)]';
-x0 = [0.01*ones(1,n) s1_interp(t0) s2_interp(t0) s3_interp(t0)]'; 
+x0 = [0.001*ones(1,n) s1_interp(t0) s2_interp(t0) s3_interp(t0)]'; 
 x_fun = @(t) x0;
 B = @(t) Bx(x_fun(t),nA,nB,kA,kB,muA,muB,kSA,kSB,kI);
 PtF = F;
@@ -80,10 +79,10 @@ x_old = X;
 csTolerance = 4; %cauchy sequence tolerance
 iter = 1;
 diff = norm(x_old - x_new);
-save(sprintf('MAT_files\\%s_iter_%.0f',nameFile,iter))
+save(sprintf('MAT_files\\%s_iter_%.0f',name_file,iter))
 while diff > csTolerance
     x_fun = @(t) interp1(t_new,x_new,t)';    
-    control = @(t) trackingControl(lambda,B(t),P(t),x_fun(t),sf_interp(t),n);
+    control = @(t) tracking_control(lambda,B(t),P(t),x_fun(t),sf_interp(t),n);
     control_eval = arrayfun(control,t_new,'UniformOutput',false);
     figure
     hold on
@@ -99,8 +98,8 @@ while diff > csTolerance
     fig.PaperUnits = 'inches';
     fig.PaperPosition = [0 0 9 3];
     fig.PaperPositionMode = 'auto';
-    print(sprintf('..\\..\\Images\\%s',sprintf('%s_Trajectory_Iter_%.0f',...
-        nameFile,iter)),'-dpng','-r0')
+    print(sprintf('Images\\%s',sprintf('%s_Trajectory_Iter_%.0f',...
+        name_file,iter)),'-dpng','-r0')
     figure
     control_plot = plot(t_new,reshape(cell2mat(control_eval),n,...
         length(t_new)),'LineWidth',1.5);
@@ -113,8 +112,8 @@ while diff > csTolerance
     fig.PaperUnits = 'inches';
     fig.PaperPosition = [0 0 9 3];
     fig.PaperPositionMode = 'auto';
-    print(sprintf('..\\..\\Images\\%s',sprintf('%s_Control_Iter_%.0f',...
-        nameFile,iter)),'-dpng','-r0')
+    print(sprintf('Images\\%s',sprintf('%s_Control_Iter_%.0f',...
+        name_file,iter)),'-dpng','-r0')
     B = @(t) Bx(x_fun(t),nA,nB,kA,kB,muA,muB,kSA,kSB,kI);
     system_ricatti = @(t,P_lin) ricatti_diff(P_lin,x_fun(t),Q,nA,nB,kA,kB,muA,...
         muB,kSA,kSB,kI,s_in_interp(t),d_interp(t),lambda);
@@ -140,5 +139,5 @@ while diff > csTolerance
     x_old = reshape(cell2mat(xOldCell),length(t_new),n+3);
     iter = iter + 1;
     diff = norm(x_old - x_new);
-    save(sprintf('MAT_files\\%s_iter_%.0f',nameFile,iter))
+    save(sprintf('MAT_files\\%s_iter_%.0f',name_file,iter))
 end
