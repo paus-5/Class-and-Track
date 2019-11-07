@@ -1,0 +1,1376 @@
+\documentclass[3p,times]{elsarticle}
+
+%% The `ecrc' package must be called to make the CRC functionality available
+\usepackage{ecrc}
+%% The ecrc package defines commands needed for running heads and logos.
+%% For running heads, you can set the journal name, the volume, the starting page and the authors
+
+%% set the volume if you know. Otherwise `00'
+\volume{00}
+
+%% set the starting page if not 1
+\firstpage{1}
+
+%% Give the name of the journal
+\journalname{}
+
+%% Give the author list to appear in the running head
+%% Example \runauth{C.V. Radhakrishnan et al.}
+\runauth{}
+
+%% The choice of journal logo is determined by the \jid and \jnltitlelogo commands.
+%% A user-supplied logo with the name <\jid>logo.pdf will be inserted if present.
+%% e.g. if \jid{yspmi} the system will look for a file yspmilogo.pdf
+%% Otherwise the content of \jnltitlelogo will be set between horizontal lines as a default logo
+
+%% Give the abbreviation of the Journal.
+\jid{procs}
+
+%% Give a short journal name for the dummy logo (if needed)
+\jnltitlelogo{}
+
+%% Hereafter the template follows `elsarticle'.
+%% For more details see the existing template files elsarticle-template-harv.tex and elsarticle-template-num.tex.
+
+%% Elsevier CRC generally uses a numbered reference style
+%% For this, the conventions of elsarticle-template-num.tex should be followed (included below)
+%% If using BibTeX, use the style file elsarticle-num.bst
+
+%% End of ecrc-specific commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{algorithm2e}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{hyperref}
+
+\usepackage{xcolor}
+\usepackage[version=4]{mhchem}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\I}{\mathcal{I}}
+\newcommand{\diag}{\textbf{diag}}
+\newtheorem{defn}{Definition}
+\newtheorem{hypo}{H}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theo}{Theorem}
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers after \end{frontmatter}.
+%% \usepackage{lineno}
+
+%% natbib.sty is loaded by default. However, natbib options can be
+%% provided with \biboptions{...} command. Following options are
+%% valid:
+
+%%   round  -  round parentheses are used (default)
+%%   square -  square brackets are used   [option]
+%%   curly  -  curly braces are used      {option}
+%%   angle  -  angle brackets are used    <option>
+%%   semicolon  -  multiple citations separated by semi-colon
+%%   colon  - same as semicolon, an earlier confusion
+%%   comma  -  separated by comma
+%%   numbers-  selects numerical citations
+%%   super  -  numerical citations as superscripts
+%%   sort   -  sorts multiple citations according to order in ref. list
+%%   sort&compress   -  like sort, but also compresses numerical citations
+%%   compress - compresses without sorting
+%%
+%% \biboptions{comma,round}
+
+% \biboptions{}
+
+% if you have landscape tables
+\usepackage[figuresright]{rotating}
+
+\graphicspath{{Images/}}
+% put your own definitions here:
+%   \newcommand{\cZ}{\cal{Z}}
+%   \newtheorem{def}{Definition}[section]
+%   ...
+
+% add words to TeX's hyphenation exception list
+%\hyphenation{author another created financial paper re-commend-ed Post-Script}
+
+% declarations for front matter
+
+\begin{document}
+
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for the associated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for the associated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for the associated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%%
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{Address\fnref{label3}}
+%% \fntext[label3]{}
+
+\dochead{}
+%% Use \dochead if there is an article header, e.g. \dochead{Short communication}
+
+\title{A Model of Microbial Interactions in a Chemostat Setting : Analysis and Application}
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{<author name>}
+%% \address[label1]{<address>}
+%% \address[label2]{<address>}
+
+\author{Pablo Ugalde-Salas, Jérôme Harmand, Elie Desmond Le-Quemener, Héctor Ramirez}
+
+\address{}
+
+\begin{abstract}
+	A model of microbial interactions applied to a nitrifying process in a chemostat setting is revisited. To overcome the shortcomings of this earlier model an optimal tracking method is developed to include the genetic measurements for the prediction of a bioreactor. The resulting model is a high order (24 variables) differential equations system with a good prediction of measured metabolites. Numerical simulations of the model are presented and discussed.
+\end{abstract}
+
+\end{frontmatter}
+
+\section{Introduction}
+
+
+Microbial communities and their interactions play a central role in the understanding of microbial ecosystems \cite{West2007}, and a current challenge is integrating genetic sequencing data in a deterministic modelling framework \cite{Widder2016,WADE201664}. A thorough review in current methodologies in the deterministic modelling approaches of microbial community dynamics is presented by Song \textit{et al.} \cite{Song2014}. Using their terminology this articles deals with population-based approaches where species are taken as the interacting units. Particularly the model here studied could be classified as a stoichiometric model of multiple species and at the same time as a generalized Lotka Volterra Model \cite{Hernandez-Bermejo1997}.
+
+The classical ecological concept of species and niche in the microbial world is an elusive one: In the macro world one can clearly identify one species of another for reproductive reasons and their ability to give birth to offspring. In the case of bacteria and archea, reproduction goes simply by mitosis and exchange of some functional genes (the ability to synthesize or metabolize substances) can be acquired in evolutionary scale through lateral gene transfer \cite{Boucher2003}. Therefore as an ecological problem is hard to precise the 'niche' of 'species'.
+
+These obstacles can be circumvented by considering the microbiologist concept of operative taxonomic unit (OTU) based in 16sRNA analysis. There is a core genome in Bacteria, which is in turn related to the main metabolism of Bacteria. The abundance of the present OTU allows to account for a group of Bacteria that behave similarly in terms of which substances catabolyzes and at which growth rates and substrate to biomass conversion yields \cite{Muyzer1993}.
+
+In the past years considerable efforts have been made to measure the bacterial community composition. Tests such as fluorescence in situ hybridization, polymerase chain reaction (PCR) dependent techniques, and PCR independent techniques for the analysis of DNA, RNA, proteins and metabolites have become a standard tool for studying  microbial diversity\cite{FERRERA2016790}. 
+
+The objective of this article is to show a method to predict the reactor performance based on any technique that can track the species relative abundances through time. This work revisits the model proposed by Dumont et al \cite{Dumont2016} in which a model with intra and inter species interactions were they claimed coexistence of two species consuming the same substrate: The rigorous mathematical and numerical analysis of this work states the contrary. However, using a different set of parameters than the ones proposed on their article, the model proposed becomes very rich in steady states, and different coexistences may emerge depending on operational parameters of the working chemostat. Their approach suffers from a quadratic growing number of parameters on the number of species considered, thus its scope of applicability for diverse ecosystems seems limited. 
+
+In the present paper this difficulty is overcame by generalizing their interactions approach and using method of optimal tracking for parameter identification, where the growth rate of each species is modulated by a constrained regular control of the system.  The regular control is composed of a feedback part on the species state variable, and a feed forward part, or tracking, on the abundances of each species. The main novelty of the article lies in proposing/testing/using microbial interactions as the driver of the reactor's performance  through an optimal control approach.
+
+The article is divided in a first section that re-examines the properties of the work of Dumont \textit{et al.} \cite{Dumont2016}, and a second section that generalizes their approach. 
+
+\section{Model Definition}
+
+Notations used throughout the article are:
+\begin{enumerate}
+	\item $n$: the number of $OTU$ considered.
+	\item $n_i, \, i \in \{1,2\}$: the number of OTU in functional group $G_i$.
+	\item Let $m$ be an interger then $[m]:=\{1,\dots,n \}$. 
+	\item $x_i$ :  is the concentration of OTU $i$ measured in $[g/l]$. $i \in [n]$. 
+	\item $x$: vector $(x_1,\dots,x_n)^\top$.
+	\item $s_1$ : concentration of substrate 1 in $[g/l]$.
+	\item $s_2$ : concentration of substrate 2 in $[g/l]$. 
+	\item $s_3$ : concentration of substrate 3 in $[g/l]$.
+	\item $s$:  vector $(s_1,s_2,s_3)$.
+	\item $\I_i(t,x)$ : Interaction function of OTU $i \in \{1,\dots,n\}$.
+	\item $\mu_i(s,x)$ : growth function of OTU $i \in \{1,\dots,n\}$.
+	\item $\mu = (\mu_1(s,x), \dots, \mu_n(s,x))$ vector containing the growth function of every OTU.
+	\item $D$: Dilution Rate of the continuous reactor in $[1/day]$. 
+	\item $y_i$: Yield of moles of biomass formed per mole of substrate consumed of OTU $i$.
+	\item $y$: vector $y_1,\dots,y_n$.
+	\item $k_i$: Yield of  moles of substrate consumed per mole of biomass formed of OTU $i$ . The inverse of the biomass yield $k_i = \dfrac{1}{y_i}$.
+	\item $k$: vector $k_1,\dots,k_n$.
+	\item For integers $m_1$ and $m_2$ and $a \in \R$, $a_{m_1 \times m_2}$ represents a matrix of $m_1$ rows and $m_2$ columns with $a$ in every entry. 
+	\item Let $m$ be an integer then $I_m$ is the identity matrix of size $m$.
+\end{enumerate}
+
+\subsection{Stoichiometric Equations}
+A cascade (bio)reaction process is considered. Suppose $n$ different OTU are present in the chemostat. The cascade reaction refers to the situation where a group of microorganisms ($G_1 \subset [n] $) consumes a substrate $s_1$ and produces $s_2$ and biomass, while another group of microorganisms ($G_2\subset [n]$) consumes $s_2$ and produces $s_3$ and biomass. $G_1$ and $G_2$ are called functional groups. The number of organisms in each functional will be denoted $n_1$ and $n_2$ respectively, that is $\vert G_1 \vert = n_1$ and $\vert G_2 \vert = n_2$ . This work treats the case when the $G_1$ and $G_2$ are disjoint sets:
+
+\begin{hypo}  Sets $G_1$ and $G_2$ satisfy: $G_1 \cap G_2 = \emptyset$ and $G_1 \cup G_2 = [n]$. 
+\end{hypo}
+
+The situation is described as simplified reactions \eqref{Reaction1} and \eqref{Reaction2}. The reactions are simplified in the sense that they do not attempt to represent a balanced chemical reaction, rather it represents the direction of the bioprocess and the proportions of different consumed and formed compounds of interest. 
+
+The terms $y_i$ are known as yields, it represents the number of grams of biomass produced per gram of substrate consumed. In this work the unit grams of dry biomass per gram of substrate is used for yields. Furthermore, for each $ i \in [n]$, OTU $i$ is characterized by its process rate (also known as growth function) $\mu_i(s,x)$. Notice that for being as generic as possible, the growth rate may be a function of the whole state in order to model the influence of all OTU on the growth rates of others.
+
+\begin{align}
+\label{Reaction1} \tag{R G1} 	s_1 \stackrel{\mu_i(s,x)}{\longrightarrow} s_2 + y_ix_1 \quad \forall i \in G_1 \\
+\label{Reaction2} \tag{R G2} s_2\stackrel{\mu_i(s,x)}{\longrightarrow} s_3 + y_ix_i \quad \forall i \in G_2
+\end{align}
+
+\subsection{Kinetic Equations}
+The growth rate of each species is given by:
+\begin{align}
+\mu_i(s,x) &= \bar{\mu}_i \dfrac{s_1}{K_i + s_1}\left(1+\sum \limits_{j\in [n]} a_{ij} x_{j} \right) \quad \forall i \in G_1 \\
+\mu_i(s,x) &= \bar{\mu}_i \dfrac{s_2}{K_i + s_2}\left(1+\sum \limits_{j\in [n]} a_{ij} x_{j} \right) \quad \forall i \in G_2
+\end{align}
+The term $\left(1+\sum \limits_{j\in [n]} a_{ij} x_{j} \right)$ accounts for pairwise interactions affecting the growth rate of each OTU. Let $A$ denote the matrix
+with entries $a_{ij}$, which will be referred to as the interaction matrix.  
+
+\subsection{Mass Balance Equations}
+
+Consider the scenario of an continuous and homogeneous reactor: the input flow is the same as the output flow, with a dilution rate of $D$. The input flow contains a concentration $s_{in}$ of substrate $s_1$. Note that $s_{in}$ and $D$ are time dependent. Each OTU grows at a rate $\mu_i(s,x)$. System \eqref{system} represents this situation. A specific case of $\mu_i(s,x)$ is given by \cite{Dumont2016}, and the first part of this article deals with the mathematical analysis of that model. A second part then generalizes its growth function and calibrates it against experimental data using an optimal control approach.
+
+\begin{align} 
+\label{system}
+\begin{array}{cl}
+\dot{x_i} =& \left(\mu_i(s,x) -D \right)x_i \quad \forall i \in G_1\\
+\dot{x_i} =& \left(\mu_i(s,x) -D \right)x_i \quad \forall i \in G_2 \\
+\dot{s_1} =& \displaystyle (s_{in}-s_1)D-\sum\limits_{i\in G_1} \frac{1}{y_i}\mu_i(s_1,x) x_i  \\
+\dot{s_2} = & \displaystyle -s_2D+\sum\limits_{i\in G_1}\frac{1}{y_i}\mu_i(s,x)x_i 		-\sum\limits_{i\in G_2}\frac{1}{y_i}\mu_i(s,x) x_i  \\
+\dot{s_3} =&  \displaystyle -s_3D+\sum\limits_{i\in G_2}\frac{1}{y_i}\mu_i(s,x) x_i 
+\end{array}
+\end{align}	
+
+
+\section{Mathematical Analysis}
+
+The system of equations \eqref{system} is defined in the region 
+
+\begin{align*}
+\Omega := \{ (x_1,\dots,x_n,s_1,s_2,s_3)\in  \R^{n+3} | x_1,\dots,x_n,s_1,s_2,s_3  \geq 0  \}
+\end{align*}
+
+First sufficient conditions for the system to be well posed are established: meaning that solutions remain bounded and non-negative in time, this ultimately implies that the solution exists for every $t \geq 0$ \cite{Khalil1996}. 
+
+Second the equilibria of the system are derived. Possible equilibrium points for this system grow exponentially with the number of OTU considered ($n$).  Stability is not analytically addressed, a numerical scheme calculating every equilibrium point and the system's Jacobian eigenvalues at the equilibrium point were implemented for studying the system. 
+
+
+\subsection{Properties of the system}
+
+ By bounding the norm of the interaction matrix on the initial conditions and parameters one establishes that solutions will remain positive and bounded. 
+
+\begin{lemma}
+	\label{l1}
+	For initial conditions $(x_1(0),\dots,x_n(0),s_1(0),s_2(0),s_3(0)))\in \Omega$, there exists positive scalars $M_1$, $M_2$, and $M_3$ such that solutions to \eqref{system} satisfy the following inequalities:
+	\begin{align}
+	&\sum \limits_{i \in G_1} \frac{1}{y_i}x_i + s_1 \leq M_1 \\
+	&\sum \limits_{i \in G_2} \frac{1}{y_i}x_i + s_1 +s_2 \leq M_2 \\
+	&s_1 + s_2 + s_2 \leq M_3
+	\end{align}
+\end{lemma}
+
+The proof can be seen in the appendix. A bound on the norm of $A$ is found such that every matrix $A$, respecting the bound, guaranties that $\Omega$ is a positively invariant set.
+
+\begin{theo}
+	\label{theoWellPosedness}
+	For initial conditions $(x_1(0),\dots,x_n(0),s_1(0),s_2(0),s_3(0)))\in \Omega$, there exists a constant $M>0$ such that for every matrix $A$ satisfying $\Vert A \Vert_{\infty} \leq M $, the solutions remain in $\Omega$ and are bounded.
+\end{theo}
+
+The proof can be seen in the appendix.
+
+\subsection{Equilibrium Points}
+
+In this section analytical expressions for equilibrium points are derived. Analytic expressions of equilibrium points are obtained, however no analytic expression concerning the stability of such points is presented. To answer the question of stability a numeric scheme is used by evaluating the Jacobian at the equilibrium point. At the end of the section an algorithm is provided for exploring all the possible equilibria.
+
+\begin{defn} 
+	An equilibrium point (or steady state) is a point $(x^{eq},s^{eq}) \in \R^{n+3}_+$ so that the right hand side of equations \eqref{Eq1},\eqref{Eq2}, \eqref{Eq3}, and \eqref{Eq4} equals zero. 
+\end{defn} 
+
+Observe that equilibrium points are by definition non-negative so the state variables can have biological meaning. Details of the calculations are given in the appendix. 
+
+This model \eqref{system} is restated in a more compact form using matrix notation.
+
+\begin{defn} Given a vector $v=(v_1,\dots, v_n)\in \R^n$, the function $\diag(v)$:
+	\begin{align}
+	\begin{array}{rc}
+	\diag:\R^n \rightarrow & \mathbb{M}_{n\times n}(\R)\\
+	& \\
+	v \rightarrow & \begin{pmatrix}
+	v_1 & 0 & \dots & 0 \\
+	0 & v_2 & \ddots & \vdots\\ 
+	\vdots & \ddots & \ddots& 0 \\
+	0 & \dots &0 & v_n 
+	\end{pmatrix}
+	\end{array}
+	\end{align}
+\end{defn}
+
+The former function places a vector $v$ in the diagonal of a matrix. By noting $A$ the matrix with coefficients $a_{ij}$, system \eqref{system} is restated as follows:
+\begin{align}
+\label{Eq1}	\dot{x} = & \diag(x)(\diag(f(s))(1_{n\times 1} + Ax) - D_{n\times 1}) \\
+\label{Eq2}	\dot{s_1} = & (s_{in}-s_1)D + \begin{bmatrix}
+-(1_{n_1\times 1} +A_1x) \\0
+\end{bmatrix}^\top \diag(k) \diag(f(s))x \\
+\label{Eq3}	\dot{s_2} = & -s_2D+
+\begin{bmatrix}
+1_{n_1\times 1} +A_1x \\ -(1_{n_2\times 1} +A_2x)
+\end{bmatrix}^\top \diag(k) \diag(f(s))x \\	
+\label{Eq4}	\dot{s_3} = & -s_3D+\begin{bmatrix}
+0	\\(1_{n_2\times 1} +A_2x) 
+\end{bmatrix}^\top \diag(k) \diag(f(s))x 
+\end{align} 
+
+%
+%The following notation was used:
+%$A = \begin{bmatrix}
+%A_1\\A_2
+%\end{bmatrix}$.
+%
+%Where $A_1$ is a matrix of dimension $n_1 \times n$ corresponding to the interaction coefficients of OTU $i \in G_1$. $A_2$ is a matrix of dimension $n_2 \times n$ rows corresponding to the interaction coefficients of OTU $i \in G_2$.
+
+\subsubsection{Complete Coexistence}
+
+This section derives the equations for an equilibrium point with every OTU being positive: $x^{eq}_i>0$. 
+
+From equation \eqref{Eq1} one gets that an equilibrium point satisfies: \begin{align*}
+\diag(x)(\diag(f(s)(1_{n\times 1} + Ax) - D_{n\times 1}) & = 0 \\
+\Rightarrow x_i = 0 \vee (\diag (f(s))(1_{n\times 1} + Ax) - D_{n\times 1})_i & = 0 \quad \forall i\in (1,\dots,n)
+\end{align*}
+
+Since $x_i>0$ one has 
+\begin{align}
+\diag(f(s))(1_{n\times 1} + Ax) - D_{n\times 1}=0 \\
+\label{xEquilibria}\Leftrightarrow x = A^{-1}(\diag (f(s))^{-1}D_{n\times 1} - 1_{n\times 1})
+\end{align}  
+
+By replacing \eqref{xEquilibria} in equation \eqref{Eq2}:
+
+
+\begin{align}
+\label{s1Equilibria} (s_{in}-s_1)-	\begin{bmatrix}
+1_{n_1\times 1} \\0_{n_2\times 1}
+\end{bmatrix}^\top \diag (k) A^{-1}(\diag(f(s))^{-1}D_{n\times 1}-1_{n\times 1}) = 0 
+\end{align}
+
+
+A similar expression is obtained when replacing \eqref{xEquilibria} in equation \eqref{Eq3}
+
+\begin{align}
+\label{s2Equilibria}-s_2+
+1_{n\times 1}^{\top}\diag (k)  A^{-1}(\diag(f(s))^{-1}D_{n\times 1}-1_{n\times 1}) = 0
+\end{align}
+
+From equation \eqref{s1Equilibria} $s_2$ can be written as a function of $s_1$:
+\begin{align}
+s_2 = \frac{s_1}{c_1s_1^2+c_2s_1+c_3} \label{S2(S1)}
+\end{align}
+
+
+Then by replacing  \eqref{S2(S1)} in equation \eqref{s2Equilibria}, one gets a fourth degree polynomial for $s_1$. 
+
+\begin{align}
+\label{Poly4} a_4s_1^4+a_3s_1^3+a_2s_1^2+a_1s_1+a_0 = 0
+\end{align}
+
+
+Formulae for coefficients $c_1, c_2, c_3, a_0, a_1, a_2, a_3, a_4$ can be found in the appendix. 
+
+Finally, in equilibrium, $s_3$ can be defined in terms of $s_1$, $s_2$ and $s_{in}$. This is done by adding equations \eqref{Eq2}, \eqref{Eq3},  and \eqref{Eq4} which gives :
+
+\begin{align}
+s_{in} = s_1+s_2+s_3 \label{s1s2s3}
+\end{align}
+
+If the system of equations \eqref{xEquilibria}, \eqref{S2(S1)}, \eqref{Poly4}, and \eqref{s1s2s3} provides only solutions with some negative entries then complete coexistence is not possible.
+
+\subsubsection{Washout of some OTU}
+
+\begin{defn}
+	Given an equilibria point $(x^{eq},s^{eq})$ of system \eqref{system}, then the set of non-active coordinates $\mathcal{J}\subset \{1,\dots,n\}$ is defined as:
+	$\mathcal{J} = \{j_1, \dots, j_m\ : \, x^{eq}_{j_i} = 0 , \;i \in [m] \} $.
+	
+	The active point $x^{act}\in \R^{n-m}$ is defined by the positive entries of $x^{eq}$. The relationship between the two is given by:
+	
+	\begin{align}\label{EquilibriaFormula} (x^{eq})_i = \begin{cases}
+	x^{act}_i & \text{for } i < j_1\\
+	x^{act}_{i-k} & \text{for } j_{k}< i <j_{k+1}  \text{ and } k \in \{1,\dots,m-1\}\\
+	x^{act}_{i-m} & \text{for } j_{m}< i \\
+	0 & \text{for } i \in \{j_1, \dots, j_m\}
+	\end{cases} \end{align}	
+	
+	The active growths $f^{act}(s)$ and yields $k^{act}$ are defined analogously by the positive entries of $x^{eq}$. The active interactions $A^{act}$ is defined as matrix $A$ without the $\mathcal{J}$ rows and columns.
+\end{defn}
+
+From equation \eqref{Eq1} equilibrium points satisfy: 
+
+\begin{align}
+\Rightarrow  (\diag (f(s))(1_{n\times 1}+ Ax) - D_{n\times 1})_i = 0 \quad \forall i \in [n]\setminus \mathcal{J} \\
+\Leftrightarrow f_i(s)(1 + A_{i\bullet}x) - D = 0 \quad \forall i \in [n]\setminus \mathcal{J} \label{Extinction}
+\end{align} 
+
+But since $\forall j \in \mathcal{J}, \; x^{eq}_j = 0 $ then the coefficients $a_{ij}$ play no role in the equation \eqref{Extinction} one can rewrite equation \eqref{Extinction} as $\diag(f^{act}(s))(1_{(n-m)\times 1} + A^{act}x^{act}) - D_{(n-m) \times 1}=0 $.
+
+\begin{lemma} 
+	The active point of the solution of \eqref{Extinction} solves the system of equations \eqref{EqSome}. 
+	\begin{align}
+	\label{EqSome}x^{act} = (A^{act})^{-1}(\diag(f^{act}(s))^{-1}D_{(n-m)\times 1} - 1_{(n-m)\times 1})
+	\end{align} 
+\end{lemma} 
+
+The following hypothesis represents the case where in each functional group remains at least one OTU :
+\begin{hypo}The set $\mathcal{J}$ satisfies $ G_1 \not \subset \mathcal{J} , \, G_2 \not \subset \mathcal{J} $.
+	\label{noWashoutHyp}
+\end{hypo} 
+
+Under H \ref{noWashoutHyp}, the equilibrium of the system is solved as described by equations \eqref{S2(S1)}, \eqref{Poly4}, and \eqref{s1s2s3} as before, but coefficients are calculated differently (essentially the same, but only uses the coefficients corresponding to the active points).
+
+\subsubsection{Washout of $G_2$}
+
+The washout of $G_2$ is equivalent to the following hypothesis:
+
+\begin{hypo}
+	$G_2 \subset \mathcal{J}$ and $G_1 \not \subset \mathcal{J}$
+	\label{WashoutG2}
+\end{hypo} 
+
+In the case that $x_i = 0, \, \forall i \in G_2$ then from equation \eqref{Eq4}.
+\begin{align}
+\dot{s_3} = 0 = -s_3D \\
+\Rightarrow s_3 = 0;
+\end{align}
+
+Then by \eqref{s1s2s3} one obtains:
+
+\begin{align}
+s_{in} = s_1 + s_2
+\end{align}
+
+Then by replacing  \eqref{EqSome} and \eqref{EquilibriaFormula} in \eqref{Eq2}.
+\begin{align}
+\label{S1NOBWashout}  (s_{in}-s_1)-1_{(n-m)\times 1}^\top
+\diag(k)(A^{act})^{-1}(\diag(f^{act}(s))^{-1}D_{(n-m)\times 1} - 1_{(n-m)\times 1}) = 0 
+\end{align}
+
+Notice \eqref{S1NOBWashout} does not contain terms with $s_2$. By reordering the terms \eqref{S1NOBWashout} one finds a two degree polynomial of $s_1$:
+
+\begin{align}
+a'_2 s_1^2 + a'_1s_1 + a'_0 = 0
+\end{align}
+
+Where $a'_i$ can be found in the appendix.
+
+\subsubsection{Washout}	
+Notice that $x_i = 0$ for every $i \in \{1,\dots, n_1\}$ implies the washout equilibria (no OTU surviving):
+
+From equation \eqref{Eq2}, one gets 
+\begin{align*} s_{in} = s_1 \end{align*}
+then \eqref{s1s2s3} implies \begin{align*}s_2 &= s_3 = 0 \\ \Rightarrow \dot{x_i} &= -Dx_i \quad \forall i = n_1+1, \dots, n\end{align*}   
+which has an equilibria at $x_i = 0$. 
+
+All the former discussion leads to a potential number of   $ (2^{n_1}-1)\cdot (4\cdot(2^{n_2}-1)+2)+1 $  different equilibria. 
+\begin{align} \overbrace{(2^{n_1}-1)}^{\substack{\text{nonempty subsets} \\ \text{of }G_1 }} (\underbrace{4}_{\substack{\text{possible} \\ \text{solutions of} \\ \text{equation \eqref{Poly4}}}} \cdot\overbrace{(2^{n_2}-1)}^{\substack{\text{nonempty subsets} \\ \text{of  }G_2}}+\underbrace{2}_{\substack{G_2 \\ \text{Washout}}})+\overbrace{1}^\text{Washout} 
+\end{align}
+
+\subsection{Local Stability and Operating Diagrams}
+For checking local asymptotic stability of the equilibria points, the Jacobian of the system is provided and evaluated at each of these points. The resulting matrix's eigenvalues must satisfy that their real parts are less than zero. A general formula for this Jacobian is presented in the appendix.
+
+The former discussion proposes an algorithm for finding the positive stable equilibrium points 
+
+\begin{algorithm}[H]
+	\KwData{$A \in M_{n\times n}(\R)$, $D, s_{in}, \bar{\mu}_i,K_i, k_i,  \in \R \, i\in [n], $, $n_1, n_2 \in \N$}
+	\KwResult{Set PSP containing all Positive Stable Equilibrium Points}
+	$PSP = \emptyset$ \\
+	eig = Eigenvalues of $J(0,s_{in},0,0)$. \\
+	\If{$Real(eig) < 0$}{$PSP = PSP \cup (0,s_{in},0,0)$} 
+	\For{$A'$ square submatrix of $A$}{	Calculate $(x,s_1,s_2,s_3)$ from equations \eqref{Poly4}, \eqref{S2(S1)}, \eqref{s1s2s3}, and \eqref{xEquilibria} \\
+		\If{$(x,s_1,s_2,s_3) \geq 0$}{eig = Eigenvalues of $J(x,s_1,s_2,s_3)$ \\
+			\If{$Real(eig) < 0$}{$PSP = PSP \cup (x,s_1,s_2,s_3)$}}}
+	\label{StabilityAnalysis}
+\end{algorithm}
+
+The algorithm implicitly assumes that every submatrix $A'$ is invertible.
+
+Operating diagrams are an illustrative way of representing the long term behaviour of a reactor depending on operating parameters. Operating diagrams are created by running algorithm \eqref{StabilityAnalysis} for different pairs $(s_{in},D)$ . One then regroups all the pairs such that the set of non-active coordinates of the points of the set $PSP$ are the same. This regrouping represents graphically the coexistence of the different OTU in a $D-s_{in}$ plot. In particular for the biological process of nitrification, this implies when partial nitrification (PN) or complete nitrification (CN) may arise. PN refers to the state when nitrite $s_2$, accumulates because the OTU of $G_2$ concentration is very low and thus almost no conversion from $s_2$  to $s_3$ takes place. On the contrary CN is when nitrate ($s_3$) accumulates because of the presence of OTU of $G_2$.
+
+The operating diagram from the parameter identification from Dumont et al. is presented in figure \ref{OD Dumont}. Two species per functional group were considered. One can see that coexistence in the same functional group is not attained. However when using a different set of parameters one can see a more complex situation where coexistence in the same functional group is possible as seen in figure \ref{OD modified}. In the latter case CN can be achieved at a more elevated dilution rats than in the former case. Parameters of cases 1 and 2 can be seen in table \ref{Parameters Dumont} and \ref{Parameters Modified}, respectively. 
+
+The model isalso  able to overcome the  competitive exclusion principle \cite{lobry2017chemostat} (CEP) paradigm. The CEP roughly states that if two species are growing on the same limiting resource, and their growth law is monotonic in the substrate, then only one of them will survive in the long run. However reports on wastewater treatment plants have shown coexistence between species in nitrifying reactors has\cite{Wagner2002}.
+
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{|l|l|l|l|}
+		\hline
+		Parameters Dumont & $\mu_i\,[1/day]$ & $K_i\,[mg/L]$ & $\frac{1}{y_i} \, [gr/gr]$ \\ \hline
+		$x_1 \in G_1$ & 0.828  & 0.147 & 3.85  \\ \hline
+		$x_2\in G_1$ &0.828   & 0.147 &  3.85\\ \hline
+		$x_3\in G_2$ & 0.18 & 0.026 &  100 \\ \hline
+		$x_4\in G_2$ & 0.18 & 0.026 &  100 \\ \hline
+	\end{tabular}
+	\caption{Kinetic parameters of model \eqref{system} from \cite{Dumont2016}.}
+	\label{Parameters Dumont}
+\end{table}
+
+\begin{figure}[ht]
+	\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{Interactions_Parameters_Dumont}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.45\textwidth}
+	\includegraphics[width=\textwidth]{OD_parameters_Dumont}
+	\end{subfigure}
+	\caption{Left: interactions of the system. Right: operating diagram of Model \eqref{system}, with parameters in Table \ref{Parameters Dumont}. The different zones represent the surviving species in the steady state. PN takes place when neither $x_3$ nor $x_4$ are present. CN takes place if $x_3$ or $x_4$ are present.}
+	\label{OD Dumont}
+\end{figure}
+
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{|l|l|l|l|}
+		\hline
+		Modified Parameters  & $\mu_i\,[1/day]$ & $K_i\,[mg/L]$ & $\frac{1}{y_i} \, [gr/gr]$ \\ \hline
+		$x_1 \in G_1$ &0.828  &0.147  & 5 \\ \hline
+		$x_2\in G_1$ & 0.621 & 0.0147 & 3 \\ \hline
+		$x_3\in G_2$ & 0.18 & 0.026 & 110 \\ \hline
+		$x_4\in G_2$ & 0.135& 0.0026& 90 \\ \hline
+	\end{tabular}
+	\caption{Kinetic parameters of model \eqref{system} modified from \cite{Dumont2016}.}
+	\label{Parameters Modified}
+\end{table}
+\begin{figure}[ht]
+	\centering	
+	\begin{subfigure}[b]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{Interactions_Parameters_modifed}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{OD_parameters_modified}
+	\end{subfigure}
+	\caption{Left: interactions of the system. Right: operating diagram of Model \eqref{system}, with parameters in Table \ref{Parameters Modified}. The different zones represent the surviving species in the steady state. PN takes place when neither $x_3$ nor $x_4$ are present. CN takes place if $x_3$ or $x_4$ are present.}
+	\label{OD modified}
+\end{figure}
+\clearpage
+
+\subsection{Remarks}
+The model here presented serves to illustrate that by considering interactions complete nitrification with a bigger dilution rate can be explained. It also shows a mechanism by which the CEP no longer holds. However the quadratic increase of parameters with the number of OTU considered makes it difficult to accurately calibrate the model. Simulations always show a single stable equilibrium point, however no proof is offered to such conjecture. In the next section, in the spirit of this model, a more systematic treatment is provided to include genetic sequencing in order to predict the outcome of the reactor.
+
+
+\section{Generalized approach for modelling interactions}
+In the previous sections interactions were modelled as an affine function of the OTU concentration that multiplies a substrate dependent growth equation. 
+
+More generally the interaction function is defined. It represents how the growth rate of species $i$ is affected by the concentration of other Bacteria, $x$:
+
+Given a vector $(v_1,\dots,v_n)^\top$ the interaction function $\I$ is noted as:
+\begin{align}
+\begin{array}{rc}
+\I: \R^n \rightarrow & \R_+^n\\
+& \\
+v \rightarrow & \begin{pmatrix}
+I_1(v) \\
+I_2(v) \\ 
+\vdots  \\
+I_n(v)
+\end{pmatrix}
+\end{array}
+\end{align}
+
+	Let $f_i(s)$ be a bounded, positive, and continuous function of $s$ (e.g. Monod, Haldane). The growth equation of OTU $i$ becomes:
+	\begin{align}
+	\mu_i(s,x) = f_i(s)I_i(x)
+	\end{align}
+	Note $f(s) := (f_1(s),\dots,f_n(s))^\top$.
+	\label{growthForm}
+
+Since the growth of a single strain in batch experiments is driven by the substrate concentration, when no interactions are present one should recover expression $f_i(s)$. Therefore if there are no interactions then $I_i(x) = 1$. From this hypothesis, note that $ \lim \limits_{x \rightarrow 0} I_i(x) = 1$ since if there is minimal presence of OTU, interactions can not exist. Furthermore for this first study it is assumed that $I_i(\cdot)$ is a continuously differentiable function on $x$. For making explicit all of the former:
+
+\begin{hypo}
+	The interaction function $\I$ previously defined satisfies:
+	\begin{enumerate}
+		\item\begin{align}
+		\I \left( (0,\dots,0)^\top \right) = 
+		(1,\dots,1)^\top 
+		\end{align}
+		\item Let $\Omega$ be an open subset of $ \R^n $ then $\I \in C^1(\Omega)$.
+	\end{enumerate} 
+\end{hypo}
+
+
+Note $J_I(x)$ the Jacobian matrix of function $\mathcal{I}$. then a first order approximation of $\I(\cdot)$ centred at $\bar{x}$ gives: $\I(x) = \I(\bar{x}) + J_I(\bar{x})(x-\bar{x}) + o(\Vert x- \bar{x} \Vert)$. I $\bar{x}= 0$, one recovers the growth expression from the previous section and $J_I(\bar{0})$ can be seen as the interaction matrix from model \eqref{system}.
+
+\subsection{Reconstructing the Interaction Function}
+
+Suppose that the functions $f_i(s)$, and the yields $y_i$ are well-known. By using experimental measurements of $x$, represented by $z(t)$, the objective is to reconstruct function $I(x)$. For doing so, the terms $I_i(x)$ are replaced by a control $u_i(t)$  and a state feedback is obtained by solving a nonlinear optimal tracking problem.	
+
+Consider the observable system \eqref{Controlsystem} ($y(t)$ being the observer) where $g(\cdot)$ is a known function.
+
+\begin{align} 
+\label{Controlsystem}
+\begin{array}{cl}
+\dot{x_i} =& \left(f_i(s)u_i(t) -D \right)x_i \quad \forall i \in G_1\\
+\dot{x_i} =& \left(f_i(s)u_i(t) -D \right)x_i \quad \forall i \in G_2\\
+\dot{s_1} =& \displaystyle (s_{in}-s_1)D-\sum\limits_{i \in G_1}\frac{1}{y_i}f_i(s)u_i(t) x_i  \\
+\dot{s_2} = & \displaystyle -s_2D+\sum\limits_{i \in G_1}\frac{1}{y_i}f_i(s)u_i(t)	-\sum\limits_{i \in G_2}\frac{1}{y_i}f_i(s)u_i(t) x_i  \\
+\dot{s_3} =&  \displaystyle -s_3D+\sum\limits_{i \in G_2}\frac{1}{y_i}f_i(s)u_i(t) x_i \\
+y(t) & = g(x,s)
+\end{array}
+\end{align}	
+
+For this model $g(x,s) = x$, since we are observing measurements coming from genetic sequencing. Consider the weighted norms defined by positive definite matrices $F,Q$, and $R$, represented by $\Vert \cdot \Vert_F$, $\Vert \cdot \Vert_Q$, and $\Vert \cdot \Vert_R$, respectively. The optimal tracking problem is defined as: 
+
+\begin{align}
+\label{Optimal Control} \begin{array}{cc} \min &  \int \limits_{0}^{T} \Vert g(x,s) - z \Vert_Q + \Vert(u -\vec{1}) \Vert_R dt\\
+s.t.& 
+(x,s_1,s_2,s_3)\mbox{ solution of \eqref{Controlsystem}} \\
+&u_i(t) \in [0,1]
+\end{array}	
+\end{align} 
+
+The control $u(t)$ is intended to drive the system to be near a desired output $z(t)$, which in this context are the measurements of the concentrations of OTU and metabolites. The term $\lambda \Vert(u -\vec{1}) \Vert_R$, was added for two reasons:
+
+First because the interest is testing the idea that interactions could be driving the system. Therefore adding a penalization in the objective function for each control to remain near $1$ can be seen as an attempt to explain data without any interaction.
+
+Second, to force a regularized control. Otherwise note that $u$ is linear in \eqref{Controlsystem}, therefore if the integral cost does not have a non-linear expression of $u$ the optimal control will be of a bang-bang type with possibly singular arcs. Since the objective is to find a differentiable expression of $I(x)$ the addition of the regularization term is deemed necessary.
+
+The problem of approximating the solution of the system to a desired reference ($z$ in this case) is called the optimal tracking problem. For solving such a problem the approach developed by Cimen \textit{et al.} \cite{Cimen2004} was adapted to our problem. The method proposed involves the resolution of Approximating Sequences of Ricatti Equations (ASRE). 
+
+Two points of departure from the original method are made clear, details can be seen in the appendix: first the tracking problem does not consider a constrained control, so one should consider a reformulation as proposed by the same author in other works \cite{Cimen2008}. Nevertheless, the methods were directly used, and an explicit constraint in the synthesis of the control was added for the control to remain within the desired bounds. Second, when implementing equation (12) of their article \cite{Cimen2008} a linearised dynamic is not used. Instead the original dynamic with the control given by equation (9) of their article is used. This modification of the original method was performed after experiencing poor numerical integration (ill conditioning) of the proposed linear equation. 
+
+The problem with implementing the linearisation fo the dynamic can be partially explained because the dynamic used in this article has the property of remaining in the positive octant, while a linearisation of it may not posses this property, thus hindering the next iteration by -for example- providing a solution with negative substrate or biomass. Partially explained, because even when controlling positivity of the output of the differential equation solver, numerical integration problems were also encountered.
+
+The change of variable $u_i(t) = v_i(t) + 1$ is used for technical reasons explained in the appendix section. This in turn implies $v_i(t) \in [-1,0]$.
+
+The feedback control $v(t)$, will be of the form $v(t) = -R^{-1}\tilde{B}^\top(t)\left(\tilde{P}(t)x(t)-s_f(t)\right)$. Where matrix $P(t)$ and vector $s_f(t)$ solve differential equations. Note that the control becomes a function of the OTU concentration so it represents the interaction function.
+
+For compensating the lack of a theoretical optimal control, the approach presented in here was first tested against noised synthetic data and then against real experimental data. The first test consisted in simulating
+\subsection{Numerical results}
+
+
+In this section the tracking problem was solved in the chemostat setting discussed before with data coming from a nitrification process; the experimental conditions are described in \cite{dumont2008observers}. Only data from day $183$ onwards was used because a change in the operating temperature happened at that point, which is known to have an effect on the kinetics; for exploring the hypothesis of interactions as drivers of bioreactors performance environmental conditions should be kept constant as possible.
+
+A method was used in order to classify OTU in either $G_1$ or $G_2$ from data ranging from day $184$ and $245$ which yields as well the $k_i$ of each OTU.  12 OTU were present in the $G_1$ group and 9 in the $G_2$ functional group. The system state dimension becomes 24. Then the tracking method was used from day $245$ to day $362$.
+
+The knowledge of function $f_i(s)$ were based on a study of nitrification's kinetic parameters\cite{Wiesmann1994}. Particularly given the system's ammonium and nitrate concentration a Monod function (eq \eqref{monod}) was used for $G_1$ while a Haldane function (eq. \eqref{Haldane})was used for $G_2$. Since flock formation was seen in the chemostat experiment, the $K_s$ constant proposed by \cite{Wiesmann1994} was multiplied by a hundred times, in order to model for less substrate availability inside a flock. 
+
+\begin{align}
+\label{monod} f_i(s) &= \bar{\mu}_i \dfrac{s_1}{K_i +s_1} \, \forall i \in G_1 \\
+\label{Haldane} f_i(s) &= \bar{\mu}_i \dfrac{s_2}{K_i +s_2 + \frac{s_2^2}{KI}} \, \forall i \in G_2
+\end{align}
+
+The choice of the matrix $F$, $Q$ and $R$, influence the quality of the fitting, and three cases are presented. Before for the reader to gain understanding of the situation a simulation in figure \ref{NoControlSimulation} is shown without control. One can see that simulation predicts CN (accumulation of $s_3$), while data is showing PN  (accumulation of $s_2$).
+
+\begin{figure}[ht]
+	\centering
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{OTU_no_control}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{metabolites_no_control}
+	\end{subfigure}
+	\caption{Simulation with no control. Warm colors for OTU belonging to $G_1$. Cold colors for OTU belonging to $G_2$. Dotted line represents data.}
+	\label{NoControlSimulation}
+\end{figure}
+\clearpage
+
+
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_OTU_Iter_1}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_metabolites_Iter_1}
+	\end{subfigure}
+	~	
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_OTU_Iter_5}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_metabolites_Iter_5}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_OTU_Iter_25}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_metabolites_Iter_25}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_OTU_Iter_45}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_metabolites_Iter_45}
+	\end{subfigure}
+	\caption{Case 1 Metabolites and OTU concentration,  $R = 0.01 I_n$. Let $Q = I_n$, and $F = 10Q$. Left OTU fitting, right Metabolites. Continuous lines are the fit. Dotted lines represent data. Warm colors for OTU in $G_1$, cold colors for OTU in $G_2$.}
+	\label{Case 1 Metabolites OTU}
+\end{figure}
+
+\clearpage
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_Control_Iter_1}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_Control_Iter_5}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_Control_Iter_25}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+	\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_Control_Iter_45}
+	\end{subfigure}
+	\caption{Case 1: Control for tracking. Warm colors for OTU in $G_1$, cold colors for OTU in $G_2$.}
+	\label{Case 1 Control}
+\end{figure}  
+In this case from figure \ref{Case 1 Metabolites OTU} one can see that $s_1$ accumulation is predicted and not $s_2$ which was the most abundant metabolite. By choosing the identity matrix as the weight matrix of the tracking part it privileges the most abundant species (OTU 11), and thus the behaviour is predicted based only on OTU 11. From figure \ref{Case 1 Control} it can be seen that the control for OTU in $G_2$ tends to $1$, while the control for OTU in $G_1$ (with exception of OTU 11) remain almost zero until day $320$. The method seems to converge: note that the control for iterations $25$ and $45$ vary slightly from one another.
+
+\clearpage
+\begin{figure}
+	\centering
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_OTU_Iter_1}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_metabolites_Iter_1}
+	\end{subfigure}
+	~	
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_OTU_Iter_5}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_metabolites_Iter_5}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_OTU_Iter_15}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_metabolites_Iter_15}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_OTU_Iter_25}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_metabolites_Iter_25}
+	\end{subfigure}
+	\caption{Case 2: $R = 0.001 I_n$. Let $\bar{k} =  \max \{k_i| i\in [n] \}$, $Q = \diag(k) /\bar{k}$, and $F = 10Q$. Left OTU fitting, right Metabolites. Continuous lines are the fit. Dotted lines represent data. Warm colors for OTU in $G_1$, cold colors for OTU in $G_2$.}
+	\label{Case 2 Metabolites OTU}
+\end{figure}
+\clearpage
+\begin{figure}
+	\centering
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_Control_Iter_1}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_Control_Iter_5}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_Control_Iter_15}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_Control_Iter_25}
+	\end{subfigure}
+	\caption{Case 2 Control for tracking.Warm colors for OTU in $G_1$, cold colors for OTU in $G_2$.}
+	\label{Case 2 Control}
+\end{figure}  
+
+In this case from figure \ref{Case 2 Metabolites OTU} one can see that $s_2$ accumulation is predicted which was the most abundant metabolite. It was also able to detect an $s_1$ peak at day $340$.  The rationale for choosing the yields as the diagonal of the weight matrix of the tracking part is that a higher yielding organism will cause a more pronounced difference in the metabolites of the system, thus more weight is given to correctly tracking those OTU. From figure \ref{Case 2 Control} it can be seen that the control for OTU in $G_2$ remains zero until day 300, while the control for OTU in $G_1$ vary differently throughout the trajectory.
+
+\clearpage
+\begin{figure}
+	\centering
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_OTU_Iter_1}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_metabolites_Iter_1}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_OTU_Iter_5}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_metabolites_Iter_5}
+	\end{subfigure}
+	~
+		\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_OTU_Iter_15}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_metabolites_Iter_15}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_OTU_Iter_25}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_metabolites_Iter_25}
+	\end{subfigure}
+\caption{Case 3: $R = 0.0001 I_n$. Let $\bar{k} =  \max \{k_i| i\in [n] \}$, $Q = \diag(k) /\bar{k}$, and $F = 10Q$. Left OTU fitting, right Metabolites. Continuous lines are the fit. Dotted lines represent data. Warm colors for OTU in $G_1$, cold colors for OTU in $G_2$.}
+\label{Case 3 Metabolites OTU}
+\end{figure}
+\clearpage
+\begin{figure}
+	\centering
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_Control_Iter_1}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_Control_Iter_5}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_Control_Iter_15}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.32\textheight}
+	\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_Control_Iter_25}
+	\end{subfigure}
+	\caption{Case 3: Control for tracking. Warm colors for OTU in $G_1$, cold colors for OTU in $G_2$.}
+	\label{Case 3 Control}
+\end{figure}  
+
+In this case from figure \ref{Case 3 Metabolites OTU} one can see that $s_2$ accumulation is predicted which was the most abundant metabolite. It was also able to detect an $s_1$ peak at day $340$ and an $s_3$ peak at the beginning of the trajectory.  The same rationale as case two was used for picking the weight matrix of the tracking part. From figure \ref{Case 3 Control} it can be seen that the control for OTU in $G_2$ remains zero until day 300 (except for OTU 20, responsible for the $s_3$ peak), while the control for OTU in $G_1$ vary differently throughout the trajectory. The only difference from case two is that the weight matrix for the control part was divided by 10, thus allowing a better fit of the OTU at the expense of more steep variations in the control.
+
+
+
+
+\clearpage
+In two out of three cases it can be seen that the accumulation of $s_2$ instead of $s_3$ (i.e. PN) was predicted. The cases were accumulation of $s_2$ was predicted are explained by a weight matrix  that used the yields of each OTU. It also seems that the control (and therefore the solution) converge, however since departures from the original method were used, one can not ensure they converge to the optimal value. But given that the fit of the OTU follows the trend of data, and one is able to predict $s_2$ accumulation, the results seems satisfactory from a numerical standpoint. All cases matrix $F$ (the final point weight) was taken as 10 times $Q$, otherwise the control always ended up in $0$ ($v(t_f) = 0$).
+
+
+
+\section{Conclusion}
+
+This article dealt with the problem of how to include genetic data in the prediction of performance of bioreactors, a previous model which deals with such an issue was revisited. The former model suffers from poor scalability, and therefore its application is limited. Inspired by their model a novel approach was here developed in order to systematically integrate the available genetic data. The approach is fairly straightforward for chemostat systems because it consists in multiplying a control to the growth expression of each OTU to be tracked. Nevertheless a method for previous identification of the microbial community must be used beforehand.
+
+\clearpage
+\section{Appendix}
+
+
+\textbf{Proof of lemma \ref{l1}}
+\begin{proof}
+	Define 
+	\begin{align}
+	z_1 &: = \sum \limits_{i \in G_1} \frac{1}{y_i}x_i + s_1  \\
+	z_2 &: = \sum \limits_{i \in G_2} \frac{1}{y_i}x_i + s_1 + s_2 \\
+	z_3 &: = s_1 + s_2 + s_3
+	\end{align} 
+	
+	Computing $\dot{z_{1}}$ one gets:
+	\begin{align*}
+	\dot{z_{1}} &=\sum \limits_{i \in G_1} \frac{1}{y_i}\dot{x_i} + \dot{s_1} \\
+	& = \sum \limits_{i \in G_1} \frac{1}{y_i}\left(\mu_i(s_1,x) -D \right)x_i + (s_{in}-s_1)D-\sum\limits_{i \in G_1}\frac{1}{y_i}\mu_i(s_1,x) x_i   \\
+	&= 	D\left(-\sum \limits_{i \in G_1} \frac{1}{y_i}x_i - s_1 + s_{in}\right)  \\
+	& = D(s_{in} - z_1)
+	\end{align*}
+	
+	Define $\bar{s} =\max\{s_{in}(t) | t\geq 0\}$ and consider the differential equation:
+	
+	\begin{align}
+	\label{compareEquation}
+	\begin{array}{l}
+	\dot{w} = D(\bar{s} - w) \\
+	w(0) = \sum \limits_{i \in G_1} \frac{1}{y_i}x_i(0) + s_1(0)
+	\end{array}
+	\end{align}
+	
+	If there is a time interval $H$ such that $t^*\in H  \Rightarrow D(t^*) = 0$, then $z_1$ is constant and therefore bounded by  the value of the solution in $z(t^*)$. 
+	If $D(t) > 0$, then $w = \bar{s}$ is a stable asymptotic equilibrium. Define $M_1 :=  \max\{w(0),\bar{s}\}$. If $ w(0) > \bar{s}$ then by the Picard-Lindeloff theorem $ \forall t \; \dot{w}(t) < 0 $, otherwise it would cross the solution of the initial value problem \eqref{compareEquation} with starting point $\bar{s}$ , therefore $w(t) \geq \bar{s}$. The same reasoning may be applied if $ w(0) < \bar{s}$. One concludes that $ w(t) \leq M_1 $. 
+	
+	Consider  
+	\begin{align}
+	\label{z1} \begin{array}{l}
+	\dot{z_1} =  D(s_{in} - z_1)\\
+	z_1(0) = \sum \limits_{i \in G_1} \frac{1}{y_i}x_i(0) + s_1(0)
+	\end{array} 
+	\end{align}
+	From a comparison lemma (see chapter 3 \cite{Khalil1996}), the solution of \eqref{z1} is bounded by $w$ and therefore $z_1(t) \leq M_1$.
+	
+	By defining $M_2 = \max\left \{ \displaystyle \sum \limits_{i=n_1 +1 }^{n} \frac{1}{y_i}x_i(0) + s_1(0) +s_2(0), \bar{s} \right\}$, and $M_3 =\max\left \{ s_1(0) +s_2(0) + s_3(0), \bar{s} \right\} $ and noting that $z_2(t)$ and $z_3(t)$ satisfies the same differential equations as $z_1$ the above reasoning may be applied and one has the desired bounds.
+\end{proof}
+
+\textbf{Proof of theorem \ref{theoWellPosedness}}
+
+\begin{proof}
+	If any coordinate of the solution becomes zero, then it's derivative is either zero, or positive. The bound will follow from Lemma \ref{l1}.
+	
+	Note that for any $i \in \{1,\dots, n\} $ if $x_i = 0$ then $\dot{x_{i}} = 0$, therefore all solutions of system \eqref{system} with initial condition $x_i(t_0) = 0$ remain in these planes. By the Picard Lindeloff theorem a solution starting in $int(\Omega)$ cannot cross these planes, therefore $x_i(t)\geq 0$ for $t \geq 0$.
+	
+	If $s_1 = 0$, then $\dot{s_1} = Ds_{in} > 0$. Therefore $s_1(t) \geq 0$.
+	
+	If $s_2 = 0$ then note first that by adding both inequalities from Lemma \eqref{l1} and since, $s_1,x_i \geq 0$ one has:
+	\begin{align*}
+	\sum \limits_{i \in G_1 \cup G_2}  \frac{1}{y_i} x_i + 2s_1 + s_2 \leq M_1 + M_2 \\
+	\Rightarrow \sum \limits_{i = 1}^{n}  \frac{1}{y_i} x_i + 2s_1 \leq M_1 + M_2 \\
+	\Rightarrow \sum \limits_{i = 1}^{n}  \frac{1}{y_i} x_i \leq M_1 + M_2\\ 
+	\Rightarrow \bar{k} \sum  \limits_{i = 1}^{n}   x_i  \leq M_1 + M_2  \\
+	\Leftrightarrow \bar{k} \sum  \limits_{i = 1}^{n}   \vert x_i \vert  \leq M_1 + M_2  \\
+	\Leftrightarrow \bar{k} \Vert x \Vert_1  \leq M_1 + M_2  \\
+	\Rightarrow   \bar{k} \Vert x \Vert_{\infty} \leq M_1 + M_2
+	\end{align*}
+	
+	Where $\bar{k} = \min \left\{ \frac{1}{y_i}  : \; i\in [n] \right \}$.
+	
+	Define $M := \dfrac{\bar{k}}{M_1 + M_2}$, and let $A$ be a matrix such that $\Vert A \Vert_{\infty} \leq M$. Then since $\Vert Ax \Vert_{\infty} \leq 1 \Rightarrow \forall i=1,\dots,n \; (1 + A_{i\bullet}x) \geq 0 $, and $\Vert Ax \Vert_{\infty} \leq \Vert A \Vert_{\infty} \Vert x\Vert_{\infty} \leq M \frac{1}{M}$.
+	One has proven that:
+	\begin{align}
+	\label{Bound1} \forall i=1,\dots,n \;  \;  (1 + A_{i\bullet}x) \geq 0 
+	\end{align} 
+	
+	Therefore $\dot{s_2} = \displaystyle \sum \limits_{i \in G_1 } \frac{1}{y_i}\mu_i(s_1,x)x_i =  \sum \limits_{i \in G_1 } \frac{1}{y_i}\bar{\mu_i}f_i(s)(1+A_{i \bullet }x)x_i \geq 0$. Therefore $s_2(t) \geq 0$.
+	
+	Note that since one has proven that $s_2 \geq 0$, bound \eqref{Bound1} is valid for any time, and not only when $s_2 = 0$. 
+	If $s_3 = 0$ then $\dot{s_3} = \sum \limits_{i \in G_2 }^{n}\frac{1}{y_i}\mu_i(s_2,x)\geq 0$. Therefore $s_3 \geq 0$.
+	
+	For the boundedness it suffices to notice from Lemma \ref{l1} that the sum of positive elements is bounded, therefore each element is bounded.
+\end{proof}
+
+\subsection{Properties of diag operator}
+
+Notice that for two vectors $v_1$ and $v_2$ the following holds:
+\begin{align}
+\diag(v_1)\diag(v_2) = \diag(v_2)\diag(v_1) 
+\end{align}
+
+Suppose $v \in \R^n$ such that $v_i \neq 0 \forall i \in [n]$. Define $v^{-1}:= \left( \dfrac{1}{v_1},\dots,\dfrac{1}{v_n} \right)$ then the inverse of $\diag(v)$ exists and is $\diag(v^{-1})$:
+
+\begin{align}
+\diag(v)^{-1} = \diag(v^{-1}) 
+\end{align}
+
+\subsection{Inverse of A and products}
+Notice that $\begin{bmatrix}
+A_1 \\ A_2
+\end{bmatrix} A^{-1} = \begin{bmatrix}
+A_1A^{-1} \\ A_2A^{-1}
+\end{bmatrix}=I $.
+
+Then $A_1A^{-1}= \begin{bmatrix}
+I_{n_1}& 0_{n_2 \times 1} 
+\end{bmatrix}$ and $A_2A^{-1}= \begin{bmatrix}
+0_{n_1 \times 1} & I_{n_2}
+\end{bmatrix}$.
+
+For notation purposes it is useful to define: \begin{align}
+B := \diag(k) A^{-1}.
+\end{align}
+
+\subsection{Deduction of  \eqref{s1Equilibria}}
+
+Replacing \eqref{xEquilibria} in \eqref{Eq2} yields :
+\begin{align}
+(s_{in}-s_1)D- \begin{bmatrix}
+1_{n_1 \times 1}+A_1A^{-1}(\diag(f(s))^{-1}D_{n_1 \times 1}-1_{n_1 \times 1}) \\0_{n_2 \times 1}
+\end{bmatrix}^\top \diag(k)\diag(f(s))A^{-1}(\diag(f(s))^{-1}D_{n \times 1}-1_{n \times 1})=0 \\
+(s_{in}-s_1)D-	\begin{bmatrix}
+1_{n_1 \times 1}+\begin{bmatrix}
+I_{n_1} & 0_{n_2 \times 1} 
+\end{bmatrix}(\diag(f(s))^{-1}D_{n \times 1}-1_{n \times 1}) \\0_{n_2\times 1}
+\end{bmatrix}^\top \diag(k)\diag(f(s))A^{-1}(\diag(f(s))^{-1}D_{n \times 1}-1_{n \times 1}) = 0 \\
+(s_{in}-s_1)D-	\begin{bmatrix}
+D_{n_1 \times 1}\\0_{n_2 \times 1}
+\end{bmatrix}^T\diag(f(s))^{-1}\diag(f(s)) \diag(k) A^{-1}(\diag(f(s))^{-1}D_{n \times 1}-1_{n \times 1}) = 0  \\
+(s_{in}-s_1)D-\begin{bmatrix}
+D_{n_1 \times 1} \\0_{n_2\times 1}
+\end{bmatrix}^\top \diag(k)A^{-1}(\diag(f(s))^{-1}D_{n \times 1}-1_{n_1 \times 1}) = 0 \\
+(s_{in}-s_1)- \begin{bmatrix}
+1_{n_1 \times 1}\\0_{n_2 \times 1}
+\end{bmatrix}^\top B (\diag(f(s))^{-1}D_{n \times 1} - 1_{n \times 1}) = 0 
+\end{align}
+
+\subsection{Deduction of \eqref{s2Equilibria}}
+Analogous as before, replacing \eqref{xEquilibria} in \eqref{Eq3} yields :
+\begin{align}
+-s_2D+
+\begin{bmatrix}
+(\diag(\mu_A)^{-1} \vec{D}) \\ -(\diag(\mu_B)^{-1} \vec{D})
+\end{bmatrix}^\top \diag(\mu)\diag(y)^{-1} A^{-1}(\diag(\mu)^{-1}\vec{D}-\vec{1}) = 0 \\
+-s_2D+
+\begin{bmatrix}
+\vec{D} \\ - \vec{D}
+\end{bmatrix}^\top \diag(y)^{-1} A^{-1}(\diag(\mu)^{-1}\vec{D}-\vec{1}) = 0\\
+-s_2+
+\begin{bmatrix}
+\vec{1} \\ - \vec{1}
+\end{bmatrix}^\top B(\diag(\mu)^{-1}\vec{D}-\vec{1}) = 0
+\end{align}
+\begin{align} 
+-s_2D+ \begin{bmatrix}
+1_{n_1 \times 1}+A_1A^{-1}(\diag(f(s))^{-1}D_{n_1 \times 1}-1_{n_1 \times 1}) \\-(1_{n_1 \times 1}+A_2A^{-1}(\diag(f(s))^{-1}D_{n_1 \times 1}-1_{n_1 \times 1})
+\end{bmatrix}^\top \diag(k)\diag(f(s))A^{-1}(\diag(f(s))^{-1}D_{n \times 1}-1_{n \times 1}) = 0 \\
+-s_2D+	\begin{bmatrix}
+1_{n_1 \times 1}+\begin{bmatrix}
+I_{n_1} & 0_{n_2 \times 1} 
+\end{bmatrix}(\diag(f(s))^{-1}D_{n \times 1}-1_{n \times 1}) \\-(1_{n_1 \times 1}+\begin{bmatrix}
+0_{n_1 \times 1} & I_{n_2} 
+\end{bmatrix}(\diag(f(s))^{-1}D_{n_1 \times 1}-1_{n_1 \times 1})
+\end{bmatrix}^\top \diag(k)\diag(f(s))A^{-1}(\diag(f(s))^{-1}D_{n \times 1}-1_{n \times 1}) = 0 \\
+-s_2D +	\begin{bmatrix}
+D_{n_1 \times 1}\\-D_{n_2 \times 1}
+\end{bmatrix}^T\diag(f(s))^{-1}\diag(f(s)) \diag(k) A^{-1}(\diag(f(s))^{-1}D_{n \times 1}-1_{n \times 1}) = 0  \\
+-s_2D+\begin{bmatrix}
+D_{n_1 \times 1} \\-D_{n_2\times 1}
+\end{bmatrix}^\top \diag(k)A^{-1}(\diag(f(s))^{-1}D_{n \times 1}-1_{n_1 \times 1}) = 0 \\
+-s_2 + \begin{bmatrix}
+1_{n_1 \times 1}\\1_{n_2 \times 1}
+\end{bmatrix}^\top B (\diag(f(s))^{-1}D_{n \times 1} - 1_{n \times 1}) = 0 
+\end{align}
+\subsection{Deduction of \eqref{S2(S1)}}
+
+
+Note that 
+\begin{align}  (\diag(f(s))^{-1}D_{n\times 1}-1_{n\times1})  & = \begin{array}{cc} 
+\begin{bmatrix}
+\left(D\frac{K_1+s_1}{\bar{\mu}_{1}s_1}-1 \right) \\ \vdots \\ \left(D\frac{K_n+s_2}{\bar{\mu}_{n}s_2}-1\right) 
+\end{bmatrix} & \hspace{-0.5cm}\begin{array}{c} \left\} n_1\right. \\ \\ \left\} n_2\right.\end{array}
+\end{array} \\
+\label{invMu} 
+& = \begin{bmatrix}
+\dfrac{DK_1+(D-\bar{\mu}_1)s_1}{\bar{\mu}_{1}s_1} \\ \vdots \\ \dfrac{DK_n+(D-\bar{\mu}_n)s_2}{\bar{\mu}_{n}s_2} 
+\end{bmatrix}
+\end{align}
+
+Replacing \eqref{invMu} in \eqref{s1Equilibria}.
+
+\begin{align}
+(s_{in}-s_1)-	\begin{bmatrix}
+1_{n_1 \times 1} \\0_{n_2\times 1}
+\end{bmatrix}^\top  B\begin{bmatrix}
+\dfrac{DK_1+(D-\bar{\mu}_1)s_1}{\bar{\mu}_{1}s_1} \\ \vdots \\ \dfrac{DK_n+(D-\bar{\mu}_n)s_2}{\bar{\mu}_{n}s_2} 
+\end{bmatrix} = 0 \\
+(s_{in}-s_1) - \sum \limits_{i=1}^{n_1}\left(\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_1}{\bar{\mu}_{j}s_1} +\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_2}{\bar{\mu}_{j}s_2} \right) = 0 \quad / \cdot s_1s_2 \\
+(s_{in}-s_1)s_1s_2 - \sum \limits_{i=1}^{n_1}\left(\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_1}{\bar{\mu}_{j}}s_2 +\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_2}{\bar{\mu}_{j}}s_1 \right) = 0 \\
+(s_{in}-s_1)s_1s_2 - \sum \limits_{i=1}^{n_1}\left(\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}s_2 +\sum \limits_{j = 1}^{n} B_{ij}\dfrac{(D-\bar{\mu}_j)}{\bar{\mu}_{j}}s_2s_1 + \sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}s_1 \right) = 0  \\
+s_2\left((s_{in}-s_1)s_1 - \sum \limits_{i=1}^{n_1}  \left( \sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}} + \sum \limits_{j = 1}^{n} B_{ij}\dfrac{(D-\bar{\mu}_j)}{\bar{\mu}_{j}}s_1 \right)  \right) =  \sum \limits_{i=1}^{n_1}\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}s_1 \\
+s_2\left(-s_{1}^2  +  \left( s_{in}\underbrace{- \sum \limits_{i=1}^{n_1} \sum \limits_{j = 1}^{n} B_{ij}\dfrac{(D-\bar{\mu}_j)}{\bar{\mu}_{j}}}_{\beta_1}\right) s_1 \underbrace{ - \sum \limits_{i=1}^{n_1}  \sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}}_{\beta_2}  \right) = \underbrace{\sum \limits_{i=1}^{n_1}\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}}_{\beta_3}s_1 \\
+s_2\left(-s_{1}^2  +  \left( s_{in}+\beta_1 \right) s_1 +\beta_2  \right) = \beta_3 s_1
+\end{align} 
+
+From the last expression it should be clear that formula \eqref{S2(S1)} holds, it is just a matter of identifying the coefficients.
+\begin{itemize}
+	\item $\beta_1 =  - \sum \limits_{i=1}^{n_1} \sum \limits_{j = 1}^{n} B_{ij}\dfrac{(D-\bar{\mu}_j)}{\bar{\mu}_{j}}$
+	\item $\beta_2 =-\sum \limits_{i=1}^{n_1}  \sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}$
+	\item $\beta_3 = \sum \limits_{i=1}^{n_1}\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}} $
+	\item $c_1 = \dfrac{-1}{\beta_3}$
+	\item $c_2 =  \dfrac{s_{in} + \beta_1}{\beta_3}$
+	\item $c_3 = \dfrac{\beta_2}{\beta_3}$
+\end{itemize}
+
+\subsection{Deduction of \eqref{Poly4}}
+
+Again, replacing \eqref{invMu} in \eqref{s2Equilibria}.
+\begin{align}
+-s_2+
+\begin{bmatrix}
+1_{n_1 \times 1}\\ - 1_{n_2 \times 1}
+\end{bmatrix}^\top B\begin{bmatrix}
+\dfrac{DK_1+(D-\bar{\mu}_1)s_1}{\bar{\mu}_{1}s_1} \\ \vdots \\ \dfrac{DK_n+(D-\bar{\mu}_n)s_2}{\bar{\mu}_{n}s_2} 
+\end{bmatrix} = 0 \\
+\begin{array}{c} \displaystyle  -s_2 + \sum \limits_{i=1}^{n_1}\left(\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_1}{\bar{\mu}_{j}s_1} +\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_2}{\bar{\mu}_{j}s_2} \right) \\
+\displaystyle - \sum \limits_{i=n_1+1}^{n}\left(\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_1}{\bar{\mu}_{j}s_1} +\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_2}{\bar{\mu}_{j}s_2} \right)= 0
+\end{array} \quad / \cdot s_1s_2 \\
+\begin{array}{c} \displaystyle  -s_1s_2^2 +\sum \limits_{i=1}^{n_1}\left(\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_1}{\bar{\mu}_{j}}s_2 +\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_2}{\bar{\mu}_{j}}s_1 \right) \\
+\displaystyle -  \sum \limits_{i=n_1+1}^{n}\left(\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_1}{\bar{\mu}_{j}}s_2 +\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_2}{\bar{\mu}_{j}}s_1 \right)= 0
+\end{array} \\
+\begin{array}{c} \displaystyle  -s_1s_2^2 + \sum \limits_{i=1}^{n_1}\left(\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}s_2 +\sum \limits_{j = 1}^{n} B_{ij}\dfrac{(D-\bar{\mu}_j)}{\bar{\mu}_{j}}s_2s_1 + \sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}s_1\right) \\
+\displaystyle -  \sum \limits_{i=n_1+1}^{n}\left(\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}s_2 +\sum \limits_{j = 1}^{n} B_{ij}\dfrac{(D-\bar{\mu}_j)}{\bar{\mu}_{j}}s_2s_1 + \sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}s_1 \right)= 0
+\end{array}\\
+\begin{array}{c} \displaystyle  -s_1s_2^2  - \beta_2s_2 -\beta_1s_1s_2 + \beta_3s_1 
+\underbrace{- \sum \limits_{i=n_1+1}^{n}\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}}_{\beta_4}s_2 \underbrace{-\sum \limits_{i=n_1+1}^{n}\sum \limits_{j = 1}^{n} B_{ij}\dfrac{(D-\bar{\mu}_j)}{\bar{\mu}_{j}}}_{\beta_5}s_2s_1\underbrace{ -\sum \limits_{i=n_1+1}^{n}\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}}_{\beta_6}s_1 = 0
+\end{array}\\
+-s_1s_2^2  - \beta_2s_2 -\beta_1s_1s_2 + \beta_3s_1 + \beta_4s_2 +\beta_5s_1s_2 + \beta_6s_1  = 0 \\
+\label{Prepoly4} (\beta_4-\beta_2)s_2 + (\beta_3+\beta_6)s_1 + (\beta_5 - \beta_1)s_1s_2- s_1s_2^2 = 0 
+\end{align}
+\begin{itemize}
+	\item  $\displaystyle  \beta_4 = - \sum \limits_{i=n_1+1}^{n}\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}$
+	\item $\displaystyle  \beta_5 = -\sum \limits_{i=n_1+1}^{n}\sum \limits_{j = 1}^{n} B_{ij}\dfrac{(D-\bar{\mu}_j)}{\bar{\mu}_{j}}$
+	\item $\displaystyle \beta_6 =  -\sum \limits_{i=n_1+1}^{n}\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}$
+\end{itemize}
+
+Then replace \eqref{S2(S1)} in \eqref{Prepoly4}: 
+\begin{align}
+(\beta_4-\beta_2)\dfrac{s_1}{c_1s_1^2+c_2s_1+c_3} + (\beta_3+\beta_6)s_1 + (\beta_5 - \beta_1)s_1\dfrac{s_1}{c_1s_1^2+c_2s_1+c_3}- s_1\left(\frac{s_1}{c_1s_1^2+c_2s_1+c_3}\right)^2 = 0 \quad / \cdot \frac{1}{s_1} \\
+(\beta_4-\beta_2)\dfrac{1}{c_1s_1^2+c_2s_1+c_3} + (\beta_3+\beta_6) + (\beta_5 - \beta_1)\dfrac{s_1}{c_1s_1^2+c_2s_1+c_3}- \left(\frac{s_1}{c_1s_1^2+c_2s_1+c_3}\right)^2 = 0  \quad / \cdot (c_1s_1^2+c_2s_1+c_3)^2 \\
+(\beta_4-\beta_2)(c_1s_1^2+c_2s_1+c_3)+ (\beta_3+\beta_6)(c_1s_1^2+c_2s_1+c_3)^2 + (\beta_5 - \beta_1)(c_1s_1^2+c_2s_1+c_3)s_1 - s_1^2 = 0   \\
+\begin{array}{c}(\beta_4-\beta_2)(c_1s_1^2+c_2s_1+c_3)+ (\beta_3+\beta_6)(c_1^2s_1^4+c_2^2s_1^2+c_3^2 + 2 c_1c_2s_1^3 + 2c_2c_3s_1 + 2 c_1c_3s_1^2)\\ \\  + (\beta_5 - \beta_1)(c_1s_1^2+c_2s_1+c_3)s_1 - s_1^2 = 0 \end{array} \\
+\begin{array}{c} \underbrace{(\beta_3+\beta_6)c_1^2}_{a_4} s_1^4 + (\underbrace{(\beta_3 + \beta_6)(2c_1c_2) +  (\beta_5 -\beta_1)c_1}_{a_3})s_1^3 + (\underbrace{(\beta_4 - \beta_2)c_1 +(\beta_3 + \beta_6)(c_2^2 + 2c_1c_3) + (\beta_5-\beta_1)c_2-1}_{a_2})s_1^2 \\ 
++(\underbrace{(\beta_4 -\beta_2)c_2 + (\beta_3 + \beta_6)2c_2c_3+(\beta_5-\beta_1)c_3}_{a_1})s_1 + \underbrace{(\beta_4-\beta_2)c_3 + (\beta_3 + \beta_6)c_3^2}_{a_0} = 0
+\end{array}
+\end{align}
+
+Which yields \eqref{Poly4}.
+\begin{itemize}
+	\item $a_4 = (\beta_3+\beta_6)c_1^2$ 
+	\item $a_3 = (\beta_3 + \beta_6)(2c_1c_2) +  (\beta_5 -\beta_1)c_1$
+	\item $a_2 = (\beta_4 - \beta_2)c_1 +(\beta_3 + \beta_6)(c_2^2 + 2c_1c_3) + (\beta_5-\beta_1)c_2-1$
+	\item $a_1 = (\beta_4 -\beta_2)c_2 + (\beta_3 + \beta_6)2c_2c_3+(\beta_5-\beta_1)c_3$
+	\item $a_0 = (\beta_4-\beta_2)c_3 + (\beta_3 + \beta_6)c_3^2$
+\end{itemize}
+
+\textbf{Note:} When calculating the equilibria with the extinction of some OTU under H \ref{noWashoutHyp}, coefficients are calculated with $B = \diag(k^{act})(A^{act})^{-1}$. The indexes are redefined to be taken only in $i,j \in [n] \setminus \mathcal{J}$ by formula \eqref{EquilibriaFormula}.
+
+\subsection{Deduction of \eqref{S1NOBWashout}}
+For auxiliary purposes $B:= \diag(k^{act})(A^{act})^{-1}$. 
+
+Under hypothesis \ref{WashoutG2}, the $j \in \mathcal{J}$ entries of vector $\diag(k) \diag(f(s))x^{eq} $ are zero. 
+Note also that $(A_1x^{eq})_i = (A^{act}x^{act})_i, \, \forall i \in [n] \setminus \mathcal{J}$.
+
+Then the cross product in equation \eqref{Eq2} can be reduced:
+\begin{align} 
+\begin{bmatrix}
+1_{n_1\times 1}+A_1x^{eq} \\0
+\end{bmatrix}^\top \diag(k) \diag(f(s))x^{eq} = [1_{(n-m)\times 1} - A^{act}x^{act}]^\top \diag(k^{act}) \diag(f^{act}(s))x^{act} 
+\end{align} 
+Therefore replacing \eqref{EquilibriaFormula} and \eqref{EqSome} in \eqref{Eq2}.
+
+\begin{align}
+0 &= (s_{in}-s_1)D- [1_{(n-m)\times 1} - A^{act}x^{act}]^\top \diag(k^{act}) \diag(f^{act}(s))x^{act}\\
+&= (s_{in}-s_1)D- [1_{(n-m)\times 1} - A^{act}(A^{act})^{-1}(\diag(f^{act}(s))^{-1}D_{(n-m)\times 1} - 1_{(n-m)\times 1})]^\top \dots \\ & \diag(k^{act}) \diag(f^{act}(s))(A^{act})^{-1}(\diag(f^{act}(s))^{-1}D_{(n-m)\times 1} - 1_{(n-m)\times 1})\\
+&  =  (s_{in}-s_1)-1_{(n-m)\times 1}^\top
+B(\diag(f^{act}(s))^{-1}D_{(n-m)\times 1} - 1_{(n-m)\times 1})
+\end{align} 
+
+
+$s_2$ does not appear in the previous equation. Then as before (using the numeration of active indexes):
+\begin{align}
+\diag(\mu^{act})^{-1}D_{(n-m)\times 1} - 1_{(n-m)\times 1} = \begin{bmatrix}
+\dfrac{DK_1+(D-\bar{\mu}_1)s_1}{\bar{\mu}_{1}s_1} \\ \vdots \\ \dfrac{DK_{n-m}+(D-\bar{\mu}_{n-m})s_1}{\bar{\mu}_{n-m}s_1}
+\end{bmatrix}
+\end{align}
+
+Therefore:
+
+\begin{align}
+(s_{in}-s_1)- 1_{(n-m)\times 1}^\top 
+B\begin{bmatrix}
+\dfrac{DK_1+(D-\bar{\mu}_1)s_1}{\bar{\mu}_{1}s_1} \\ \vdots \\ \dfrac{DK_{n-m}+(D-\bar{\mu}_{n-m})s_1}{\bar{\mu}_{n-m}s_1}
+\end{bmatrix} = 0 \\
+(s_{in}-s_1) -\frac{1}{y_A} \sum \limits_{i=1}^{n-m}\sum \limits_{j=1}^{n-m} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_1}{\bar{\mu}_{j}s_1}  = 0 \quad /\cdot s_1 \\
+(s_{in} - s_1)s_1   -\frac{1}{y_A} \sum \limits_{i=1}^{n-m}\sum \limits_{j=1}^{n-m} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_1}{\bar{\mu}_{j}}  = 0 \\
+-s_1^2 + \left( s_{in}-\frac{1}{y_A} \sum \limits_{i=1}^{n-m}\sum \limits_{j=1}^{n-m} B_{ij}\dfrac{(D-\bar{\mu}_j)}{\bar{\mu}_{j}} \right)s_1 - \frac{1}{y_A} \sum \limits_{i=1}^{n-m}\sum \limits_{j=1}^{n-m} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}} =0
+\end{align} 
+
+Identifying coefficients
+\begin{itemize}
+	\item $a'_2 = -1$
+	\item $a'_1 = s_{in}-\frac{1}{y_A} \sum \limits_{i=1}^{n-m}\sum \limits_{j = 1}^{n-m} B_{ij}\dfrac{(D-\bar{\mu}_j)}{\bar{\mu}_{j}}$
+	\item $a'_0 =- \frac{1}{y_A} \sum \limits_{i=1}^{n-m}\sum \limits_{j = 1}^{n-m} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}$ 
+\end{itemize}
+
+
+\subsection{Jacobian of the system}
+The jacobian is a square matrix of dimension $n\times 3$. The entries corresponding to the derivative of the first $n$ functions in the first $n$ variables can be calculated by the use of the chain rule. Define (for a fixed $s$):
+\begin{align*} 
+& \begin{array}{rc}
+h_1:\mathcal{M}_{n \times n}(\R) \times \R^n \rightarrow & \R^n \\
+(M,y) \rightarrow & My
+\end{array}  \\
+&\begin{array}{rl}
+h_2: \R^n \rightarrow & \R^n \\
+x \rightarrow & \diag(f(s))\left(1_{n\times 1}+ Ax\right)-D_{n\times 1}
+\end{array} 	
+\end{align*}
+
+The first $n$ equations of system \eqref{system} may be written then as$\dot{x} =  h(x) = h_1(\diag(x), h_2(x))$, by the chain rule: 
+\begin{align*} J_h(x) &= D_M h_1(\diag(x),h_2(x))\circ D_x \diag (x) + D_yh_1(\diag(x),h_2(x))\circ D_xh_2(x)  \\ &=
+\diag(h_2(x))+\diag(x)\diag(f(s))A  \label{n2_entries}
+\end{align*}
+
+Expression \eqref{n2_entries} corresponds to the first $n\times n$ entries of the Jacobian of system \eqref{system}.
+
+\begin{align*}
+f_A' := \left( \dfrac{\partial f_1}{\partial s_1}, \dots, \dfrac{\partial f_{n_1}}{\partial s_1} \right)^\top = \left(\dfrac{\bar{\mu}_1K_1}{(K_1 + s_1)^2},\dots, \dfrac{\bar{\mu}_{n_1}K_{n_1}}{(K_{n_1} + s_1)^2} \right)^\top \in \R^{n_1} \\
+f_B' := \left( \dfrac{\partial f_{n_1+1}}{\partial s_2}, \dots, \dfrac{\partial f_{n}}{\partial s_2} \right)^\top = \left( \dfrac{\bar{\mu}_{n_1+1}K_{n_1+1}}{(K_{n_1+1} + s_2)^2},\dots, \dfrac{\bar{\mu}_{n}K_{n}}{(K_{n} + s_2)^2} \right)^\top \in \R^{n_2}
+\end{align*}
+
+Then the Jacobian of the system may be expressed as:
+$J(x,s_1,s_2,s_3) = \begin{bmatrix}
+J_{11} & J_{12} & J_{13} & J_{14} \\
+J_{21} & J_{22} & J_{23} & J_{24} \\
+J_{31} & J_{32} & J_{33} & J_{34} \\
+J_{41} & J_{42} & J_{43} & J_{44} 
+\end{bmatrix} $
+
+\begin{align}
+J_{11} &=  \diag(\diag(f(s))(1_{n\times 1} +Ax)-D_{n\times 1})
++\diag(f(s))\diag(x)A \\
+J_{12} &= \diag(x)\diag(1_{n \times 1}+Ax)\begin{bmatrix} f_A' \\ 0_{n_2 \times 1} \end{bmatrix}  \\
+J_{13} &=\diag(x)\diag(1_{n\times 1}+Ax)\begin{bmatrix} 0_{n_1 \times 1} \\ f_B' \end{bmatrix} \\
+J_{14} &= 0_{n\times 3}\\
+J_{21} &= -\begin{bmatrix}
+1_{n_1 \times 1} + A_1 x \\ 0_{n_2 \times 1} \end{bmatrix}^\top \diag(y)^{-1} \diag (f(s))  + (\diag(k)\diag(f(s))x)^\top\begin{bmatrix} A_1 \\ 0 \end{bmatrix}  \\
+J_{22} &= -D  - \begin{bmatrix} 1_{n_1 \times 1} + A_1x \\ 0 \end{bmatrix}^\top \diag(k) \diag\left( \begin{bmatrix}\mu_A' \\ 0 \end{bmatrix}\right)x \\
+J_{23} & = 0 \\
+J_{24} &= 0 \\
+J_{31} &= \begin{bmatrix} \left(1_{n_1 \times 1}+A_1x \right)\\ - \left(1_{n_2 \times 1} + A_2x \right)  \end{bmatrix}^\top \diag(k) \diag(f(s)) 
++  (\diag(k)\diag(f(s))x)^\top \begin{bmatrix}A_1 \\ -A_2\end{bmatrix} \\
+J_{32} &= \begin{bmatrix}\left(1_{n_1 \times 1} + A_1x\right)\\ -\left(1_{n_2 \times 1} + A_2x\right)\end{bmatrix}^\top \diag(k) \diag\left( \begin{bmatrix}
+f_A' \\ 0\end{bmatrix}\right)x \\
+J_{33} &= -D + \begin{bmatrix} \left(1_{n_1 \times 1} + A_1x\right) \\ -\left(1_{n_2\times 1}+ A_2x\right) \end{bmatrix}^\top \diag(k)\diag\left(
+\begin{bmatrix}
+0 \\ f_B'
+\end{bmatrix}\right)x  \\
+J_{34} &= 0 \\
+J_{41} &= \begin{bmatrix}0 \\ 1_{n_2 \times 1} + A_2x \end{bmatrix}^\top\diag(k) \diag(f(s)) 
++ (\diag(k)\diag(f(s))x)^\top\begin{bmatrix} 
+0 \\ A_2
+\end{bmatrix} \\
+J_{42} &= 0 \\
+J_{43} &= \begin{bmatrix} 0 \\(1_{n_2\times 1} + A_2x) \end{bmatrix}^\top \diag(k) \diag\left(\begin{bmatrix}
+0 \\ f_B'
+\end{bmatrix}\right) x \\
+J_{44} &= -D
+\end{align}
+
+\subsection{Tracking Problem reformulation and details}
+
+For applying the methods developed in \cite{Cimen2004}. Define the system state $X = (x,s)$. Make the change of variables $v_i = u_i - 1$ with $v = (v_1,\dots,v_n)$ are applied to system \eqref{Controlsystem}. The system may be rewritten then as:
+\begin{align} 
+\begin{array}{cl}
+\dot{x_i} =& \left(f_i(s)(1+v_i(t)) -D \right)x_i \quad \forall i \in G_1\\
+\dot{x_i} =& \left(f_i(s)(1+v_i(t)) -D \right)x_i \quad \forall i \in G_2\\
+\dot{s_1} =& \displaystyle s_1\left(\frac{s_{in}}{s_1}-1\right)D-\sum\limits_{i \in G_1}\frac{1}{y_i}f_i(s)(1+v_i(t)) x_i  \\
+\dot{s_2} = & \displaystyle -s_2D+\sum\limits_{i \in G_1}\frac{1}{y_i}f_i(s)(1+v_i(t))	-\sum\limits_{i \in G_2}\frac{1}{y_i}f_i(s)(1+v_i(t)) x_i  \\
+\dot{s_3} =&  \displaystyle -s_3D+\sum\limits_{i \in G_2}^{n_1+n_2}\frac{1}{y_i}f_i(s)(1+v_i(t)) x_i \\
+y(t) & = g(x,s)
+\end{array}
+\end{align}	
+
+Define $k_{G_1} = \left ( \frac{1}{y_1},\dots,\frac{1}{y_{nA}}\right )^\top \in \R^{n_1}$,  $k_{G_2} = \left(\frac{1}{y_{n_1+1}},\dots,\frac{1}{y_{n}}\right )^\top \in \R^{n_2}$, and
+
+\begin{align}
+A(X) & = \begin{bmatrix} 
+\diag(f(s)- D_{n\times 1} ) & 0_{n \times 3}\\
+\begin{matrix} 
+f(s)^\top \begin{bmatrix} -\diag(k_{G_1}) & 0_{n_1 \times n_2} \end{bmatrix}^\top  \\
+f(s)^\top \begin{bmatrix} \diag(k_{G_1}) & -\diag(k_{G_2}) \end{bmatrix}^\top   \\
+f(s)^\top \begin{bmatrix} 0_{n_2 \times n_1} & \diag(k_{G_2}) \end{bmatrix}^\top  \end{matrix} & \begin{matrix} \left(\frac{s_{in}}{s_1}-1\right)D & 0 & 0 \\ 
+0 &-D & 0 \\ 
+0 & 0 &-D \end{matrix}
+\end{bmatrix}  \\
+B(X) & = \begin{bmatrix} \diag(f(s)\diag(x)  \\
+\begin{matrix}
+f(s)^\top \diag(x) \begin{bmatrix} -\diag(k_{G_1}) & 0_{n_1 \times n_2} \end{bmatrix}^\top \\
+f(s)^\top \diag(x) \begin{bmatrix} \diag(k_{G_1}) & -\diag(k_{G_2}) \end{bmatrix}^\top  \\
+f(s)^\top \diag(x) \begin{bmatrix} 0_{n_2 \times n_1} & \diag(k_{G_2}) \end{bmatrix}^\top  
+\end{matrix}
+\end{bmatrix} \\
+C(X) = \begin{bmatrix}
+I_n & 0_{n\times 3} \\
+\end{bmatrix}
+\end{align}
+
+Then the system \eqref{Controlsystem} can be rewritten as:
+
+\begin{align}
+\dot{X} &= A(X)X + B(X)v \\
+y &= C(X)X
+\end{align} 
+
+$z(t)\in \R^n$ is the measured vector containing the OTU concentrations in time. The cost functional is given by
+\begin{align}
+J(v) = \left(z(t_f) - C(X) X(t_f)\right)^\top F\left(z(t_f) - C(X) X(t_f)\right) +  \int \limits_{t_0}^{t_f} \left(z(t) - C(X) X(t)\right)^\top Q \left(z(t) -C(X)X(t)\right) + v(t)^\top R v(t)
+\end{align}
+
+where $F,Q$ and $R$ are positive definite matrices. Particularly in all simulations $R = \lambda I_n$ for some $\lambda >0$, so all controls have the same weight. Since there is no interest in the final time, we define $F = 0$. $Q$ is a diagonal matrix.
+
+Define the dynamic sequences for $i \in \N \cup \{0\}$, $\dot{X}^{[i]}$ as :
+
+\begin{align}
+\dot{X}^{[i]} &= A(X^{[i]})X^{[i]} + B(X^{[i]})v^{[i]} \quad i\in \N \\
+y^{[i]} &= X^{[i]} \quad i\in \N \\
+X^{[i]}(t_0) &= X_0 \quad i\in \N
+\end{align} 
+
+And for $i = -1$ define $X^{[-1]}(t) = X_0$.
+
+The control law is given by
+\begin{align}
+v^{[i]}(t)_j = \max \left\{ -1,\min\left\{0,\left( -R^{-1}B^\top\left(X^{[i-1]}(t)\right)\left(P^{[i]}(t)X^{[i]}(t)-s_f^{[i]}(t)\right)\right)_j \right\}\right\} \forall j \in [n]
+\end{align} 
+
+Where $P^{[i]}(t) \in \mathcal{M}_{n+3\times n+3}(\R)$ and $s_f^{[i]}(t)\in \R^{n+3}$ are the solution to the differential equations:
+\begin{align}
+\dot{P}^{[i]} &= -C^T\left(X^{[i-1]}(t)\right)QC\left(X^{[i-1]}(t)\right) - P^{[i]}A\left (X^{[i-1]}(t)\right) -A^\top \left( X^{[i-1]}(t)\right)P^{[i]} \\&+ P^{[i]}B\left( X^{[i-1]}(t) \right)R^{-1}B^\top\left(X^{[i-1]}(t)\right)P^{[i]} \\
+P^{[i]}(t_f) &= C^\top \left( X^{[i-1]}(t_f) \right) F C \left( X^{[i-1]}(t_f) \right)
+\end{align}
+
+\begin{align}
+\dot{s_f^{[i]}} &= - C^\top\left(X^{[i-1]}(t)\right)Qz(t)- \left[A\left(X^{[i-1]}(t)\right) -B\left(X^{[i-1]}(t)\right)R^{-1}B^\top \left(X^{[i-1]}(t)\right)P^{[i]}(t) \right]^\top s_f^{[i]} \\
+s_f^{[i]}(t_f) &= C^\top\left(X^{[i-1]}(t_f)\right)Fz(t_f)
+\end{align}
+
+Replacing the matrices of our problem
+
+\begin{align}
+\dot{P}^{[i]}(t) &= -\begin{bmatrix}
+Q & 0_{n\times 3} \\ 0_{3\times n} & 0_{3\times 3}
+\end{bmatrix}- P^{[i]}A\left (X^{[i-1]}(t)\right) -A^\top \left( X^{[i-1]}(t)\right)P^{[i]} + \frac{1}{\lambda}P^{[i]}B\left( X^{[i-1]}(t) \right)B^\top\left(X^{[i-1]}(t)\right)P^{[i]} \\
+P^{[i]}(t_f) &= \begin{bmatrix}
+0_{n\times n} & 0_{n\times 3} \\ 0_{3\times n} & 0_{3\times 3}
+\end{bmatrix}
+\end{align}
+
+\begin{align}
+\dot{s_f}^{[i]}(t) &= -\begin{bmatrix}Qz(t) \\ 0_{3\times 1} \end{bmatrix}- \left[A\left(X^{[i-1]}(t)\right) -\frac{1}{\lambda}B\left(X^{[i-1]}(t)\right)B^\top \left(X^{[i-1]}(t)\right)P^{[i]}(t) \right]^\top s_f^{[i]} \\
+s_f^{[i]}(t_f) &=   \begin{bmatrix}
+0_{n\times n}  & 0_{n\times 3} \\
+\end{bmatrix}^\top z(t_f)
+\end{align}
+
+For certain entries of the dynamic the constantly zero function is a solution for them, implying by existence and uniqueness that they should be constantly zero. Then $P^{[i]}$ has $n\times n$ non zero entries and $s^{[i]}$ has $n$ non zero entries, explicitly:
+
+\begin{align}
+P^{[i]}(t) = \begin{bmatrix}
+\tilde{P}^{[i]}(t) & 0_{n\times 3} \\ 0_{3 \times n} & 0_{3 \times 3}
+\end{bmatrix} \\
+s_f^{[i]}(t) = \begin{bmatrix}
+\tilde{s}_f^{[i]}(t) \\ 0_{1\times 3}
+\end{bmatrix} \\
+A\left (X^{[i-1]}(t)\right) = \begin{bmatrix}
+A_{11} & A_{12} \\ A_{21} & A_{22}
+\end{bmatrix} \\
+B\left (X^{[i-1]}(t)\right) = \begin{bmatrix}
+B_1 \\ B_2
+\end{bmatrix} 
+\end{align}
+
+
+Where $A_{11} = \diag \left( f\left(s^{[i-1]}\right)- D_{n\times 1} \right)$, and $B_1 = \diag\left(f\left(s^{[i-1]}\right)\right)\diag \left(x^{[i-1]} \right) $ The equations for $\tilde{P}^{[i]}(t)$:
+\begin{align}
+\dot{\tilde{P}}^{[i]}(t)= -Q- \tilde{P}^{[i]}A_{11} -A_{11}^\top \tilde{P}^{[i]} + \dfrac{1}{\lambda} \tilde{P}^{[i]}B_1B_1^\top \tilde{P}^{[i]} \\
+\tilde{P}^{[i]}(t_f) = 0
+\end{align}
+
+Inspecting the former equation one notices that if $i\neq j$, $P_{ij}(t) = 0$ is a solution of all non diagonal entries. And therefore by existence and uniqueness they should be constantly zero. Hence only the diagonal entries should be calculated. 
+\begin{align}
+\dot{\tilde{P}}^{[i]}_{jj}(t)= -Q_{jj}- 2 \left(f_j\left(s^{[i-1]}\right)- D \right)\tilde{P}^{[i]}_{jj} + \dfrac{1}{\lambda}\left(\tilde{P}^{[i]}_{jj}\right)^2f_j\left(s^{[i-1]}\right)^2\left(x^{[i-1]}_j\right)^2  \\
+\tilde{P}^{[i]}_{jj}(t_f) = 0
+\end{align}
+
+For and  $\tilde{s_f}^{[i]}(t)$ the system reduces to:
+
+\begin{align}
+\dot{\tilde{s}}_f^{[i]}(t) &= -z(t)- \left[A_{11} -\frac{1}{\lambda}B_1B_1^\top \tilde{P}^{[i]}(t) \right]^\top \tilde{s}_f^{[i]} \\
+\tilde{s}_f^{[i]}(t_f) &= 0
+\end{align}
+
+And the control law is given by
+\begin{align}
+v^{[i]}(t)_j = \max \left\{ -1,\min\left\{0,\left( -\dfrac{1}{\lambda}B_1^\top\left(X^{[i-1]}(t)\right)\left(\tilde{P}^{[i]}(t)x^{[i]}(t)-\tilde{s}_f^{[i]}(t)\right)\right)_j \right\}\right\} \forall j \in [n]
+\end{align} 
+
+They were solved using standard backward numerical integration.
+
+\bibliographystyle{elsarticle-num}
+\bibliography{mybibfile}
+\end{document}
