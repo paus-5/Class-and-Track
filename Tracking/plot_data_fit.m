@@ -1,16 +1,16 @@
 %plotting
 clear
 close all
-name_file_in = 'MAT_Files\\061119_Try1_iter_500';
+name_file_in = 'MAT_Files\\061119_Try1_iter_300';
 load(name_file_in);
 numbering_AOB = strsplit(num2str(1:nA)) ;
-legend_tags_AOB = strsplit(strcat(sprintf('OTU %s (model),', numbering_AOB{:}),...
+legend_tags_AOB = strsplit(strcat(sprintf('OTU %s (tracking),', numbering_AOB{:}),...
     sprintf(',OTU %s (data)', numbering_AOB{:})),',');
 numbering_NOB = strsplit(num2str(nA+1:n)) ;
-legend_tags_NOB = strsplit(strcat(sprintf('OTU %s (model),', numbering_NOB{:}),...
+legend_tags_NOB = strsplit(strcat(sprintf('OTU %s (tracking),', numbering_NOB{:}),...
     sprintf(',OTU %s (data)', numbering_NOB{:})),',');
-legend_tags_biomass{1} = 'Sum of species measured biomass';
-legend_tags_biomass{2} = 'Sum of species model biomass';
+legend_tags_biomass{1} = 'Data: Sum of species biomass';
+legend_tags_biomass{2} = 'Tracking: Sum of species biomass';
 legend_tags_AOB_control = strsplit(sprintf('Control OTU %s,', numbering_AOB{:}),',');
 legend_tags_AOB_control(end) = [];
 legend_tags_NOB_control = strsplit(sprintf('Control OTU %s,', numbering_NOB{:}),',');
@@ -28,12 +28,12 @@ figure
 hold on
 total_biomass_plot = plot(t_OTU(index_t_OTU),sum(OTU_interp(index_t_OTU,:),2),'k*','LineWidth',1.5);
 total_biomass_plot2 = plot(t_new,sum(x_new(:,1:n),2),'k.-','LineWidth',1.5);
-xlabel('\fontsize{12}Time [days]'),...
-    ylabel('\fontsize{12}  Concentration [g/l]'),...
+xlabel('\fontsize{15}Time [days]'),...
+    ylabel('\fontsize{15}  Concentration [g/l]'),...
     title(sprintf('Tracking results total biomass iteration:%.0f',iter));
 %     title(sprintf('Simulation v(t) = -1'));
 set(gca,'fontsize',15),
-legend(legend_tags_biomass,'fontsize',7);
+legend(legend_tags_biomass,'fontsize',12);
 fig.PaperUnits = 'inches';
 fig.PaperPosition = [0 0 9 3];
 fig.PaperPositionMode = 'auto';
@@ -44,14 +44,14 @@ figure
 hold on
 AOB_plot = plot(t_new,x_new(:,1:nA),'LineWidth',1.5);
 AOB_data_plot = plot(t_OTU(index_t_OTU),biomass_filtered(index_t_OTU,1:nA),'--','LineWidth',1.5);
-xlabel('\fontsize{12}Time [days]'),...
-    ylabel('\fontsize{12}  Concentration [g/l]'),...
+xlabel('\fontsize{15}Time [days]'),...
+    ylabel('\fontsize{15}  Concentration [g/l]'),...
     title(sprintf('Tracking results AOB iteration:%.0f',iter));
 %     title(sprintf('Simulation v(t) = -1'));
 set(gca,'fontsize',15),
 set(AOB_plot,{'Color'}, colors_AOB)
 set(AOB_data_plot,{'Color'}, colors_AOB) 
-legend(legend_tags_AOB,'fontsize',7,'Location','bestoutside');
+legend(legend_tags_AOB,'fontsize',10,'Location','bestoutside');
 fig.PaperUnits = 'inches';
 fig.PaperPosition = [0 0 9 3];
 fig.PaperPositionMode = 'auto';
@@ -62,14 +62,14 @@ figure
 hold on
 NOB_plot = plot(t_new,x_new(:,nA+1:n),'LineWidth',1.5);
 NOB_data_plot = plot(t_OTU(index_t_OTU),biomass_filtered(index_t_OTU,nA+1:end),'--','LineWidth',1.5);
-xlabel('\fontsize{12}Time [days]'),...
-    ylabel('\fontsize{12}  Concentration [g/l]'),...
+xlabel('\fontsize{15}Time [days]'),...
+    ylabel('\fontsize{15}  Concentration [g/l]'),...
     title(sprintf('Tracking results NOB iteration:%.0f',iter));
 %     title(sprintf('Simulation v(t) = -1'));
 set(gca,'fontsize',15),
 set(NOB_plot,{'Color'}, colors_NOB)
 set(NOB_data_plot,{'Color'}, colors_NOB) 
-legend(legend_tags_NOB,'fontsize',7,'Location','bestoutside');
+legend(legend_tags_NOB,'fontsize',10,'Location','bestoutside');
 fig.PaperUnits = 'inches';
 fig.PaperPosition = [0 0 9 3];
 fig.PaperPositionMode = 'auto';
@@ -80,8 +80,8 @@ figure
 hold on
 metabolite_plot = plot(t_new,x_new(:,(n+1):end),'LineWidth',1.5);
 data_metabolite_plot = plot(tS,[S1(index_span) S2(index_span) S3(index_span)],'--');
-xlabel('\fontsize{12}Time [days]'),...
-    ylabel('\fontsize{12}  Concentration [g/l]'),...
+xlabel('\fontsize{15}Time [days]'),...
+    ylabel('\fontsize{15}  Concentration [g/l]'),...
     title(sprintf('Tracking results iteration:%.0f',iter));
 set(gca,'fontsize',15),
 set(metabolite_plot,{'Color'},colors2);
@@ -106,7 +106,7 @@ xlabel('\fontsize{12}Time [days]'),...
     title(sprintf('Control for AOB iter: %.0f',iter))
 set(gca,'fontsize',15),
 set(control_plot_AOB,{'Color'}, colors_AOB),
-legend(legend_tags_AOB_control,'fontsize',7,'Location','bestoutside');
+legend(legend_tags_AOB_control,'fontsize',10,'Location','bestoutside');
 fig.PaperUnits = 'inches';
 fig.PaperPosition = [0 0 9 3];
 fig.PaperPositionMode = 'auto';
@@ -120,7 +120,7 @@ xlabel('\fontsize{12}Time [days]'),...
     title(sprintf('Control for NOB iter: %.0f',iter))
 set(gca,'fontsize',15),
 set(control_plot_NOB,{'Color'}, colors_NOB),
-legend(legend_tags_NOB_control,'fontsize',7,'Location','bestoutside');
+legend(legend_tags_NOB_control,'fontsize',10,'Location','bestoutside');
 fig.PaperUnits = 'inches';
 fig.PaperPosition = [0 0 9 3];
 fig.PaperPositionMode = 'auto';
