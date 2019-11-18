@@ -47,9 +47,12 @@ legend_tags = strsplit(strjoin({num2str(1:n),' s_1 s_2 s_3'}));
 legend_tags_OTU = strsplit(strjoin({num2str(1:n)}));
 tF = tS(end);
 t0 = tS(1);
-%x0 = [z(t0)' s1Interpol(t0) s2Interpol(t0) s3Interpol(t0)]';
-x0 = [0.001*ones(1,n) s1_interp(t0) s2_interp(t0) s3_interp(t0)]'; 
-x_fun = @(t) x0;
+x0 = [0.001*ones(1,n) s1_interp(t0) s2_interp(t0) s3_interp(t0)]';
+dynamic = @(t,X) Ax(X,nA,nB,kA,kB,muA,muB,kSA,kSB,kI,s_in_interp(t),...
+    d_interp(t))*X ;
+options = odeset('NonNegative',(1:n+3)');
+[t_new,x_new] = ode15s(dynamic,[t0 tF], x0,options);
+x_fun = @(t) interp1(t_new,x_new,t)';
 B = @(t) Bx(x_fun(t),nA,nB,kA,kB,muA,muB,kSA,kSB,kI);
 PtF = F;
 system_ricatti = @(t,P_lin) ricatti_diff(P_lin,x_fun(t),Q,nA,nB,kA,kB,muA,...
