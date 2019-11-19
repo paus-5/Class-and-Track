@@ -538,7 +538,7 @@ The model is also  able to overcome the  competitive exclusion principle \cite{l
 
 \subsection{Remarks}
 
-The model here presented serves to illustrate that by considering a more complex growth rate that accounts for ecological interactions one might explain differences in reactors operating similarly. It also shows a new mechanism by which the CEP no longer holds. However the quadratic increase of parameters with the number of OTU considered makes it difficult to accurately calibrate the model. The operating diagrams always show a single stable equilibrium point for each pair $(s_in,D)$, however no proof is offered to such conjecture. In the next section, a generalization of the former model, and a schema for calibrating a class of models is presented as well.
+The model here presented serves to illustrate that by considering a more complex growth rate that accounts for ecological interactions one might explain differences in reactors operating under similar conditions. It also shows a new mechanism by which the CEP no longer holds. However the quadratic increase of parameters with the number of OTU considered makes it difficult to accurately calibrate the model. The operating diagrams always show a single stable equilibrium point for each pair $(s_in,D)$, however no proof is offered to such conjecture. In the next section, a generalization of the former model, and a schema for calibrating a class of models is presented as well.
 
 
 \section{Generalized approach for modelling interactions}
@@ -619,243 +619,151 @@ Second, to force a regularized control. Otherwise note that $u$ is linear in \eq
 
 The problem of approximating the solution of the system to a desired reference ($z$ in this case) is called the optimal tracking problem. For solving such a problem the approach developed by Cimen \textit{et al.} \cite{Cimen2004} was adapted to our problem. The method proposed involves the resolution of Approximating Sequences of Ricatti Equations (ASRE). 
 
-Two points of departure from the original method are made clear, details can be seen in the appendix: first the tracking problem does not consider a constrained control, so one should consider a reformulation as proposed by the same author in other works \cite{Cimen2008}. Nevertheless, the methods were directly used, and an explicit constraint in the synthesis of the control was added for the control to remain within the desired bounds. Second, when implementing equation (12) of their article \cite{Cimen2008} a linearised dynamic is not used. Instead the original dynamic with the control given by equation (9) of their article is used. This modification of the original method was performed after experiencing poor numerical integration (ill conditioning) of the proposed linear equation. 
+The method consists on iteratively calculating trajectories of system \eqref{Controlsystem} with a certain control and feeding a non-autonomous Ricatti differential equation with the resulting trajectory. Then a control law that uses the Ricatti equation is proposed and a new trajectory is calculated. The iteration is stopped when a convergence in the output or in the control is observed.
 
-The problem with implementing the linearisation fo the dynamic can be partially explained because the dynamic used in this article has the property of remaining in the positive octant, while a linearisation of it may not posses this property, thus hindering the next iteration by -for example- providing a solution with negative substrate or biomass. Partially explained, because even when controlling positivity of the output of the differential equation solver, numerical integration problems were also encountered.
+Two points of departure from the original method are made clear, details can be seen in the appendix: first the tracking problem does not consider a constrained control, so one should consider a reformulation as proposed by the same author in other works \cite{Cimen2008}. Nevertheless, the methods were directly used, and an explicit constraint in the synthesis of the control was added for the control to remain within the desired bounds. 
+
+First the tracking problem does not consider a constrained control, so one should consider a reformulation as proposed by the same author in other works \cite{Cimen2008}. Nevertheless, the methods in \cite{Cimen2004} were directly used, and an explicit constraint in the synthesis of the control was added for the control to remain within the desired bounds (see equation \eqref{control synthesis}). Even though this is probably suboptimal it worked for our purposes.
+
+Second in their problem they used an approximation of their original dynamics for calculating the trajectories and subsequently proved that such linearisation converged to the original dynamics. In the case here presented the linearisation of the dynamics was not necessary.
+Second, when implementing equation (12) of their article \cite{Cimen2008} a linearised dynamic is not used. Instead the original dynamic with the control given by equation (9) of their article is used. This modification of the original method Second in their problem they used an approximation of their original dynamics for calculating the trajectories and subsequently proved that such linearisation converged to the original dynamics. In the case here presented the linearisation of the dynamics was not necessary.
 
 The change of variable $u_i(t) = v_i(t) + 1$ is used for technical reasons explained in the appendix section. This in turn implies $v_i(t) \in [-1,0]$.
 
-The feedback control $v(t)$, will be of the form $v(t) = -R^{-1}\tilde{B}^\top(t)\left(\tilde{P}(t)x(t)-s_f(t)\right)$. Where matrix $P(t)$ and vector $s_f(t)$ solve differential equations. Note that the control becomes a function of the OTU concentration so it represents the interaction function.
+The feedback control $v(t)$, will be of the form $v(t) = -R^{-1}\tilde{B}^\top(t)\left(\tilde{P}(t)x(t)-s_f(t)\right)$. Where matrix $P(t)$ and vector $s_f(t)$ solve differential equations. In the appendix one may prove that because of the structure of the system one only needs to calculate $2n$ differential equations for the synthesis of the control, instead of $(n+3)^2 + (n+3)$ that would imply the direct application of the method. Which renders the method- at least theoretically- scalable.
 
-For compensating the lack of a theoretical optimal control, the approach presented in here was first tested against noised synthetic data and then against real experimental data. The first test consisted in simulating
-\subsection{Numerical results}
-
-
-In this section the tracking problem was solved in the chemostat setting discussed before with data coming from a nitrification process; the experimental conditions are described in \cite{dumont2008observers}. Only data from day $183$ onwards was used because a change in the operating temperature happened at that point, which is known to have an effect on the kinetics; for exploring the hypothesis of interactions as drivers of bioreactors performance environmental conditions should be kept constant as possible.
-
-A method was used in order to classify OTU in either $G_1$ or $G_2$ from data ranging from day $184$ and $245$ which yields as well the $k_i$ of each OTU.  12 OTU were present in the $G_1$ group and 9 in the $G_2$ functional group. The system state dimension becomes 24. Then the tracking method was used from day $245$ to day $362$.
-
-The knowledge of function $f_i(s)$ were based on a study of nitrification's kinetic parameters\cite{Wiesmann1994}. Particularly given the system's ammonium and nitrate concentration a Monod function (eq \eqref{monod}) was used for $G_1$ while a Haldane function (eq. \eqref{Haldane})was used for $G_2$. Since flock formation was seen in the chemostat experiment, the $K_s$ constant proposed by \cite{Wiesmann1994} was multiplied by a hundred times, in order to model for less substrate availability inside a flock. 
-
+Finally for the parametric identification of a particular class of interaction functions the following static optimization problem is proposed. Suppose $u(t)$ is the optimal control of problem \eqref{Optimal Control}, and $x(t)$ is the associated trajectory. Suppose a set of parameters $\theta \in \Theta$, such that the interaction function has a explicit form that depends on this parameters $I_{\theta}(x)$ ($\theta$ would represent matrix $A$ from section 2 for example). Then one solves the following optimization problem:
 \begin{align}
-\label{monod} f_i(s) &= \bar{\mu}_i \dfrac{s_1}{K_i +s_1} \, \forall i \in G_1 \\
-\label{Haldane} f_i(s) &= \bar{\mu}_i \dfrac{s_2}{K_i +s_2 + \frac{s_2^2}{KI}} \, \forall i \in G_2
+\label{Parameter Identification} \min & \quad \Vert I_{\theta}(x(\cdot)) - u(\cdot) \Vert_{L^2([0,T])} \\
+s.t. &  \quad \theta \in \Theta \notag \\
+& \quad t \in [0,T] \notag
+\end{align} 
+
+In practice $t \in [0,T]$ from \eqref{Parameter Identification} is replaced by considering the time steps given by the differential equation solver.
+\subsection{Proof of concept}
+
+For compensating the lack of a theoretical optimal control, the approach presented in here was first tested against synthetic data. The first test consisted in simulating system \eqref{Controlsystem} with $I(x) = 1 + Ax$, for $n_1 = 10$ and $n_2 = 5$. 
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//061119_Try1_Biomass_Iter_300}
+	\caption{Total biomass. Dotted line: simulated data. Continuous line: the tracking procedure results.}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//061119_Try1_AOB_Iter_300}
+	\caption{AOB biomass. Dotted line: simulated data. Continuous line: the tracking procedure results.}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//061119_Try1_NOB_Iter_300}
+	\caption{NOB biomass. Dotted line: simulated data. Continuous line: the tracking procedure results.}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//061119_Try1_metabolites_Iter_300}
+	\caption{Metabolites. Dotted line: simulated data. Continuous line: the tracking procedure results.}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//061119_Try1_Control_AOB_Iter_300}
+	\caption{Control for the AOB population.}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//061119_Try1_Control_NOB_Iter_300}
+	\caption{Control for the NOB population.}
+\end{figure}
+
+Finally in the parametric identification one can compare the original matrix, with the identified one.
+
+
+
+The procedure is repeated but with noise on the simulated trajectory.
+
+Again the method follows the tendencies from data.
+
+And the reconstructed matrix
+
+
+\clearpage
+\section{Application}
+
+The choice of matrices $Q$ and $R$ are always of discussion in a quadratic regulator. $Q$ represents the covariance matrix of measurements, while the interpretation of $R$ is not clear. In the simulations here presented $Q = I_n$ and $R = 0.0001I_n$, found by trial and error in order for the control to fit accurately the species abundance. The method stopped after 110 iterations where each iteration took approximately 600 seconds of computing time in a computer equipped with 8gb of RAM memory and Intel core i3-7100U CPU 2,40 GHz.
+
+The tracking problem was applied to data coming from a nitrification process; the experimental conditions are described in \cite{dumont2008observers}. For exploring the hypothesis of interactions as drivers of bioreactors performance environmental conditions should be kept as constant as possible. Therefore only data from day $183$ onwards was used because a change in the operating temperature happened at that point, which is known to have an effect on the kinetics.  For choosing which species belong in which functional group, the procedure described in \cite{Ugalde-Salas2019} was used: from day $183$ to day $230$: 17 OTU were identified in the $G_1$ group (known as Ammonium oxidizing bacteria AOB) and 8 in the $G_2$ functional group (known as Nitrite oxidizing bacteria NOB). The system state dimension becomes 28.
+
+The knowledge of functions $f_i(s)$ was based on a study of nitrification's kinetic parameters\cite{Wiesmann1994}. Particularly given the system's ammonium and nitrate concentration a Monod function (eq \eqref{monod}) was used for $G_1$ and $G_2$. 
+\begin{align}
+\label{monod} f_i(s) &= \bar{\mu}_2 \dfrac{s_1}{K_1 +s_1} \, \forall i \in G_1 \\
+\notag  f_i(s) &= \bar{\mu}_2 \dfrac{s_2}{K_2 +s_2 } \, \forall i \in G_2
 \end{align}
 
-The choice of the matrix $F$, $Q$ and $R$, influence the quality of the fitting, and three cases are presented. Before for the reader to gain understanding of the situation a simulation in figure \ref{NoControlSimulation} is shown without control. One can see that simulation predicts CN (accumulation of $s_3$), while data is showing PN  (accumulation of $s_2$).
+For the reader to gain understanding of the situation, a simulation of the system using the experiments operating parameters ($D$ and $s_{in}$) is presented without control (i.e. $v(t)= 0$) in  Figure \ref{NoControlSimulation}. $s_3$ accumulates all along the trajectory, but when compared to data it is clear that $s_3$ stops accumulating after a while. 
 
-\begin{figure}[ht]
+\begin{figure}[h]
 	\centering
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{OTU_no_control}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{metabolites_no_control}
-	\end{subfigure}
-	\caption{Simulation with no control. Warm colors for OTU belonging to $G_1$. Cold colors for OTU belonging to $G_2$. Dotted line represents data.}
+	\includegraphics[width= 0.4\textwidth]{Prediction_No_Control_metabolites}
+	\caption{Simulation when $u=1$. }
 	\label{NoControlSimulation}
 \end{figure}
-\clearpage
+
+When applying the presented method one obtains the simulation that can be seen in figure \ref{ControlSimulation}. The method captures the tendencies in the measured substrates, but not their absolute values. The simulation of each functional $G_1$ (AOB), and $G_2$ (NOB) can be seen in figures \ref{AOBSimulation} and \ref{NOB Simulation}, respectively. Note that the fit of $G_1$ seems better than the fit of $G_2$, which can be explained by the 1 order of magnitude difference of abundance between the members of the group.
 
 
-
-\begin{figure}
+\begin{figure}[h]
 	\centering
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_OTU_Iter_1}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_metabolites_Iter_1}
-	\end{subfigure}
-	~	
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_OTU_Iter_5}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_metabolites_Iter_5}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_OTU_Iter_25}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_metabolites_Iter_25}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_OTU_Iter_45}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_metabolites_Iter_45}
-	\end{subfigure}
-	\caption{Case 1 Metabolites and OTU concentration,  $R = 0.01 I_n$. Let $Q = I_n$, and $F = 10Q$. Left OTU fitting, right Metabolites. Continuous lines are the fit. Dotted lines represent data. Warm colors for OTU in $G_1$, cold colors for OTU in $G_2$.}
-	\label{Case 1 Metabolites OTU}
+	\includegraphics[width= 0.4\textwidth]{260919_Try1_metabolites_Iter_110}
+	\caption{Simulation applying the control strategy.}
+	\label{ControlSimulation}
 \end{figure}
 
-\clearpage
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_Control_Iter_1}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_Control_Iter_5}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_Control_Iter_25}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-	\includegraphics[width=\textwidth]{Case_1//Prediction_Constrained_Control_2_Control_Iter_45}
-	\end{subfigure}
-	\caption{Case 1: Control for tracking. Warm colors for OTU in $G_1$, cold colors for OTU in $G_2$.}
-	\label{Case 1 Control}
-\end{figure}  
-In this case from figure \ref{Case 1 Metabolites OTU} one can see that $s_1$ accumulation is predicted and not $s_2$ which was the most abundant metabolite. By choosing the identity matrix as the weight matrix of the tracking part it privileges the most abundant species (OTU 11), and thus the behaviour is predicted based only on OTU 11. From figure \ref{Case 1 Control} it can be seen that the control for OTU in $G_2$ tends to $1$, while the control for OTU in $G_1$ (with exception of OTU 11) remain almost zero until day $320$. The method seems to converge: note that the control for iterations $25$ and $45$ vary slightly from one another.
+	\includegraphics[width= 0.4\textwidth]{260919_Try1_AOB_Iter_110}
+	\caption{Abundance of $G_1$ (AOB) simulation applying the control strategy.}
+	\label{AOBSimulation}
+\end{figure}
 
-\clearpage
-\begin{figure}
+\begin{figure}[h]
 	\centering
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_OTU_Iter_1}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_metabolites_Iter_1}
-	\end{subfigure}
-	~	
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_OTU_Iter_5}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_metabolites_Iter_5}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_OTU_Iter_15}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_metabolites_Iter_15}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_OTU_Iter_25}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_metabolites_Iter_25}
-	\end{subfigure}
-	\caption{Case 2: $R = 0.001 I_n$. Let $\bar{k} =  \max \{k_i| i\in [n] \}$, $Q = \diag(k) /\bar{k}$, and $F = 10Q$. Left OTU fitting, right Metabolites. Continuous lines are the fit. Dotted lines represent data. Warm colors for OTU in $G_1$, cold colors for OTU in $G_2$.}
-	\label{Case 2 Metabolites OTU}
+	\includegraphics[width= 0.4\textwidth]{260919_Try1_NOB_Iter_110}
+	\caption{Abundance of $G_2$ (NOB) simulation applying the control strategy.}
+	\label{NOB Simulation}
+\end{figure}
+
+One can observe that in figure \ref{ControlSimulation} the predicted $s_3$ around day 240 is much higher than the measurement. If one looks at figure \ref{NOB Simulation} it suggests attributing this extra production of $s_3$ around day 240 to the growth of OTU 24. What would have happened if OTU 24 had been classified in the other functional group? One would have seen a decrease in $s_1$, an increase in $s_2$, and a decrease in $s_3$ which could have better fitted the measurements. Thus suggesting that OTU 24 was misclassified from the method presented in \cite{Ugalde-Salas2019}.
+
+In figures \ref{AOB_control} and \ref{NOB_control} it can be seen the obtained controls for each functional group. Both controls saturate at certain points, but in general terms they vary throughout the dynamic. 
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width= 0.4\textwidth]{260919_Try1_Control_AOB_Iter_110}
+	\caption{Control obtained for OTU in $G_1$ (AOB).}
+	\label{AOB_control}
+	\includegraphics[width= 0.4\textwidth]{260919_Try1_Control_NOB_Iter_110}
+	\caption{Control obtained for OTU in $G_2$ (NOB).}
+	\label{NOB_control}
+\end{figure}
+
+Recalling that $u(t)$ is supposed to represent $I(x(t))$ (the interactions terms), one could try to fit different forms of $I(\cdot)$ for example $I(x) = 1 + Ax$, where  $A$ is a real valued square matrix. In figure \ref{LV_fit} the simulation of the system after the identification of matrix A is presented, suggesting that an affine interaction function is not able to capture the behaviour of the system.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width= 0.4\textwidth]{260919_Try1_metabolites_Iter_110_LV}
+	\caption{Simulation obtained for the interaction function $I(x) = 1 + Ax$, where $A$ was fitted with the obtained controls from figures \ref{AOB_control} and \ref{NOB_control}.}
+	\label{LV_fit}
 \end{figure}
 \clearpage
-\begin{figure}
-	\centering
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_Control_Iter_1}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_Control_Iter_5}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_Control_Iter_15}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_2//Prediction_Constrained_Control_6_Control_Iter_25}
-	\end{subfigure}
-	\caption{Case 2 Control for tracking.Warm colors for OTU in $G_1$, cold colors for OTU in $G_2$.}
-	\label{Case 2 Control}
-\end{figure}  
-
-In this case from figure \ref{Case 2 Metabolites OTU} one can see that $s_2$ accumulation is predicted which was the most abundant metabolite. It was also able to detect an $s_1$ peak at day $340$.  The rationale for choosing the yields as the diagonal of the weight matrix of the tracking part is that a higher yielding organism will cause a more pronounced difference in the metabolites of the system, thus more weight is given to correctly tracking those OTU. From figure \ref{Case 2 Control} it can be seen that the control for OTU in $G_2$ remains zero until day 300, while the control for OTU in $G_1$ vary differently throughout the trajectory.
-
-\clearpage
-\begin{figure}
-	\centering
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_OTU_Iter_1}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_metabolites_Iter_1}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_OTU_Iter_5}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_metabolites_Iter_5}
-	\end{subfigure}
-	~
-		\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_OTU_Iter_15}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_metabolites_Iter_15}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_OTU_Iter_25}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_metabolites_Iter_25}
-	\end{subfigure}
-\caption{Case 3: $R = 0.0001 I_n$. Let $\bar{k} =  \max \{k_i| i\in [n] \}$, $Q = \diag(k) /\bar{k}$, and $F = 10Q$. Left OTU fitting, right Metabolites. Continuous lines are the fit. Dotted lines represent data. Warm colors for OTU in $G_1$, cold colors for OTU in $G_2$.}
-\label{Case 3 Metabolites OTU}
-\end{figure}
-\clearpage
-\begin{figure}
-	\centering
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_Control_Iter_1}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_Control_Iter_5}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-		\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_Control_Iter_15}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.32\textheight}
-	\includegraphics[width=\textwidth]{Case_3//Prediction_Constrained_Control_7_Control_Iter_25}
-	\end{subfigure}
-	\caption{Case 3: Control for tracking. Warm colors for OTU in $G_1$, cold colors for OTU in $G_2$.}
-	\label{Case 3 Control}
-\end{figure}  
-
-In this case from figure \ref{Case 3 Metabolites OTU} one can see that $s_2$ accumulation is predicted which was the most abundant metabolite. It was also able to detect an $s_1$ peak at day $340$ and an $s_3$ peak at the beginning of the trajectory.  The same rationale as case two was used for picking the weight matrix of the tracking part. From figure \ref{Case 3 Control} it can be seen that the control for OTU in $G_2$ remains zero until day 300 (except for OTU 20, responsible for the $s_3$ peak), while the control for OTU in $G_1$ vary differently throughout the trajectory. The only difference from case two is that the weight matrix for the control part was divided by 10, thus allowing a better fit of the OTU at the expense of more steep variations in the control.
-
-
-
-
-\clearpage
-In two out of three cases it can be seen that the accumulation of $s_2$ instead of $s_3$ (i.e. PN) was predicted. The cases were accumulation of $s_2$ was predicted are explained by a weight matrix  that used the yields of each OTU. It also seems that the control (and therefore the solution) converge, however since departures from the original method were used, one can not ensure they converge to the optimal value. But given that the fit of the OTU follows the trend of data, and one is able to predict $s_2$ accumulation, the results seems satisfactory from a numerical standpoint. All cases matrix $F$ (the final point weight) was taken as 10 times $Q$, otherwise the control always ended up in $0$ ($v(t_f) = 0$).
-
-
-
 \section{Conclusion}
 
 This article dealt with the problem of how to include genetic data in the prediction of performance of bioreactors, a previous model which deals with such an issue was revisited. The former model suffers from poor scalability, and therefore its application is limited. Inspired by their model a novel approach was here developed in order to systematically integrate the available genetic data. The approach is fairly straightforward for chemostat systems because it consists in multiplying a control to the growth expression of each OTU to be tracked. Nevertheless a method for previous identification of the microbial community must be used beforehand.
+All the codes can be downloaded from Github.
 
-\clearpage
+\section{Acknowledgements}
+ Alain Rapaport, CMM, Thermomic
+
 \section{Appendix}
 
 
