@@ -1,8 +1,10 @@
+%Reference: Cimen et al 2002 Nonlinear optimal tracking control
+
 %main: process and filter data to model.
 close all
 clear
-load('MAT_files\synthetic_data_no_noise')
-name_file = '061119_Try1';
+load('MAT_files\synthetic_data_noise')
+name_file = '191119_Try1';
 nA = round(sum(a));
 nB = round(sum(b)); 
 n = nA+nB;
@@ -72,14 +74,13 @@ dynamic = @(t,X) Ax(X,nA,nB,kA,kB,muA,muB,kSA,kSB,kI,s_in_interp(t),...
     d_interp(t))*X + Bx(X,nA,nB,kA,kB,muA,muB,kSA,kSB,kI)...
     *tracking_control(lambda,B(t),P(t),X,sf_interp(t),n);
 tic
-options = odeset('NonNegative',(1:n+3)');
 [t_new,x_new] = ode15s(dynamic,[t0 tF], x0,options);
 toc
 %%SRE
 x_cell = arrayfun(x_fun,t_new,'UniformOutput',false);
 X = reshape(cell2mat(x_cell),length(t_new),n+3);
 x_old = X;
-csTolerance = 4; %cauchy sequence tolerance
+csTolerance = 0.001; %cauchy sequence tolerance
 iter = 1;
 diff = norm(x_old - x_new);
 save(sprintf('MAT_files\\%s_iter_%.0f',name_file,iter))
@@ -103,9 +104,9 @@ while diff > csTolerance
     fig.PaperPositionMode = 'auto';
     print(sprintf('Images\\%s',sprintf('%s_Trajectory_Iter_%.0f',...
         name_file,iter)),'-dpng','-r0')
-    figure
+    figure 
     control_plot = plot(t_new,reshape(cell2mat(control_eval),n,...
-        length(t_new)),'LineWidth',1.5);
+        length(t_new)),'LineWidth',1.5,'Visible','on');
         xlabel('\fontsize{12}Time [days]'),...
         ylabel('\fontsize{12}  v(t)'),...
         title(sprintf('Control for the tracking of z iteration: %.0f',iter))
