@@ -276,7 +276,7 @@ Observe that equilibrium points are by definition non-negative so the state vari
 
 This model \eqref{system} is restated in a more compact form using matrix notation.
 
-\begin{defn} Given a vector $v=(v_1,\dots, v_n)\in \R^n$, the function $\diag(v)$:
+\begin{defn} Given a vector $v=(v_1,\dots, v_n)\in \R^n$, the function $\diag(v)$ stands for:
 	\begin{align}
 	\begin{array}{rc}
 	\diag:\R^n \rightarrow & \mathbb{M}_{n\times n}(\R)\\
@@ -458,7 +458,7 @@ All the former discussion leads to a potential number of   $ (2^{n_1}-1)\cdot (4
 \end{align}
 
 \subsection{Local Stability and Operating Diagrams}
-For checking local asymptotic stability of the equilibria points, the Jacobian of the system is provided and evaluated at each of these points. The resulting matrix's eigenvalues must satisfy that their real parts are less than zero. A general formula for this Jacobian is presented in the appendix.
+For checking local asymptotic stability of the equilibria points, the Jacobian of the system is provided and evaluated at each of these points. The resulting matrix's eigenvalues must have negative real part. A general formula for this Jacobian is presented in the appendix.
 
 The former discussion proposes an algorithm for finding the positive stable equilibrium points 
 
@@ -476,11 +476,11 @@ The former discussion proposes an algorithm for finding the positive stable equi
 
 The algorithm implicitly assumes that every submatrix $A'$ is invertible.
 
-Operating diagrams are an illustrative way of representing the long term behaviour of a reactor depending on operating parameters. Operating diagrams are created by running algorithm \eqref{StabilityAnalysis} for different pairs $(s_{in},D)$ . One then regroups all the pairs such that the set of non-active coordinates of the points of the set $PSP$ are the same. This regrouping represents graphically the coexistence of the different OTU in a $D-s_{in}$ plot. In particular for the biological process of nitrification, this implies when partial nitrification (PN) or complete nitrification (CN) may arise. PN refers to the state when nitrite $s_2$, accumulates because the OTU of $G_2$ concentration is very low and thus almost no conversion from $s_2$  to $s_3$ takes place. On the contrary CN is when nitrate ($s_3$) accumulates because of the presence of OTU of $G_2$.
+Operating diagrams are an illustrative way of representing the long term behaviour of a reactor depending on operating parameters. Operating diagrams are created by running algorithm \eqref{StabilityAnalysis} for different pairs $(s_{in},D)$ \cite{lobry2017chemostat}. One then regroups all the pairs such that the set of non-active coordinates of the points of the set $PSP$ are the same and have the same stability properties. This regrouping represents graphically the coexistence of the different OTU in a $D-s_{in}$ plot. In particular for the biological process of nitrification, this allows to represent when partial nitrification (PN) or complete nitrification (CN) may arise \cite{KHIN2004519}. PN refers to the state when nitrite $s_2$, accumulates because the OTU of $G_2$ concentration is very low and thus almost no conversion from $s_2$  to $s_3$ takes place. On the contrary CN is when nitrate ($s_3$) accumulates because of the presence of OTU of $G_2$.
 
-The operating diagram from the parameter identification from Dumont et al. is presented in figure \ref{OD Dumont}. Two species per functional group were considered. One can see that coexistence in the same functional group is not attained. However when using a different set of parameters one can see a more complex situation where coexistence in the same functional group is possible as seen in figure \ref{OD modified}. In the latter case CN can be achieved at a more elevated dilution rats than in the former case. Parameters of cases 1 and 2 can be seen in table \ref{Parameters Dumont} and \ref{Parameters Modified}, respectively. 
+The operating diagram from one of the sets of the parameter identification from Dumont et al. is presented in figure \ref{OD Dumont} from a Bayesian estimation method. Two species per functional group were considered. One can see that coexistence in the same functional group is never attained. However when using a different set of parameters one can see a more complex situation where coexistence in the same functional group is possible as seen in figure \ref{OD modified}. In the latter case CN can be achieved at a more elevated dilution rats than in the former case. Parameters of cases 1 and 2 can be seen in table \ref{Parameters Dumont} and \ref{Parameters Modified}, respectively. 
 
-The model isalso  able to overcome the  competitive exclusion principle \cite{lobry2017chemostat} (CEP) paradigm. The CEP roughly states that if two species are growing on the same limiting resource, and their growth law is monotonic in the substrate, then only one of them will survive in the long run. However reports on wastewater treatment plants have shown coexistence between species in nitrifying reactors has\cite{Wagner2002}.
+The model is also  able to overcome the  competitive exclusion principle \cite{lobry2017chemostat} (CEP) paradigm. The CEP roughly states that if two species are growing on the same limiting resource, and their growth law is monotonic in the substrate, then only one of them will survive in the long run. However reports on wastewater treatment plants have shown coexistence between species in nitrifying reactors has\cite{Wagner2002}.
 
 
 \begin{table}[ht]
@@ -537,18 +537,19 @@ The model isalso  able to overcome the  competitive exclusion principle \cite{lo
 \clearpage
 
 \subsection{Remarks}
-The model here presented serves to illustrate that by considering interactions complete nitrification with a bigger dilution rate can be explained. It also shows a mechanism by which the CEP no longer holds. However the quadratic increase of parameters with the number of OTU considered makes it difficult to accurately calibrate the model. Simulations always show a single stable equilibrium point, however no proof is offered to such conjecture. In the next section, in the spirit of this model, a more systematic treatment is provided to include genetic sequencing in order to predict the outcome of the reactor.
+
+The model here presented serves to illustrate that by considering a more complex growth rate that accounts for ecological interactions one might explain differences in reactors operating similarly. It also shows a new mechanism by which the CEP no longer holds. However the quadratic increase of parameters with the number of OTU considered makes it difficult to accurately calibrate the model. The operating diagrams always show a single stable equilibrium point for each pair $(s_in,D)$, however no proof is offered to such conjecture. In the next section, a generalization of the former model, and a schema for calibrating a class of models is presented as well.
 
 
 \section{Generalized approach for modelling interactions}
 In the previous sections interactions were modelled as an affine function of the OTU concentration that multiplies a substrate dependent growth equation. 
 
-More generally the interaction function is defined. It represents how the growth rate of species $i$ is affected by the concentration of other Bacteria, $x$:
+More generally the interaction function is defined. It represents how the growth rate of species $i$ is affected by the concentration of other species, $x$:
 
 Given a vector $(v_1,\dots,v_n)^\top$ the interaction function $\I$ is noted as:
 \begin{align}
 \begin{array}{rc}
-\I: \R^n \rightarrow & \R_+^n\\
+\I: \R_+^n \rightarrow & \R_+^n\\
 & \\
 v \rightarrow & \begin{pmatrix}
 I_1(v) \\
@@ -600,7 +601,7 @@ y(t) & = g(x,s)
 \end{array}
 \end{align}	
 
-For this model $g(x,s) = x$, since we are observing measurements coming from genetic sequencing. Consider the weighted norms defined by positive definite matrices $F,Q$, and $R$, represented by $\Vert \cdot \Vert_F$, $\Vert \cdot \Vert_Q$, and $\Vert \cdot \Vert_R$, respectively. The optimal tracking problem is defined as: 
+For this model $g(x,s) = x$, since we are observing measurements coming from genetic sequencing. Consider the weighted norms defined by positive definite matrices $Q$ and $R$, represented by $\Vert \cdot \Vert_Q$ and $\Vert \cdot \Vert_R$, respectively. The optimal tracking problem is defined as: 
 
 \begin{align}
 \label{Optimal Control} \begin{array}{cc} \min &  \int \limits_{0}^{T} \Vert g(x,s) - z \Vert_Q + \Vert(u -\vec{1}) \Vert_R dt\\
