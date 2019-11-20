@@ -136,7 +136,6 @@ while diff > csTolerance
         d_interp(t))*X + Bx(X,nA,nB,kA,kB,muA,muB,kSA,kSB,kI)...
         *tracking_control(lambda,B(t),P(t),X,sf_interp(t),n);
     tic
-    options = odeset('NonNegative',(1:n+3)');
     [t_new,x_new] = ode15s(dynamic,[t0 tF], x0,options);
     toc
     xOldCell = arrayfun(x_fun,t_new,'UniformOutput',false);
