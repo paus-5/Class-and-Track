@@ -127,7 +127,7 @@
 \dochead{}
 %% Use \dochead if there is an article header, e.g. \dochead{Short communication}
 
-\title{A general model of microbial interactions in a chemostat.}
+\title{A general model of microbial interactions in a chemostat}
 
 %% use optional labels to link authors explicitly to addresses:
 %% \author[label1,label2]{<author name>}
@@ -139,7 +139,7 @@
 \address{}
 
 \begin{abstract}
-	A model of microbial interactions applied to a nitrifying process in a chemostat setting is revisited. To overcome the shortcomings of this earlier model an optimal tracking method is developed to include the genetic measurements for the prediction of a bioreactor. The resulting model is a high order (24 variables) differential equations system with a good prediction of measured metabolites. Numerical simulations of the model are presented and discussed.
+	This article deals with the inclusion of microbial ecology in bioprocess modelling. The first part exposes the mathematical analysis of a model that included pairwise linear interactions fitted to experimental data in a chemostat setting. The limitations and the insights of such an approach are discussed. The main novelty of this work lies in the second part, where the use of an optimal tracking technique for the integration of genetic sequencing in chemostat models is presented. The method revisits the data used for the first model presented and proposes a way to calibrate and discriminate . 
 \end{abstract}
 
 \end{frontmatter}
@@ -538,7 +538,7 @@ The model is also  able to overcome the  competitive exclusion principle \cite{l
 
 \subsection{Remarks}
 
-The model here presented serves to illustrate that by considering a more complex growth rate that accounts for ecological interactions one might explain differences in reactors operating under similar conditions. It also shows a new mechanism by which the CEP no longer holds. However the quadratic increase of parameters with the number of OTU considered makes it difficult to accurately calibrate the model. The operating diagrams always show a single stable equilibrium point for each pair $(s_in,D)$, however no proof is offered to such conjecture. In the next section, a generalization of the former model, and a schema for calibrating a class of models is presented as well.
+The model here presented serves to illustrate that by considering a more complex growth rate that accounts for ecological interactions one might explain differences in reactors operating under similar conditions. It also shows a new mechanism by which the CEP no longer holds. However the quadratic increase of parameters with the number of OTU considered makes it difficult to accurately calibrate the model. The operating diagrams always show a single stable equilibrium point for each pair $(s_{in},D)$, however no proof is offered to such conjecture. In the next section, a generalization of the former model, and a schema for calibrating a class of models is presented as well.
 
 
 \section{Generalized approach for modelling interactions}
@@ -621,16 +621,13 @@ The problem of approximating the solution of the system to a desired reference (
 
 The method consists on iteratively calculating trajectories of system \eqref{Controlsystem} with a certain control and feeding a non-autonomous Ricatti differential equation with the resulting trajectory. Then a control law that uses the Ricatti equation is proposed and a new trajectory is calculated. The iteration is stopped when a convergence in the output or in the control is observed.
 
-Two points of departure from the original method are made clear, details can be seen in the appendix: first the tracking problem does not consider a constrained control, so one should consider a reformulation as proposed by the same author in other works \cite{Cimen2008}. Nevertheless, the methods were directly used, and an explicit constraint in the synthesis of the control was added for the control to remain within the desired bounds. 
-
-First the tracking problem does not consider a constrained control, so one should consider a reformulation as proposed by the same author in other works \cite{Cimen2008}. Nevertheless, the methods in \cite{Cimen2004} were directly used, and an explicit constraint in the synthesis of the control was added for the control to remain within the desired bounds (see equation \eqref{control synthesis}). Even though this is probably suboptimal it worked for our purposes.
+Two points of departure from the original method are made clear, details can be seen in the appendix: first the tracking problem does not consider a constrained control, so one should consider a reformulation as proposed by the same author in other works \cite{Cimen2008}. Nevertheless, the methods were directly used, and an explicit constraint in the synthesis of the control was added for the control to remain within the desired bounds.  Even though this is probably suboptimal it worked in a first implementation.
 
 Second in their problem they used an approximation of their original dynamics for calculating the trajectories and subsequently proved that such linearisation converged to the original dynamics. In the case here presented the linearisation of the dynamics was not necessary.
-Second, when implementing equation (12) of their article \cite{Cimen2008} a linearised dynamic is not used. Instead the original dynamic with the control given by equation (9) of their article is used. This modification of the original method Second in their problem they used an approximation of their original dynamics for calculating the trajectories and subsequently proved that such linearisation converged to the original dynamics. In the case here presented the linearisation of the dynamics was not necessary.
 
 The change of variable $u_i(t) = v_i(t) + 1$ is used for technical reasons explained in the appendix section. This in turn implies $v_i(t) \in [-1,0]$.
 
-The feedback control $v(t)$, will be of the form $v(t) = -R^{-1}\tilde{B}^\top(t)\left(\tilde{P}(t)x(t)-s_f(t)\right)$. Where matrix $P(t)$ and vector $s_f(t)$ solve differential equations. In the appendix one may prove that because of the structure of the system one only needs to calculate $2n$ differential equations for the synthesis of the control, instead of $(n+3)^2 + (n+3)$ that would imply the direct application of the method. Which renders the method- at least theoretically- scalable.
+The feedback control $v(t)$, will be of the form $v(t) = -R^{-1}\tilde{B}^\top(t)\left(\tilde{P}(t)x(t)-s_f(t)\right)$. Where matrix $P(t)$ and vector $s_f(t)$ solve differential equations. In the appendix one may prove that because of the structure of the system one only needs to calculate $2n$ differential equations for the synthesis of the control, instead of $(n+3)^2 + (n+3)$ that would imply the direct application of the method. Which renders the method- at least theoretically- scalable for a growing number of OTU.
 
 Finally for the parametric identification of a particular class of interaction functions the following static optimization problem is proposed. Suppose $u(t)$ is the optimal control of problem \eqref{Optimal Control}, and $x(t)$ is the associated trajectory. Suppose a set of parameters $\theta \in \Theta$, such that the interaction function has a explicit form that depends on this parameters $I_{\theta}(x)$ ($\theta$ would represent matrix $A$ from section 2 for example). Then one solves the following optimization problem:
 \begin{align}
@@ -642,48 +639,97 @@ s.t. &  \quad \theta \in \Theta \notag \\
 In practice $t \in [0,T]$ from \eqref{Parameter Identification} is replaced by considering the time steps given by the differential equation solver.
 \subsection{Proof of concept}
 
-For compensating the lack of a theoretical optimal control, the approach presented in here was first tested against synthetic data. The first test consisted in simulating system \eqref{Controlsystem} with $I(x) = 1 + Ax$, for $n_1 = 10$ and $n_2 = 5$. 
+For compensating the lack of a theoretical optimal control, the approach presented in here was first tested against synthetic data. The test consisted in simulating system \eqref{Controlsystem} with $I(x) = 1 + Ax$, for $n_1 = 10$ and $n_2 = 5$. In all figures, dotted lines represent the synthetic data, while the continuous lines represent the method's output.
+
+The choice of matrices $Q$ and $R$ are always of discussion in a quadratic regulator. $Q$ represents the covariance matrix of measurements, while the interpretation of $R$ is not clear. In the simulations here presented $Q = I_n$ and $R = \begin{bmatrix}
+10^{-4}I_{n_1} & 0 \\ 0 & 10^{-5}I_{n_2}
+\end{bmatrix}$, found by trial and error in order for the control to fit accurately the species abundance. The rational behind choosing a smaller value for the group $G_2$ is related to the one order of magnitude difference in yields between $G_1$ and $G_2$.
+
+
+
+Figures \ref{Total Biomass no noise}, \ref{AOB no noise}, and \ref{NOB no noise} show the total biomass concentration, and the trajectories for the OTU belonging to $G_1$ and $G_2$, respectively. It can be seen that the method approaches well the trajectories. The metabolites concentration represented in figure \ref{Metabolites no noise} are in accordance with the simulated data as well. 
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//061119_Try1_Biomass_Iter_300}
+	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//221119_no_noise_Biomass_Iter_5}
 	\caption{Total biomass. Dotted line: simulated data. Continuous line: the tracking procedure results.}
+	\label{Total Biomass no noise}
 \end{figure}
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//061119_Try1_AOB_Iter_300}
+	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//221119_no_noise_AOB_Iter_5}
 	\caption{AOB biomass. Dotted line: simulated data. Continuous line: the tracking procedure results.}
+	\label{AOB no noise}
 \end{figure}
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//061119_Try1_NOB_Iter_300}
+	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//221119_no_noise_NOB_Iter_5}
 	\caption{NOB biomass. Dotted line: simulated data. Continuous line: the tracking procedure results.}
+	\label{NOB no noise}
 \end{figure}
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//061119_Try1_metabolites_Iter_300}
+	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//221119_no_noise_metabolites_Iter_5}
 	\caption{Metabolites. Dotted line: simulated data. Continuous line: the tracking procedure results.}
+	\label{Metabolites no noise}
 \end{figure}
+\clearpage
+
+The resulting controls correcting the growth rate can be seen in figure \eqref{Control AOB no noise} and \eqref{Control NOB no noise}. Note that from the structure of a quadratic regulator, since there is no cost in the final state, the end value is always 1. Problem \eqref{Parameter Identification} is then solved from the obtained trajectories (figures \eqref{AOB no noise} and \eqref{NOB no noise} and controls. The difference between the control and the fit is expressed in Figure \ref{Difference fit}. Not  Considering that the control is contained in $[0,1]$, the error is below 5 \% throughout the trajectory.
+
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//061119_Try1_Control_AOB_Iter_300}
+	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//221119_no_noise_Control_AOB_Iter_5}
 	\caption{Control for the AOB population.}
+	\label{Control AOB no noise}
 \end{figure}
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//061119_Try1_Control_NOB_Iter_300}
+	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//221119_no_noise_Control_NOB_Iter_5}
 	\caption{Control for the NOB population.}
+	\label{Control NOB no noise}
 \end{figure}
 
-Finally in the parametric identification one can compare the original matrix, with the identified one.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//221119_no_noise_iter_5_difference_fit_5_LV}
+	\caption{Difference between $u(t)$ and the $1+Ax(t)$, with $A$ shown in the right hand side of Figure \ref{Comparison Interaction Matrices}}
+	\label{Difference fit}
+\end{figure} 
 
 
+\begin{figure}[h]
+	\centering	
+\begin{subfigure}[b]{0.45\textwidth}
+	\includegraphics[width=\textwidth]{Synthetic_data_no_noise//Interactions_synthetic_data_no_noise}
+\end{subfigure}
+\begin{subfigure}[b]{0.45\textwidth}
+	\includegraphics[width=\textwidth]{Synthetic_data_no_noise//Interactions_221119_no_noise_iter_5}
+\end{subfigure}
+\caption{Left: interactions of the synthetic data. Right: Interaction matrix obtained from solving problem \eqref{Parameter Identification}}
+\label{Comparison Interaction Matrices}
+\end{figure}
 
-The procedure is repeated but with noise on the simulated trajectory.
+Finally
 
-Again the method follows the tendencies from data.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5 \textwidth]{Synthetic_data_no_noise//221119_no_noise_iter_5_AOB_Iter_5_LV}
+	\caption{AOB trajectories using the identified matrix seen in \eqref{Comparison Interaction Matrices}.}
+\end{figure}
 
-And the reconstructed matrix
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5 \textwidth]{Synthetic_data_no_noise//221119_no_noise_iter_5_NOB_Iter_5_LV}
+	\caption{NOB trajectories using the identified matrix seen in \eqref{Comparison Interaction Matrices}.}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5 \textwidth]{Synthetic_data_no_noise//221119_no_noise_iter_5_metabolites_Iter_5_LV}
+	\caption{Metabolites trajectories using the identified matrix seen in \eqref{Comparison Interaction Matrices}.}
+\end{figure}
 
 
 \clearpage
@@ -758,8 +804,13 @@ Recalling that $u(t)$ is supposed to represent $I(x(t))$ (the interactions terms
 \clearpage
 \section{Conclusion}
 
-This article dealt with the problem of how to include genetic data in the prediction of performance of bioreactors, a previous model which deals with such an issue was revisited. The former model suffers from poor scalability, and therefore its application is limited. Inspired by their model a novel approach was here developed in order to systematically integrate the available genetic data. The approach is fairly straightforward for chemostat systems because it consists in multiplying a control to the growth expression of each OTU to be tracked. Nevertheless a method for previous identification of the microbial community must be used beforehand.
-All the codes can be downloaded from Github.
+Last decades advances in genetic sequencing and microbial ecology has opened a gap for modellers in biochemical reactors to integrate this valuable information. Considering the success of mass balance models to predict and pilot bioreactors, one should build upon these existing models. This article proposed a naïve approach to start filling the gap of microbial ecology and biochemical process modelling: The approach can be simply described as correcting the growth rate of each individual species from genetic sequencing measurements, and observing what would that imply in the chemical species involved. If one already posses a model for describing a particular bioprocess the use of the techniques here presented can be applied in a straightforward manner if one has already identified the microbial species involved with a particular functionality.
+
+The interaction function introduced tries to address the issue of prediction from the genetic sequencing, leaving the conclusion that linear pairwise interaction model do not capture the complexity of the particular nitrifying chemostat. The question remains open to other classes of interaction functions that could prove capable of prediction.
+
+In the experiments used, the environmental factors were controlled, thus the term is interpreted as microbial interaction. However in other contexts the correction term might also be interpreted as a non accounted phenomena ranging from virus to environmental factors (e.g. temperature variations) and not only from microbial interactions. 
+
+   
 
 \section{Acknowledgements}
  Alain Rapaport, CMM, Thermomic
