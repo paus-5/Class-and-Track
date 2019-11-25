@@ -3,8 +3,8 @@
 %main: process and filter data to model.
 close all
 clear
-load('MAT_files\synthetic_data_noise')
-name_file = '191119_Try1';
+load('MAT_files\synthetic_data_no_noise')
+name_file = '241119_no_noise';
 nA = round(sum(a));
 nB = round(sum(b)); 
 n = nA+nB;
@@ -22,8 +22,8 @@ biomass_filtered(biomass_filtered == 0) = min_biomass;
 z = @(t) interp1(t_OTU,biomass_filtered,t)';
 kA = yields_AOB(index_AOB);
 kB = yields_NOB(index_NOB);
-muARef = 0.77;
-muBRef = 1.07;
+muARef = 0.77*1.2;
+muBRef = 1.07*1.2;
 kSARef = 0.7e-1;
 kSBRef = 1.4982e-1;
 kIRef = 1.217;
@@ -80,44 +80,44 @@ toc
 x_cell = arrayfun(x_fun,t_new,'UniformOutput',false);
 X = reshape(cell2mat(x_cell),length(t_new),n+3);
 x_old = X;
-csTolerance = 0.001; %cauchy sequence tolerance
+csTolerance = 0.01; %cauchy sequence tolerance
 iter = 1;
 diff = norm(x_old - x_new);
 save(sprintf('MAT_files\\%s_iter_%.0f',name_file,iter))
 while diff > csTolerance
     x_fun = @(t) interp1(t_new,x_new,t)';    
-    control = @(t) tracking_control(lambda,B(t),P(t),x_fun(t),sf_interp(t),n);
-    control_eval = arrayfun(control,t_new,'UniformOutput',false);
-    figure
-    hold on
-    OTU_plot = plot(t_new,x_new(:,1:n),'LineWidth',1.5);
-    metabolite_plot = plot(t_new,x_new(:,(n+1):end),'-.','LineWidth',1.5);
-    xlabel('\fontsize{12}Time [days]'),...
-        ylabel('\fontsize{12}  Concentration'),...
-        title(sprintf('Tracking results iteration:%.0f',iter));
-    set(gca,'fontsize',15),
-    set(OTU_plot,{'Color'}, colors)
-    set(metabolite_plot,{'Color'},colors2);
-    legend(legend_tags,'fontsize',7);
-    fig.PaperUnits = 'inches';
-    fig.PaperPosition = [0 0 9 3];
-    fig.PaperPositionMode = 'auto';
-    print(sprintf('Images\\%s',sprintf('%s_Trajectory_Iter_%.0f',...
-        name_file,iter)),'-dpng','-r0')
-    figure 
-    control_plot = plot(t_new,reshape(cell2mat(control_eval),n,...
-        length(t_new)),'LineWidth',1.5,'Visible','on');
-        xlabel('\fontsize{12}Time [days]'),...
-        ylabel('\fontsize{12}  v(t)'),...
-        title(sprintf('Control for the tracking of z iteration: %.0f',iter))
-    set(gca,'fontsize',15),
-    set(control_plot,{'Color'}, colors),
-    legend(legend_tags_OTU,'fontsize',7);
-    fig.PaperUnits = 'inches';
-    fig.PaperPosition = [0 0 9 3];
-    fig.PaperPositionMode = 'auto';
-    print(sprintf('Images\\%s',sprintf('%s_Control_Iter_%.0f',...
-        name_file,iter)),'-dpng','-r0')
+%     control = @(t) tracking_control(lambda,B(t),P(t),x_fun(t),sf_interp(t),n);
+%     control_eval = arrayfun(control,t_new,'UniformOutput',false);
+%     figure
+%     hold on
+%     OTU_plot = plot(t_new,x_new(:,1:n),'LineWidth',1.5);
+%     metabolite_plot = plot(t_new,x_new(:,(n+1):end),'-.','LineWidth',1.5);
+%     xlabel('\fontsize{12}Time [days]'),...
+%         ylabel('\fontsize{12}  Concentration'),...
+%         title(sprintf('Tracking results iteration:%.0f',iter));
+%     set(gca,'fontsize',15),
+%     set(OTU_plot,{'Color'}, colors)
+%     set(metabolite_plot,{'Color'},colors2);
+%     legend(legend_tags,'fontsize',7);
+%     fig.PaperUnits = 'inches';
+%     fig.PaperPosition = [0 0 9 3];
+%     fig.PaperPositionMode = 'auto';
+%     print(sprintf('Images\\%s',sprintf('%s_Trajectory_Iter_%.0f',...
+%         name_file,iter)),'-dpng','-r0')
+%     figure 
+%     control_plot = plot(t_new,reshape(cell2mat(control_eval),n,...
+%         length(t_new)),'LineWidth',1.5,'Visible','on');
+%         xlabel('\fontsize{12}Time [days]'),...
+%         ylabel('\fontsize{12}  v(t)'),...
+%         title(sprintf('Control for the tracking of z iteration: %.0f',iter))
+%     set(gca,'fontsize',15),
+%     set(control_plot,{'Color'}, colors),
+%     legend(legend_tags_OTU,'fontsize',7);
+%     fig.PaperUnits = 'inches';
+%     fig.PaperPosition = [0 0 9 3];
+%     fig.PaperPositionMode = 'auto';
+%     print(sprintf('Images\\%s',sprintf('%s_Control_Iter_%.0f',...
+%         name_file,iter)),'-dpng','-r0')
     B = @(t) Bx(x_fun(t),nA,nB,kA,kB,muA,muB,kSA,kSB,kI);
     system_ricatti = @(t,P_lin) ricatti_diff(P_lin,x_fun(t),Q,nA,nB,kA,kB,muA,...
         muB,kSA,kSB,kI,s_in_interp(t),d_interp(t),lambda);
