@@ -15,8 +15,8 @@ numbering_diff = strsplit(num2str(1:n));
 legend_tags_diff = strsplit(sprintf('Difference %s,', numbering_diff{:}),',');
 legend_tags_diff(end) = [];
 %Quality of the Fit
-fit = A*x_new(:,1:n)'+1;
-control_matrix = reshape(cell2mat(control_eval),n,length(t_new))+1;
+fit = A*x_new(index_control,1:n)'+1;
+control_matrix = reshape(cell2mat(control_eval),n,length(index_control))+1;
 diff = abs(control_matrix - fit);
 figure
 diff_plot = plot(t_new,diff,'LineWidth',1.5);
