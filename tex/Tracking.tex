@@ -139,7 +139,7 @@
 \address{}
 
 \begin{abstract}
-	This article deals with the inclusion of microbial ecology in bioprocess modelling. The first part exposes the mathematical analysis of a model that included pairwise linear interactions fitted to experimental data in a chemostat setting. The limitations and the insights of such an approach are discussed. The main novelty of this work lies in the second part, where the use of an optimal tracking technique for the integration of genetic sequencing in chemostat models is presented. The method revisits the data used for the first model presented and proposes a way to calibrate and discriminate . 
+	This article deals with the inclusion of microbial ecology in bioprocess modelling. The first part exposes the mathematical analysis of a model that may be framed within the class of Lotka-Volterra models fitted to experimental data in a chemostat setting. The limitations and the insights of such an approach are discussed. The main novelty of this work lies in the second part, where the use of an optimal tracking technique for the integration of genetic sequencing in chemostat models is presented. The method revisits the data used for the first model presented and proposes a way to calibrate and discriminate . 
 \end{abstract}
 
 \end{frontmatter}
@@ -159,7 +159,7 @@ The main contribution of this article is a procedure to integrate the microbial 
 
 As a departing point the work of Dumont et al.\cite{Dumont2016} is reinspected in section 2. They model a chemostat experiment where nitrification takes place by considering a generalized Lotka-Volterra (gLV) model \cite{Hernandez-Bermejo1997} coupled with a substrate limited growth expression. Section 3 deals with the mathematical analysis of their model. It is shown that the number of possible equilibrium points grows exponentially with the number of species. Finally after a numerical analysis it is conjectured that there always exists a single stable equilibrium point depending on the operational parameters.  
 
-Section 4 is the article's most original contribution. The concept of interaction function is developed such that it generalizes the gLV model. For the identification of the interaction function a method of optimal tracking was adapted: The growth rate of each species is modulated by a constrained regular control of the system. The regular control is composed of a feedback part on the species state variable, and a feed forward part, or tracking, on the measurement of abundances of each species. 
+Section 4 is the article's most original contribution. The concept of interaction function is developed such that it generalizes the gLV model. For the identification of the interaction function a method of optimal tracking was adapted: The growth rate of each species is modulated by a constrained regular control of the system, thus the growth rate of each OTU is corrected to fit the experimental data. The regular control is composed of a feedback part on the species state variable, and a feed forward part, or tracking, on the measurement of abundances of each species. 
 
 In section 5 the methodology from section 4 is applied to the data from the experiments perform by Dumont et al \cite{Dumont2009}. Finally, a discussion on the scope of the method, its shortcomings and perspectives is presented.
 
@@ -167,7 +167,7 @@ In section 5 the methodology from section 4 is applied to the data from the expe
 
 Notations used throughout the article are:
 \begin{enumerate}
-	\item $n$: the number of $OTU$ considered.
+	\item $n$: the number of OTU considered.
 	\item $n_i, \, i \in \{1,2\}$: the number of OTU in functional group $G_i$.
 	\item Let $m$ be an interger then $[m]:=\{1,\dots,n \}$. 
 	\item $x_i$ :  is the concentration of OTU $i$ measured in $[g/l]$. $i \in [n]$. 
@@ -480,7 +480,7 @@ Operating diagrams are an illustrative way of representing the long term behavio
 
 The operating diagram from one of the sets of the parameter identification from Dumont et al. is presented in figure \ref{OD Dumont} from a Bayesian estimation method. Two species per functional group were considered. One can see that coexistence in the same functional group is never attained. However when using a different set of parameters one can see a more complex situation where coexistence in the same functional group is possible as seen in figure \ref{OD modified}. In the latter case CN can be achieved at a more elevated dilution rats than in the former case. Parameters of cases 1 and 2 can be seen in table \ref{Parameters Dumont} and \ref{Parameters Modified}, respectively. 
 
-The model is also  able to overcome the  competitive exclusion principle \cite{lobry2017chemostat} (CEP) paradigm. The CEP roughly states that if two species are growing on the same limiting resource, and their growth law is monotonic in the substrate, then only one of them will survive in the long run. However reports on wastewater treatment plants have shown coexistence between species in nitrifying reactors has\cite{Wagner2002}.
+The model is also  able to overcome the  competitive exclusion principle \cite{lobry2017chemostat} (CEP) paradigm. The CEP roughly states that if two species are growing on the same limiting resource, and their growth laws are non-decreasing in the resource, then only one of them will survive in the long run. However reports on wastewater treatment plants have shown coexistence between species in nitrifying reactors \cite{Wagner2002}, thus implying that a more complex growth law is required to include microbial diversity.
 
 
 \begin{table}[ht]
@@ -627,7 +627,7 @@ Second in their problem they used an approximation of their original dynamics fo
 
 The change of variable $u_i(t) = v_i(t) + 1$ is used for technical reasons explained in the appendix section. This in turn implies $v_i(t) \in [-1,0]$.
 
-The feedback control $v(t)$, will be of the form $v(t) = -R^{-1}\tilde{B}^\top(t)\left(\tilde{P}(t)x(t)-s_f(t)\right)$. Where matrix $P(t)$ and vector $s_f(t)$ solve differential equations. In the appendix one may prove that because of the structure of the system one only needs to calculate $2n$ differential equations for the synthesis of the control, instead of $(n+3)^2 + (n+3)$ that would imply the direct application of the method. Which renders the method- at least theoretically- scalable for a growing number of OTU.
+The feedback control $v(t)$, will be of the form $v(t) = -R^{-1}\tilde{B}^\top(t)\left(\tilde{P}(t)x(t)-s_f(t)\right)$. Where matrix $P(t)$ and vector $s_f(t)$ solve differential equations. In the appendix it is proved that because of the structure of the system one only needs to calculate $2n$ differential equations for the synthesis of the control, instead of $(n+3)^2 + (n+3)$ that would imply the direct application of the method. Which renders the method- at least theoretically- scalable for a growing number of OTU.
 
 Finally for the parametric identification of a particular class of interaction functions the following static optimization problem is proposed. Suppose $u(t)$ is the optimal control of problem \eqref{Optimal Control}, and $x(t)$ is the associated trajectory. Suppose a set of parameters $\theta \in \Theta$, such that the interaction function has a explicit form that depends on this parameters $I_{\theta}(x)$ ($\theta$ would represent matrix $A$ from section 2 for example). Then one solves the following optimization problem:
 \begin{align}
@@ -639,12 +639,11 @@ s.t. &  \quad \theta \in \Theta \notag \\
 In practice $t \in [0,T]$ from \eqref{Parameter Identification} is replaced by considering the time steps given by the differential equation solver.
 \subsection{Proof of concept}
 
-For compensating the lack of a theoretical optimal control, the approach presented in here was first tested against synthetic data. The test consisted in simulating system \eqref{Controlsystem} with $I(x) = 1 + Ax$, for $n_1 = 10$ and $n_2 = 5$. In all figures, dotted lines represent the synthetic data, while the continuous lines represent the method's output.
+For compensating the lack of a theoretical optimal control, the approach presented in here was first tested against synthetic data. The test consisted in simulating system \eqref{Controlsystem} with $I(x) = 1 + Ax$, (with $A$ in figure \ref{Comparison Interaction Matrices}) for $n_1 = 10$ and $n_2 = 5$. In all figures, dotted lines represent the synthetic data, while the continuous lines represent the method's output.
 
 The choice of matrices $Q$ and $R$ are always of discussion in a quadratic regulator. $Q$ represents the covariance matrix of measurements, while the interpretation of $R$ is not clear. In the simulations here presented $Q = I_n$ and $R = \begin{bmatrix}
 10^{-4}I_{n_1} & 0 \\ 0 & 10^{-5}I_{n_2}
 \end{bmatrix}$, found by trial and error in order for the control to fit accurately the species abundance. The rational behind choosing a smaller value for the group $G_2$ is related to the one order of magnitude difference in yields between $G_1$ and $G_2$.
-
 
 
 Figures \ref{Total Biomass no noise}, \ref{AOB no noise}, and \ref{NOB no noise} show the total biomass concentration, and the trajectories for the OTU belonging to $G_1$ and $G_2$, respectively. It can be seen that the method approaches well the trajectories. The metabolites concentration represented in figure \ref{Metabolites no noise} are in accordance with the simulated data as well. 
@@ -675,7 +674,7 @@ Figures \ref{Total Biomass no noise}, \ref{AOB no noise}, and \ref{NOB no noise}
 \end{figure}
 \clearpage
 
-The resulting controls correcting the growth rate can be seen in figure \eqref{Control AOB no noise} and \eqref{Control NOB no noise}. Note that from the structure of a quadratic regulator, since there is no cost in the final state, the end value is always 1. Problem \eqref{Parameter Identification} is then solved from the obtained trajectories (figures \eqref{AOB no noise} and \eqref{NOB no noise} and controls. The difference between the control and the fit is expressed in Figure \ref{Difference fit}. Not  Considering that the control is contained in $[0,1]$, the error is below 5 \% throughout the trajectory.
+The resulting controls that correct the growth rate can be seen in figures \eqref{Control AOB no noise} and \eqref{Control NOB no noise}. Note that from the structure of a quadratic regulator, since there is no cost in the final state, the end value is always 1. Problem \eqref{Parameter Identification} was solved from the obtained trajectories (figures \eqref{AOB no noise} and \eqref{NOB no noise}) and controls, with no bounds on the parameters. The difference between the control and the fit is expressed in Figure \ref{Difference fit}. Considering that the control is contained in $[0,1]$, the error of fit is below 5 \% almost everywhere through the trajectory.
 
 \begin{figure}[h]
 	\centering
@@ -696,7 +695,9 @@ The resulting controls correcting the growth rate can be seen in figure \eqref{C
 	\caption{Difference between $u(t)$ and the $1+Ax(t)$, with $A$ shown in the right hand side of Figure \ref{Comparison Interaction Matrices}}
 	\label{Difference fit}
 \end{figure} 
+\clearpage
 
+The obtained matrix from the fit can be seen an compared to the original matrix for simulating data in \eqref{Comparison Interaction Matrices}. It can be seen that the new matrix is very different from the original one, in both order of magnitude and sign. Implying that the model is probably not identifiable. The system was simulated again with the new matrix, and one can see that it in general terms it captures the outcome of the system as shown in figures \ref{AOB LV simulation}, \ref{NOB LV simulation}, and \ref{Metabolites LV simulation}. The final message of this section is that if the interaction function is of the form $1+Ax$, one could be able to get a fit from the data with the method here presented.
 
 \begin{figure}[h]
 	\centering	
@@ -706,16 +707,15 @@ The resulting controls correcting the growth rate can be seen in figure \eqref{C
 \begin{subfigure}[b]{0.45\textwidth}
 	\includegraphics[width=\textwidth]{Synthetic_data_no_noise//Interactions_221119_no_noise_iter_5}
 \end{subfigure}
-\caption{Left: interactions of the synthetic data. Right: Interaction matrix obtained from solving problem \eqref{Parameter Identification}}
+\caption{Left: interactions of the synthetic data. Right: Interaction matrix obtained from solving problem \eqref{Parameter Identification}.}
 \label{Comparison Interaction Matrices}
 \end{figure}
-
-Finally
 
 \begin{figure}
 	\centering
 	\includegraphics[width=0.5 \textwidth]{Synthetic_data_no_noise//221119_no_noise_iter_5_AOB_Iter_5_LV}
 	\caption{AOB trajectories using the identified matrix seen in \eqref{Comparison Interaction Matrices}.}
+	\label{AOB LV simulation}
 \end{figure}
 
 
@@ -723,19 +723,21 @@ Finally
 	\centering
 	\includegraphics[width=0.5 \textwidth]{Synthetic_data_no_noise//221119_no_noise_iter_5_NOB_Iter_5_LV}
 	\caption{NOB trajectories using the identified matrix seen in \eqref{Comparison Interaction Matrices}.}
+	\label{NOB LV simulation}
 \end{figure}
 
 \begin{figure}
 	\centering
 	\includegraphics[width=0.5 \textwidth]{Synthetic_data_no_noise//221119_no_noise_iter_5_metabolites_Iter_5_LV}
 	\caption{Metabolites trajectories using the identified matrix seen in \eqref{Comparison Interaction Matrices}.}
+	\label{Metabolites LV simulation}
 \end{figure}
 
 
 \clearpage
 \section{Application}
-
-The choice of matrices $Q$ and $R$ are always of discussion in a quadratic regulator. $Q$ represents the covariance matrix of measurements, while the interpretation of $R$ is not clear. In the simulations here presented $Q = I_n$ and $R = 0.0001I_n$, found by trial and error in order for the control to fit accurately the species abundance. The method stopped after 110 iterations where each iteration took approximately 600 seconds of computing time in a computer equipped with 8gb of RAM memory and Intel core i3-7100U CPU 2,40 GHz.
+ 
+The method stopped after 110 iterations where each iteration took approximately 600 seconds of computing time in a computer equipped with 8gb of RAM memory and Intel core i3-7100U CPU 2,40 GHz.
 
 The tracking problem was applied to data coming from a nitrification process; the experimental conditions are described in \cite{dumont2008observers}. For exploring the hypothesis of interactions as drivers of bioreactors performance environmental conditions should be kept as constant as possible. Therefore only data from day $183$ onwards was used because a change in the operating temperature happened at that point, which is known to have an effect on the kinetics.  For choosing which species belong in which functional group, the procedure described in \cite{Ugalde-Salas2019} was used: from day $183$ to day $230$: 17 OTU were identified in the $G_1$ group (known as Ammonium oxidizing bacteria AOB) and 8 in the $G_2$ functional group (known as Nitrite oxidizing bacteria NOB). The system state dimension becomes 28.
 
@@ -802,15 +804,16 @@ Recalling that $u(t)$ is supposed to represent $I(x(t))$ (the interactions terms
 	\label{LV_fit}
 \end{figure}
 \clearpage
-\section{Conclusion}
+\section{Conclusions and Perspectives}
 
-Last decades advances in genetic sequencing and microbial ecology has opened a gap for modellers in biochemical reactors to integrate this valuable information. Considering the success of mass balance models to predict and pilot bioreactors, one should build upon these existing models. This article proposed a naïve approach to start filling the gap of microbial ecology and biochemical process modelling: The approach can be simply described as correcting the growth rate of each individual species from genetic sequencing measurements, and observing what would that imply in the chemical species involved. If one already posses a model for describing a particular bioprocess the use of the techniques here presented can be applied in a straightforward manner if one has already identified the microbial species involved with a particular functionality.
+Last decades advances in genetic sequencing and microbial ecology has opened a gap for modellers in biochemical reactors to integrate this valuable information. Considering the success of mass balance models to predict and pilot bioreactors, one should build upon these existing models. This article proposed a naïve approach to start filling the gap of microbial ecology and biochemical process modelling: The approach can be simply described as correcting the growth rate of each individual species from genetic sequencing measurements, and observing what would that imply in the chemical species involved. If one already posses a model for describing a particular bioprocess the use of the techniques here presented can be applied in a straightforward manner if one has already identified the microbial species involved with a particular functionality of the system.
 
-The interaction function introduced tries to address the issue of prediction from the genetic sequencing, leaving the conclusion that linear pairwise interaction model do not capture the complexity of the particular nitrifying chemostat. The question remains open to other classes of interaction functions that could prove capable of prediction.
+The tracking model was proposed  in a chemostat setting as a way to correct a substrate limited expression. However the technique could be used in contexts where less information on the growth function of microbes is known. If one supposes nothing on the growth expression but the fact that is bounded (life cannot grow infinitely fast) the model actually becomes a linear model and one recovers a classic quadratic regulator for linear systems. Nevertheless the synthesis of the optimal bounded control remains an open theoretical challenge.
 
-In the experiments used, the environmental factors were controlled, thus the term is interpreted as microbial interaction. However in other contexts the correction term might also be interpreted as a non accounted phenomena ranging from virus to environmental factors (e.g. temperature variations) and not only from microbial interactions. 
+The interaction function introduced tries to address the issue of prediction from the genetic sequencing, leaving the conclusion that linear pairwise interaction model do not capture the complexity of the particular nitrifying chemostat analysed. Furthermore from the proof of concept section, one might conjecture that models with a large number of parameters such as an gLV model may be unidentifiable, thus proving to be a real problem in calibration, and therefore of reduced applicability. This opens the question for a broader class of interaction functions that could fit well complex microbial ecosystems. The experimental study in chemostat systems seems a good compromise between completely open ecosystems (nature) and controlled conditions (laboratory) in order to explore expressions that could account for microbial interactions.
 
-   
+The interpretation of the correction term as interactions is not the only possible reading. In other contexts the correction term might also be interpreted as a non accounted phenomena ranging from environmental factors (e.g. temperature, pH) to other biological factors (viruses, flock formation, pathogens). Alternative hypothesis for explaining the observed patterns in the microbial community should be considered as well.  
+
 
 \section{Acknowledgements}
  Alain Rapaport, CMM, Thermomic
