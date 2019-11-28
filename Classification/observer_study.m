@@ -5,11 +5,11 @@ reactor = 'A';
 [t_obs,biomass,s_in,S1,S2,S3,dilution_rate] = load_biomass(reactor);
 [t_OTU_rel,OTU_rel] = load_relative_abundance(reactor);
 d_inter = @(t) interp1(t_obs,dilution_rate,t);
-s_in_inter = @(t) interp1(t_obs,s_in,t);
+s_in_inter = @(t) interp1(t_obs,s_in,t,'previous');
 s1_inter = @(t) interp1(t_obs,S1,t);
 s2_inter = @(t) interp1(t_obs,S2,t);
 t_change = 183; %incrase of temperature
-time_steps_index = find(t_obs > t_change & t_obs < t_change + 50);
+time_steps_index = find(t_obs > t_change & t_obs < t_change + 60);
 t_used = t_obs(time_steps_index);
 dynamic = @(t,z) -1*d_inter(t)*(z - s_in_inter(t));
 % z0 = random('Uniform',0,4,3,1);
@@ -23,7 +23,7 @@ hold on
 plot(T,Z,'--','LineWidth',2.5);
 plot(T2,Z2,'--','LineWidth',2.5);
 plot(T3,Z3,'--','LineWidth',2.5);
-[ax,p1,p2] = plotyy(t_used,arrayfun(s_in_inter,t_used),t_used,arrayfun(d_inter,t_used));
+[ax,p1,p2] = plotyy(T2,arrayfun(s_in_inter,T2),T2,arrayfun(d_inter,T2));
 xlabel('\fontsize{12}Time [days]'),...
 ylabel('\fontsize{12} Concentration [g/l]'),...
 ylabel(ax(2),'\fontsize{12} Dilution Rate [day]^{-1}'),
@@ -46,7 +46,15 @@ xG2 = max(0,arrayfun(invariant,t_used)...
 optim_fun = @(x) norm(biomass(time_steps_index) - x(1)*xG1 - x(2)*xG2);
 yA_ref = 0.167;
 yB_ref = 0.027;
-[y_opt , val] = fmincon(optim_fun,[yA_ref yB_ref],[],[],[],[],[0 0],[],[]);
+% [y_opt , val] = fmincon(optim_fun,[yA_ref yB_ref],[],[],[],[],[0 0],[],[]);
+% [y_opt , val] = simulannealbnd(optim_fun,[yA_ref yB_ref]);
+ms = MultiStart;
+options = optimset('MaxFunEvals',2000000,'MaxIter',100000)';
+problem = createOptimProblem('fmincon','x0',[yA_ref yB_ref],...
+    'objective',optim_fun,'options',options,'lb',[0 0]);
+tic
+[y_opt,val,flag,outpt,allmins] = run(ms,problem,300);
+toc
 % xG1 = Z - arrayfun(s1ObsInterpol,T);
 % xG2 = Z - arrayfun(s1ObsInterpol,T) - arrayfun(s2ObsInterpol,T);
 figure
@@ -61,7 +69,7 @@ title(sprintf('Observers in Time Reactor %s',reactor))
     set(gca,'fontsize',15);
     set(ax,'fontsize',15);
     l = legend('$$y^{A}_{ref}\hat{x}_{G_1}$$','$$y^{B}_{ref}\hat{x}_{G_2}$$',...
-        '$$y^A_{ref}\hat{x}_{G_1}+y^B_{ref}\hat{x}_{G_2}$$ ','Measured Biomass');
+        '$$y^A_{opt}\hat{x}_{G_1}+y^B_{opt}\hat{x}_{G_2}$$ ','Measured Biomass');
     set(l,'Interpreter','latex')
 fig.PaperUnits = 'inches';
 fig.PaperPosition = [0 0 9 3];
