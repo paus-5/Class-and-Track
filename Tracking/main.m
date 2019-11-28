@@ -1,12 +1,11 @@
 %Reference: Cimen et al 2002 Nonlinear optimal tracking control
-
 %main: process and filter data to model.
 close all
 clear
-load('MAT_files\synthetic_data_no_noise')
-name_file = '241119_no_noise';
-nA = round(sum(a));
-nB = round(sum(b)); 
+load('MAT_files\Classification_day183_gurobi')
+name_file = '191127_Reactor_A_modified';
+nA = round(sum(class_AOB));
+nB = round(sum(class_NOB)); 
 n = nA+nB;
 index_t_obs = find(t_obs <300);
 index_span = time_steps_index(1):index_t_obs(end);
