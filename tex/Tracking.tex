@@ -139,7 +139,7 @@
 \address{}
 
 \begin{abstract}
-	This article deals with the inclusion of microbial ecology in bioprocess modelling. The first part presents the mathematical analysis of a model that may be framed within the class of Lotka-Volterra models fitted to experimental data in a chemostat setting. The limitations and the insights of such an approach are discussed. The main novelty of this work lies in the second part, where the use of an optimal tracking technique for the integration of genetic sequencing in chemostat models is presented. The method revisits the data used for the first model presented and proposes a way to calibrate and discriminate for a class . 
+	This article deals with the inclusion of microbial ecology advances in bioprocess modelling. The first part presents the mathematical analysis of a model that may be framed within the class of Lotka-Volterra models fitted to experimental data in a chemostat setting. The limitations and the insights of such an approach are discussed. The main novelty of this work lies in the second part, where the use of an optimal tracking technique for the integration of genetic sequencing in chemostat models is presented. The method revisits the data used for the first model presented and proposes a way to calibrate and discriminate for a class of growth kinetics. 
 \end{abstract}
 
 \end{frontmatter}
@@ -155,13 +155,13 @@ These obstacles can be circumvented by considering the microbiologist concept of
 
 In the past years considerable efforts have been made to measure the bacterial community composition. Tests such as fluorescence in situ hybridization, polymerase chain reaction (PCR) dependent techniques, and PCR independent techniques for the analysis of DNA, RNA, proteins, and metabolites have become a standard tool for studying  microbial diversity\cite{FERRERA2016790}. 
 
-The main contribution of this article is a procedure to integrate the microbial community measurements in chemostat models, based on any technique that can quantify the species abundances through time. This is a first step towards developing predictive models of a reactor's performance based on the microbial community structure.
+The main contribution of this article is a procedure to integrate the microbial community measurements in chemostat models, based on any sequencing technique that can quantify the species abundances through time. This is a first step towards developing predictive models of a reactor's performance based on the microbial community structure.
 
 As a departing point the work of Dumont et al.\cite{Dumont2016} is reinspected in section 2. They model a chemostat experiment where nitrification takes place by considering a generalized Lotka-Volterra (gLV) model \cite{Hernandez-Bermejo1997} coupled with a substrate limited growth expression. Section 3 deals with the mathematical analysis of their model. It is shown that the number of possible equilibrium points grows exponentially with the number of species. Finally after a numerical analysis it is conjectured that there always exists a single stable equilibrium point depending on the operational parameters.  
 
-Section 4 is the article's most original contribution. The concept of interaction function is developed such that it generalizes the gLV model. For the identification of the interaction function a method of optimal tracking was adapted: The growth rate of each species is modulated by a constrained regular control of the system, thus the growth rate of each OTU is corrected to fit the experimental data. The regular control is composed of a feedback part on the species state variable, and a feed forward part, or tracking, on the measurement of abundances of each species. 
+Section 4 is the article's core contribution. The concept of interaction function is developed such that it generalizes the gLV model. For the identification of the interaction function a method of optimal control theory was adapted: The growth rate of each species is modulated by a constrained regular control of the system, thus the growth rate of each OTU is corrected in order to fit the experimental data. The regular control is composed of a feedback part on the species state variable, and a feed forward part, or tracking, on the measurement of abundances of each species, it is solved via state-dependent ricatti equations \cite{Cimen2008}. Finally the obtained optimal trajectory and control are used in a static optimization problem in order to estimate the parameters of a specific interaction function.
 
-In section 5 the methodology from section 4 is applied to the data from the experiments perform by Dumont et al \cite{Dumont2009}. Finally, a discussion on the scope of the method, its shortcomings and perspectives is presented.
+In section 5 the methodology from section 4 is applied to all of the data from the experiments performed by Dumont \textit{et al}\cite{Dumont2009} and not just to the most abundant species as it was the case of \cite{Dumont2016}. The article ends with a discussion on the use of gLV models, the scope of applicability of the method, and its shortcomings. 
 
 \section{Model Definition}
 
@@ -420,7 +420,7 @@ Under H \ref{noWashoutHyp}, the equilibrium of the system is solved as described
 
 \subsubsection{Washout of $G_2$}
 
-The washout of $G_2$ is equivalent to the following hypothesis:
+The washout of $G_2$ is equivalent to  hypothesis \ref{WashoutG2}.
 
 \begin{hypo}
 	$G_2 \subset \mathcal{J}$ and $G_1 \not \subset \mathcal{J}$
@@ -546,7 +546,8 @@ The model is also  able to overcome the  competitive exclusion principle \cite{l
 
 \subsection{Remarks}
 
-The model here presented serves to illustrate that by considering a more complex growth rate that accounts for ecological interactions one might explain differences in reactors operating under similar conditions. It also shows a new mechanism by which the CEP no longer holds. However the quadratic increase of parameters with the number of OTU considered makes it difficult to accurately calibrate the model. The operating diagrams always show a single stable equilibrium point for each pair $(s_{in},D)$, however no proof is offered to such conjecture. In the next section, a generalization of the former model, and a schema for calibrating a class of models is presented as well.
+The model here presented serves to illustrate that by considering a more complex growth rate that tries to model ecological interactions one might explain differences in reactors operating under similar conditions. It also shows a new mechanism by which the CEP no longer holds. The operating diagrams always show a single stable equilibrium point for each pair $(s_{in},D)$, however no proof is offered to such conjecture.
+The quadratic increase of parameters with the number of OTU considered makes it difficult to accurately calibrate the model. Parameter estimation in A classic way to approach this is by a least square approach, however Some methods for parameter estimation and uncertainty in biochemical systems of ODE can be seen in Vanlier \textit{et al.} \cite{Vanlier2013} and even a "robust approach" is proposed for biological systems by Gabor \textit{et al.} \cite{Gabor2015}, however parameter estimation in ODE is still an open problem. In the next section, a generalization of the former model, and a schema for parameter estimation where the uncertainty lies in the growth function is presented as well.
 
 
 \section{Generalized approach for modelling interactions}
@@ -637,17 +638,16 @@ The change of variable $u_i(t) = v_i(t) + 1$ is used for technical reasons expla
 
 The feedback control $v(t)$, will be of the form $v(t) = -R^{-1}\tilde{B}^\top(t)\left(\tilde{P}(t)x(t)-s_f(t)\right)$. Where matrix $P(t)$ and vector $s_f(t)$ solve differential equations. In the appendix it is proved that because of the structure of the system one only needs to calculate $2n$ differential equations for the synthesis of the control, instead of $(n+3)^2 + (n+3)$ that would imply the direct application of the method. Which renders the method- at least theoretically- scalable for a growing number of OTU.
 
-Finally for the parametric identification of a particular class of interaction functions an static optimization problem is proposed \eqref{Parameter Identification}. Suppose $u(t)$ is the optimal control of problem \eqref{Optimal Control}, and $x(t)$ is the associated optimal trajectory. Suppose a set of parameters $\theta \in \Theta$, such that the interaction function has a explicit form that depends on this parameters $I_{\theta}(x)$ ($\theta$ would represent matrix $A$ from section 2 for example). 
+Finally for the parametric identification of a particular class of interaction functions a static optimization problem is proposed \eqref{Parameter Identification}. Suppose $u(t)$ is the optimal control of problem \eqref{Optimal Control}, and $x(t)$ is the associated optimal trajectory. Suppose a set of parameters $\theta \in \Theta$, such that the interaction function has a explicit form that depends on this parameters $I_{\theta}(x)$ ($\theta$ would represent matrix $A$ from section 2 for example). In practice $t \in [0,T]$ from \eqref{Parameter Identification} is replaced by considering the time steps given by the differential equation solver. 
 \begin{align}
 \label{Parameter Identification} \min & \quad \Vert I_{\theta}(x(\cdot)) - u(\cdot) \Vert_{L^2([0,T])} \\
 s.t. &  \quad \theta \in \Theta \notag \\
 & \quad t \in [0,T] \notag
 \end{align} 
 
-In practice $t \in [0,T]$ from \eqref{Parameter Identification} is replaced by considering the time steps given by the differential equation solver.
 \subsection{Proof of concept}
 
-For compensating the lack of a theoretical optimal control, the approach presented in here was first tested against synthetic data. The test consisted in simulating system \eqref{system} with growth functions \eqref{gLV growth1} and \eqref{gLV growth2} (therefore $I(x) = 1 + Ax$) for $n_1 = 10$ and $n_2 = 5$. In all figures, dotted lines represent the synthetic data, while the continuous lines represent the method's output.
+The approach was tested against synthetic data. The test consisted in simulating system \eqref{system} with growth functions \eqref{gLV growth1} and \eqref{gLV growth2} (therefore $I(x) = 1 + Ax$) for $n_1 = 10$ and $n_2 = 5$. In all figures, dotted lines represent the synthetic data, while the continuous lines represent the method's output.
 
 The choice of matrices $Q$ and $R$ are always of discussion in a quadratic regulator. $Q$ represents the covariance matrix of measurements, while the interpretation of $R$ is not clear. In the simulations here presented $Q = I_n$ and $R = \begin{bmatrix}
 10^{-4}I_{n_1} & 0 \\ 0 & 10^{-5}I_{n_2}
@@ -745,9 +745,9 @@ The original interaction matrix and the fitted interaction matrix can be seen an
 \clearpage
 \section{Application}
  
-The method stopped after 110 iterations where each iteration took approximately 600 seconds of computing time in a computer equipped with 8gb of RAM memory and Intel core i3-7100U CPU 2,40 GHz.
+The method was stopped after 10 iterations where each iteration took approximately 800 seconds of computing time in a computer equipped with 8gb of RAM memory and Intel core i3-7100U CPU 2,40 GHz.
 
-The tracking problem was applied to data coming from a nitrification process; the experimental conditions are described in \cite{dumont2008observers}. For exploring the hypothesis of interactions as drivers of bioreactors performance environmental conditions should be kept as constant as possible. Therefore only data from day $183$ onwards was used because a change in the operating temperature happened at that point, which is known to have an effect on the kinetics.  For choosing which species belong in which functional group, the procedure described in \cite{Ugalde-Salas2019} was used: from day $183$ to day $230$: 17 OTU were identified in the $G_1$ group (known as Ammonium oxidizing bacteria AOB) and 8 in the $G_2$ functional group (known as Nitrite oxidizing bacteria NOB). The system state dimension becomes 28.
+The tracking problem was applied to data coming from a nitrification process; the experimental conditions are described in \cite{dumont2008observers}. For exploring the hypothesis of interactions as drivers of bioreactors performance environmental conditions should be kept as constant as possible. Therefore only data from day $183$ onwards was used because a change in the operating temperature happened at that point, which is known to have an effect on the kinetics. For choosing which species belong in which functional group, the procedure described in \cite{Ugalde-Salas2019} was used: from day $183$ to day $315$: 30 OTU were identified in the $G_1$ group (known as Ammonium oxidizing bacteria AOB) and 5 in the $G_2$ functional group (known as Nitrite oxidizing bacteria NOB). The system state dimension becomes 38.
 
 The knowledge of functions $f_i(s)$ was based on a study of nitrification's kinetic parameters\cite{Wiesmann1994}. Particularly given the system's ammonium and nitrate concentration a Monod function (eq \eqref{monod}) was used for $G_1$ and $G_2$. 
 \begin{align}
@@ -789,7 +789,7 @@ When applying the presented method one obtains the simulation that can be seen i
 	\label{NOB Simulation}
 \end{figure}
 
-One can observe that in figure \ref{ControlSimulation} the predicted $s_3$ around day 240 is much higher than the measurement. If one looks at figure \ref{NOB Simulation} it suggests attributing this extra production of $s_3$ around day 240 to the growth of OTU 24. What would have happened if OTU 24 had been classified in the other functional group? One would have seen a decrease in $s_1$, an increase in $s_2$, and a decrease in $s_3$ which could have better fitted the measurements. Thus suggesting that OTU 24 was misclassified from the method presented in \cite{Ugalde-Salas2019}.
+One can observe that in figure \ref{ControlSimulation} the predicted $s_3$ around day 240 is much higher than the measurement. 
 
 In figures \ref{AOB_control} and \ref{NOB_control} it can be seen the obtained controls for each functional group. Both controls saturate at certain points, but in general terms they vary throughout the dynamic. 
 
@@ -803,7 +803,7 @@ In figures \ref{AOB_control} and \ref{NOB_control} it can be seen the obtained c
 	\label{NOB_control}
 \end{figure}
 
-Recalling that $u(t)$ is supposed to represent $I(x(t))$ (the interactions terms), one could try to fit different forms of $I(\cdot)$ for example $I(x) = 1 + Ax$, where  $A$ is a real valued square matrix. In figure \ref{LV_fit} the simulation of the system after the identification of matrix A is presented, suggesting that an affine interaction function is not able to capture the behaviour of the system.
+Then the procedure from the proof of concept section was applied and one can see that a gLV model is far from describing the pronounced control changes.
 
 \begin{figure}[h]
 	\centering
@@ -818,13 +818,15 @@ Last decades advances in genetic sequencing and microbial ecology has opened a g
 
 The tracking model was proposed  in a chemostat setting as a way to correct a substrate limited expression. However the technique could be used in contexts where less information on the growth function of microbes is known. If one supposes nothing on the growth expression but the fact that is bounded (life cannot grow infinitely fast) the model actually becomes a linear model and one recovers a classic quadratic regulator for linear systems. Nevertheless the synthesis of the optimal bounded control remains an open theoretical challenge.
 
-The interaction function introduced tries to address the issue of prediction from the genetic sequencing, leaving the conclusion that linear pairwise interaction model do not capture the complexity of the particular nitrifying chemostat analysed. Furthermore from the proof of concept section, one might conjecture that models with a large number of parameters such as an gLV model may be unidentifiable, thus proving to be a real problem in calibration, and therefore of reduced applicability. This opens the question for a broader class of interaction functions that could fit well complex microbial ecosystems. The experimental study in chemostat systems seems a good compromise between completely open ecosystems (nature) and controlled conditions (laboratory) in order to explore expressions that could account for microbial interactions.
+The interaction function introduced tries to address the issue of prediction from the genetic sequencing, leaving the conclusion that linear pairwise interaction model do not capture the complexity of the particular nitrifying chemostat analysed. Furthermore from the proof of concept section, one might conjecture that models with a large number of parameters such as an gLV model may be unidentifiable, thus proving to be a real problem in calibration, and therefore of reduced applicability. Furthermore the ecological interpretations to be drawn from the sign of the interaction matrix might be useless. This opens the question for a broader class of interaction functions that could fit well complex microbial ecosystems. The experimental study in chemostat systems seems a good compromise between completely open ecosystems (nature) and controlled conditions (laboratory) in order to explore expressions that could account for microbial interactions.
 
 The interpretation of the correction term as interactions is not the only possible reading. In other contexts the correction term might also be interpreted as a non accounted phenomena ranging from environmental factors (e.g. temperature, pH) to other biological factors (viruses, flock formation, pathogens). Alternative hypothesis for explaining the observed patterns in the microbial community should be considered as well.  
 
+\section{Codes}
 
+All the codes can be recovered from the following repository \url{https://github.com/paus-5/Class-and-Track}.
 \section{Acknowledgements}
- Alain Rapaport, CMM, Thermomic
+ The authors would like to thank Alain Rapaport for the fruitful exchanges. This work was financed by grant Thermomic. And a sejour 
 
 \section{Appendix}
 
@@ -1343,7 +1345,7 @@ v^{[i]}(t)_j = \max \left\{ -1,\min\left\{0,\left( -\dfrac{1}{\lambda}B_1^\top\l
 \end{align} 
 
 They were solved using standard backward numerical integration.
-
+\section{References}
 \bibliographystyle{elsarticle-num}
 \bibliography{mybibfile}
 \end{document}
