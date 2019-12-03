@@ -4,17 +4,18 @@ addpath('..\\General Functions')
 reactor = 'A';
 [t_obs,biomass,s_in,S1,S2,S3,dilution_rate] = load_biomass(reactor);
 [t_OTU_rel,OTU_rel] = load_relative_abundance(reactor);
-d_inter = @(t) interp1(t_obs,dilution_rate,t);
+d_inter = @(t) interp1(t_obs,dilution_rate,t,'previous');
 s_in_inter = @(t) interp1(t_obs,s_in,t,'previous');
 s1_inter = @(t) interp1(t_obs,S1,t);
 s2_inter = @(t) interp1(t_obs,S2,t);
-t_change = 183; %incrase of temperature
-time_steps_index = find(t_obs > t_change & t_obs < t_change + 60);
+t_initial = 183; %incrase of temperature day = 183
+delta_t = 132;
+time_steps_index = find(t_obs > t_initial & t_obs < t_initial + delta_t);
 t_used = t_obs(time_steps_index);
 dynamic = @(t,z) -1*d_inter(t)*(z - s_in_inter(t));
 % z0 = random('Uniform',0,4,3,1);
 t0 = t_obs(time_steps_index(1));
-z0 = [0.3 1 2.9]';
+z0 = [0.3 s_in_inter(t_initial) 3]';
 [T, Z] = ode15s(dynamic,[t_used(1) t_used(end)],z0(1));
 [T2, Z2] = ode15s(dynamic,[t_used(1) t_used(end)],z0(2));
 [T3, Z3] = ode15s(dynamic,[t_used(1) t_used(end)],z0(3));
@@ -68,7 +69,7 @@ ylabel('\fontsize{12} Concentration [g/l]'),...
 title(sprintf('Observers in Time Reactor %s',reactor))
     set(gca,'fontsize',15);
     set(ax,'fontsize',15);
-    l = legend('$$y^{A}_{ref}\hat{x}_{G_1}$$','$$y^{B}_{ref}\hat{x}_{G_2}$$',...
+    l = legend('$$y^{A}_{opt}\hat{x}_{G_1}$$','$$y^{B}_{opt}\hat{x}_{G_2}$$',...
         '$$y^A_{opt}\hat{x}_{G_1}+y^B_{opt}\hat{x}_{G_2}$$ ','Measured Biomass');
     set(l,'Interpreter','latex')
 fig.PaperUnits = 'inches';
