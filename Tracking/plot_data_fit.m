@@ -1,7 +1,7 @@
 %plotting
 clear
 close all
-name_file_in = 'MAT_Files\\061119_Try1_iter_300';
+name_file_in = 'MAT_Files\\191130_Reactor_A_iter_10';
 load(name_file_in);
 numbering_AOB = strsplit(num2str(1:nA)) ;
 legend_tags_AOB = strsplit(strcat(sprintf('OTU %s (tracking),', numbering_AOB{:}),...
@@ -43,7 +43,7 @@ print(sprintf('Images\\%s',sprintf('%s_Biomass_Iter_%.0f',...
 figure
 hold on
 AOB_plot = plot(t_new,x_new(:,1:nA),'LineWidth',1.5);
-AOB_data_plot = plot(t_OTU(index_t_OTU),biomass_filtered(index_t_OTU,1:nA),'--','LineWidth',1.5);
+AOB_data_plot = plot(t_OTU(index_t_OTU),biomass_filtered(index_t_OTU,1:nA),'*','LineWidth',0.7);
 xlabel('\fontsize{15}Time [days]'),...
     ylabel('\fontsize{15}  Concentration [g/l]'),...
     title(sprintf('Tracking results AOB iteration:%.0f',iter));
@@ -61,7 +61,7 @@ print(sprintf('Images\\%s',sprintf('%s_AOB_Iter_%.0f',...
 figure
 hold on
 NOB_plot = plot(t_new,x_new(:,nA+1:n),'LineWidth',1.5);
-NOB_data_plot = plot(t_OTU(index_t_OTU),biomass_filtered(index_t_OTU,nA+1:end),'--','LineWidth',1.5);
+NOB_data_plot = plot(t_OTU(index_t_OTU),biomass_filtered(index_t_OTU,nA+1:end),'*','LineWidth',0.7);
 xlabel('\fontsize{15}Time [days]'),...
     ylabel('\fontsize{15}  Concentration [g/l]'),...
     title(sprintf('Tracking results NOB iteration:%.0f',iter));
@@ -79,14 +79,14 @@ print(sprintf('Images\\%s',sprintf('%s_NOB_Iter_%.0f',...
 figure
 hold on
 metabolite_plot = plot(t_new,x_new(:,(n+1):end),'LineWidth',1.5);
-data_metabolite_plot = plot(tS,[S1(index_span) S2(index_span) S3(index_span)],'--');
+data_metabolite_plot = plot(tS,[S1(index_span) S2(index_span) S3(index_span)],'*');
 xlabel('\fontsize{15}Time [days]'),...
     ylabel('\fontsize{15}  Concentration [g/l]'),...
     title(sprintf('Tracking results iteration:%.0f',iter));
 set(gca,'fontsize',15),
 set(metabolite_plot,{'Color'},colors2);
 set(data_metabolite_plot,{'Color'},colors2);
-legend('s_1 predicted','s_2 predicted','s_3 predicted','s_1 data','s_2 data','s_3 data','Location','bestoutside')
+legend('s_1 tracking','s_2 tracking','s_3 tracking','s_1 data','s_2 data','s_3 data','Location','bestoutside')
 fig.PaperUnits = 'inches';
 fig.PaperPosition = [0 0 9 3];
 fig.PaperPositionMode = 'auto';

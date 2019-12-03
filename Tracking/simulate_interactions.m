@@ -19,7 +19,7 @@ fit = A*x_new(index_control,1:n)'+1;
 control_matrix = reshape(cell2mat(control_eval),n,length(index_control))+1;
 diff = abs(control_matrix - fit);
 figure
-diff_plot = plot(t_new,diff,'LineWidth',1.5);
+diff_plot = plot(t_used,diff,'LineWidth',1.5);
 xlabel('\fontsize{12}Time [days]'),...
     ylabel('\fontsize{12}  Absolute difference between Ax+1 and u(t)'),...
     title('Difference of LV and Control');
@@ -47,14 +47,14 @@ dynamic_inter = @(t,X) [diag(growth1(X) - d_interp(t))*X(1:nA);
 t0_interactions = tS(1);
 tF_interactions = tS(end);
 x0_interactions = x_new(1,:);
-ode_optionss = odeset('Nonnegative',1:(n+3));
-[T_inter, Y_inter] = ode45(dynamic_inter,[t0_interactions tF_interactions],x0_interactions);
+ode_options = odeset('Nonnegative',1:(n+3));
+[T_inter, Y_inter] = ode45(dynamic_inter,[t0_interactions tF_interactions],x0_interactions,ode_options);
 indexTSOTU = find(t_OTU<tF_interactions & t_OTU>t0_interactions);
 %AOB
 figure
 hold on
 AOB_plot = plot(T_inter,Y_inter(:,1:nA),'LineWidth',1.5);
-dataAOB_plot = plot(t_OTU(indexTSOTU),biomass_filtered(indexTSOTU,1:nA),'--','LineWidth',1.5);
+dataAOB_plot = plot(t_OTU(indexTSOTU),biomass_filtered(indexTSOTU,1:nA),'*','LineWidth',0.7);
 xlabel('\fontsize{12}Time [days]'),...
     ylabel('\fontsize{12}  Concentration [g/l]'),...
     title('AOB abundance simulation of LV model');
@@ -71,7 +71,7 @@ print(sprintf('Images\\%s',sprintf('%s_AOB_Iter_%.0f_LV',...
 figure
 hold on
 NOB_plot = plot(T_inter,Y_inter(:,nA+1:n),'LineWidth',1.5);
-dataNOB_plot = plot(t_OTU(indexTSOTU),biomass_filtered(indexTSOTU,nA+1:n),'--','LineWidth',1.5);
+dataNOB_plot = plot(t_OTU(indexTSOTU),biomass_filtered(indexTSOTU,nA+1:n),'*','LineWidth',0.7);
 xlabel('\fontsize{12}Time [days]'),...
     ylabel('\fontsize{12}  Concentration [g/l]'),...
     title('NOB abundance simulation of LV model');
@@ -92,7 +92,7 @@ metabolitePlot = plot(T_inter,Y_inter(:,(n+1):end),'LineWidth',1.5);
 % dataMetabolitePlot = plot(tS,[S1(indexSpan) S2(indexSpan) S3(indexSpan)],'--');
 i_0 =index_span(1);
 i_end = index_span(end);
-dataMetabolitePlot = plot(t_obs(i_0:i_end),[S1(i_0:i_end) S2(i_0:i_end) S3(i_0:i_end)],'--');
+dataMetabolitePlot = plot(t_obs(i_0:i_end),[S1(i_0:i_end) S2(i_0:i_end) S3(i_0:i_end)],'*');
 xlabel('\fontsize{12}Time [days]'),...
     ylabel('\fontsize{12}  Concentration [g/l]'),...
     title('Metabolites simulation of LV model');
