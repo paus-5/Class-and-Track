@@ -1,4 +1,6 @@
-file_in = 'synthetic_data_no_noise';
+clear
+close all
+file_in = '191204_no_noise_iter_4_interactions';
 load(sprintf('MAT_files/%s',file_in));
 labels = cell(n);
 % for i =1:n
@@ -15,7 +17,7 @@ for i=1:n
 end
 imagesc(A);
 colormap(jet)
-text_strings = num2str(A(:), '%0.1f');       % Create strings from the matrix values
+text_strings = num2str(A(:), '%1.0f');       % Create strings from the matrix values
 text_strings = strtrim(cellstr(text_strings));  % Remove any space padding
 [x, y] = meshgrid(1:n);  % Create x and y coordinates for the strings
 hStrings = text(x(:), y(:), text_strings(:), ...  % Plot the strings
@@ -34,4 +36,4 @@ title(sprintf('\\fontsize{20} Interaction Matrix'))
     set(gca,'fontsize',16)
 h.PaperPositionMode = 'manual';
 h.PaperPosition = [.25 .25 90 60];
-print(sprintf('Images/Interactions_%s',file_in),'-dpng','-r0')
+print(sprintf('Images/Interactions_%s_ms',file_in),'-dpng','-r0')
