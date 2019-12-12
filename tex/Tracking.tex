@@ -155,7 +155,7 @@ These obstacles can be circumvented by considering the microbiologist concept of
 
 In the past years considerable efforts have been made to measure the bacterial community composition. Tests such as fluorescence in situ hybridization, polymerase chain reaction (PCR) dependent techniques, and PCR independent techniques for the analysis of DNA, RNA, proteins, and metabolites have become a standard tool for studying  microbial diversity\cite{FERRERA2016790}. 
 
-The main contribution of this article is a procedure to integrate the microbial community measurements in chemostat models, based on any sequencing technique that can quantify the species abundances through time. This is a first step towards developing predictive models of a reactor's performance based on the microbial community structure.
+The contribution of this article is a new method to integrate the microbial community measurements in chemostat models, based on any sequencing technique that can quantify the species abundances through time. This is a first step towards developing predictive models of a reactor's performance based on the microbial community structure.
 
 As a departing point the work of Dumont et al.\cite{Dumont2016} is reinspected in section 2. They model a chemostat experiment where nitrification takes place by considering a generalized Lotka-Volterra (gLV) model \cite{Hernandez-Bermejo1997} coupled with a substrate limited growth expression. Section 3 deals with the mathematical analysis of their model. It is shown that the number of possible equilibrium points grows exponentially with the number of species. Finally after a numerical analysis it is conjectured that there always exists a single stable equilibrium point depending on the operational parameters.  
 
@@ -769,7 +769,7 @@ When applying the presented method one obtains the simulation that can be seen i
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width= 0.4\textwidth]{260919_Try1_metabolites_Iter_110}
+	\includegraphics[width= 0.4\textwidth]{Application//191130_Reactor_A_metabolites_Iter_10}
 	\caption{Simulation applying the control strategy.}
 	\label{ControlSimulation}
 \end{figure}
@@ -777,28 +777,27 @@ When applying the presented method one obtains the simulation that can be seen i
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width= 0.4\textwidth]{260919_Try1_AOB_Iter_110}
+	\includegraphics[width= 0.4\textwidth]{Application//191130_Reactor_A_AOB_Iter_10}
 	\caption{Abundance of $G_1$ (AOB) simulation applying the control strategy.}
 	\label{AOBSimulation}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width= 0.4\textwidth]{260919_Try1_NOB_Iter_110}
+	\includegraphics[width= 0.4\textwidth]{Application//191130_Reactor_A_NOB_Iter_10}
 	\caption{Abundance of $G_2$ (NOB) simulation applying the control strategy.}
 	\label{NOB Simulation}
 \end{figure}
 
-One can observe that in figure \ref{ControlSimulation} the predicted $s_3$ around day 240 is much higher than the measurement. 
 
 In figures \ref{AOB_control} and \ref{NOB_control} it can be seen the obtained controls for each functional group. Both controls saturate at certain points, but in general terms they vary throughout the dynamic. 
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width= 0.4\textwidth]{260919_Try1_Control_AOB_Iter_110}
+	\includegraphics[width= 0.4\textwidth]{Application//191130_Reactor_A_Control_AOB_Iter_10}
 	\caption{Control obtained for OTU in $G_1$ (AOB).}
 	\label{AOB_control}
-	\includegraphics[width= 0.4\textwidth]{260919_Try1_Control_NOB_Iter_110}
+	\includegraphics[width= 0.4\textwidth]{Application//191130_Reactor_A_Control_NOB_Iter_10}
 	\caption{Control obtained for OTU in $G_2$ (NOB).}
 	\label{NOB_control}
 \end{figure}
