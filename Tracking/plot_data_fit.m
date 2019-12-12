@@ -1,7 +1,7 @@
 %plotting
 clear
 close all
-name_file_in = 'MAT_Files\\191130_Reactor_A_iter_10';
+name_file_in = 'MAT_Files\\191211_no_noise_iter_10';
 load(name_file_in);
 numbering_AOB = strsplit(num2str(1:nA)) ;
 legend_tags_AOB = strsplit(strcat(sprintf('OTU %s (tracking),', numbering_AOB{:}),...
