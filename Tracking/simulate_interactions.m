@@ -1,6 +1,6 @@
 clear 
 close all
-file_in = '221119_no_noise_iter_5_interactions';
+file_in = '191211_no_noise_iter_10_interactions';
 load(sprintf('MAT_files/%s',file_in));%Simulation and plotting
 numbering_AOB = strsplit(num2str(1:nA)) ;
 legend_tags_AOB = strsplit(strcat(sprintf('OTU %s (model),', numbering_AOB{:}),...
@@ -15,9 +15,9 @@ numbering_diff = strsplit(num2str(1:n));
 legend_tags_diff = strsplit(sprintf('Difference %s,', numbering_diff{:}),',');
 legend_tags_diff(end) = [];
 %Quality of the Fit
-fit = A*x_new(index_control,1:n)'+1;
-control_matrix = reshape(cell2mat(control_eval),n,length(index_control))+1;
-diff = abs(control_matrix - fit);
+fit = new_A*x_new(index_control,1:n)';
+% control_matrix = reshape(cell2mat(control_eval),n,length(index_control))+1;
+diff = abs(control_matrix_med_filter - fit);
 figure
 diff_plot = plot(t_used,diff,'LineWidth',1.5);
 xlabel('\fontsize{12}Time [days]'),...
@@ -37,8 +37,8 @@ muARef = 0.77;
 muBRef = 1.07;
 kSARef = 0.7e-1;
 kSBRef = 1.4982e-1;
-growth1 = @(X) (1+A(1:nA,:)*X(1:n))*growth_monod(X(n+1),muARef,kSARef);
-growth2 = @(X) (1+A(nA+1:n,:)*X(1:n))*growth_monod(X(n+2),muBRef,kSBRef);
+growth1 = @(X) (1+new_A(1:nA,:)*X(1:n))*growth_monod(X(n+1),muARef,kSARef);
+growth2 = @(X) (1+new_A(nA+1:n,:)*X(1:n))*growth_monod(X(n+2),muBRef,kSBRef);
 dynamic_inter = @(t,X) [diag(growth1(X) - d_interp(t))*X(1:nA);
    diag(growth2(X) - d_interp(t))*X(nA+1:n);
    (s_in_interp(t) - X(n+1))*d_interp(t) - kA'*diag(growth1(X))*X(1:nA);
