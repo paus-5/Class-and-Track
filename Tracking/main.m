@@ -2,12 +2,12 @@
 %main: process and filter data to model.
 close all
 clear
-load('MAT_files\Classification_day183_gurobi')
-name_file = '191127_Reactor_A_modified';
+load('MAT_files\synthetic_data_no_noise')
+name_file = '191211_no_noise';
 nA = round(sum(class_AOB));
 nB = round(sum(class_NOB)); 
 n = nA+nB;
-index_t_obs = find(t_obs <300);
+index_t_obs = find(t_obs <315);
 index_span = time_steps_index(1):index_t_obs(end);
 tS = t_obs(index_span); 
 s1_interp = @(t) interp1(tS,S1(index_span),t);
@@ -21,8 +21,8 @@ biomass_filtered(biomass_filtered == 0) = min_biomass;
 z = @(t) interp1(t_OTU,biomass_filtered,t)';
 kA = yields_AOB(index_AOB);
 kB = yields_NOB(index_NOB);
-muARef = 0.77*1.2;
-muBRef = 1.07*1.2;
+muARef = 0.77;
+muBRef = 1.07;
 kSARef = 0.7e-1;
 kSBRef = 1.4982e-1;
 kIRef = 1.217;
@@ -33,7 +33,8 @@ kSB = kSBRef*ones(nB,1);
 kI = kIRef*ones(nB,1);
 % %%Parameters
 % lambda = 0.001;
-lambda = [0.0001*ones(nA,1); 0.00001*ones(nB,1)];
+% lambda = [0.001*ones(nA,1); 0.001*ones(nB,1)];
+lambda = ones(n,1)*10^-7;
 Q2= [kA; kB];
 % Q = Q2/norm(Q2,'inf');
 Q = [ones(nA,1); ones(nB,1)];
@@ -48,7 +49,7 @@ legend_tags = strsplit(strjoin({num2str(1:n),' s_1 s_2 s_3'}));
 legend_tags_OTU = strsplit(strjoin({num2str(1:n)}));
 tF = tS(end);
 t0 = tS(1);
-x0 = [0.001*ones(1,n) s1_interp(t0) s2_interp(t0) s3_interp(t0)]';
+x0 = [biomass_filtered(1,:) s1_interp(t0) s2_interp(t0) s3_interp(t0)]';
 dynamic = @(t,X) Ax(X,nA,nB,kA,kB,muA,muB,kSA,kSB,kI,s_in_interp(t),...
     d_interp(t))*X ;
 options = odeset('NonNegative',(1:n+3)');
@@ -79,44 +80,13 @@ toc
 x_cell = arrayfun(x_fun,t_new,'UniformOutput',false);
 X = reshape(cell2mat(x_cell),length(t_new),n+3);
 x_old = X;
-csTolerance = 0.01; %cauchy sequence tolerance
+csTolerance = 0.5; %cauchy sequence tolerance
 iter = 1;
-diff = norm(x_old - x_new);
+difference = norm(x_old - x_new,'fro'); %L2 norm
+disp(difference)
 save(sprintf('MAT_files\\%s_iter_%.0f',name_file,iter))
-while diff > csTolerance
+while difference > csTolerance
     x_fun = @(t) interp1(t_new,x_new,t)';    
-%     control = @(t) tracking_control(lambda,B(t),P(t),x_fun(t),sf_interp(t),n);
-%     control_eval = arrayfun(control,t_new,'UniformOutput',false);
-%     figure
-%     hold on
-%     OTU_plot = plot(t_new,x_new(:,1:n),'LineWidth',1.5);
-%     metabolite_plot = plot(t_new,x_new(:,(n+1):end),'-.','LineWidth',1.5);
-%     xlabel('\fontsize{12}Time [days]'),...
-%         ylabel('\fontsize{12}  Concentration'),...
-%         title(sprintf('Tracking results iteration:%.0f',iter));
-%     set(gca,'fontsize',15),
-%     set(OTU_plot,{'Color'}, colors)
-%     set(metabolite_plot,{'Color'},colors2);
-%     legend(legend_tags,'fontsize',7);
-%     fig.PaperUnits = 'inches';
-%     fig.PaperPosition = [0 0 9 3];
-%     fig.PaperPositionMode = 'auto';
-%     print(sprintf('Images\\%s',sprintf('%s_Trajectory_Iter_%.0f',...
-%         name_file,iter)),'-dpng','-r0')
-%     figure 
-%     control_plot = plot(t_new,reshape(cell2mat(control_eval),n,...
-%         length(t_new)),'LineWidth',1.5,'Visible','on');
-%         xlabel('\fontsize{12}Time [days]'),...
-%         ylabel('\fontsize{12}  v(t)'),...
-%         title(sprintf('Control for the tracking of z iteration: %.0f',iter))
-%     set(gca,'fontsize',15),
-%     set(control_plot,{'Color'}, colors),
-%     legend(legend_tags_OTU,'fontsize',7);
-%     fig.PaperUnits = 'inches';
-%     fig.PaperPosition = [0 0 9 3];
-%     fig.PaperPositionMode = 'auto';
-%     print(sprintf('Images\\%s',sprintf('%s_Control_Iter_%.0f',...
-%         name_file,iter)),'-dpng','-r0')
     B = @(t) Bx(x_fun(t),nA,nB,kA,kB,muA,muB,kSA,kSB,kI);
     system_ricatti = @(t,P_lin) ricatti_diff(P_lin,x_fun(t),Q,nA,nB,kA,kB,muA,...
         muB,kSA,kSB,kI,s_in_interp(t),d_interp(t),lambda);
@@ -140,6 +110,7 @@ while diff > csTolerance
     xOldCell = arrayfun(x_fun,t_new,'UniformOutput',false);
     x_old = reshape(cell2mat(xOldCell),length(t_new),n+3);
     iter = iter + 1;
-    diff = norm(x_old - x_new);
+    difference = norm(x_old - x_new,'fro');
+    disp(difference)
     save(sprintf('MAT_files\\%s_iter_%.0f',name_file,iter))
 end
