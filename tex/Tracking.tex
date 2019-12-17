@@ -638,13 +638,6 @@ The change of variable $u_i(t) = v_i(t) + 1$ is used for technical reasons expla
 
 The feedback control $v(t)$, will be of the form $v(t) = -R^{-1}\tilde{B}^\top(t)\left(\tilde{P}(t)x(t)-s_f(t)\right)$. Where matrix $P(t)$ and vector $s_f(t)$ solve differential equations. In the appendix it is proved that because of the structure of the system one only needs to calculate $2n$ differential equations for the synthesis of the control, instead of $(n+3)^2 + (n+3)$ that would imply the direct application of the method. Which renders the method- at least theoretically- scalable for a growing number of OTU.
 
-Finally for the parametric identification of a particular class of interaction functions a static optimization problem is proposed \eqref{Parameter Identification}. Suppose $u(t)$ is the optimal control of problem \eqref{Optimal Control}, and $x(t)$ is the associated optimal trajectory. Suppose a set of parameters $\theta \in \Theta$, such that the interaction function has a explicit form that depends on this parameters $I_{\theta}(x)$ ($\theta$ would represent matrix $A$ from section 2 for example). In practice $t \in [0,T]$ from \eqref{Parameter Identification} is replaced by considering the time steps given by the differential equation solver. 
-\begin{align}
-\label{Parameter Identification} \min & \quad \Vert I_{\theta}(x(\cdot)) - u(\cdot) \Vert_{L^2([0,T])} \\
-s.t. &  \quad \theta \in \Theta \notag \\
-& \quad t \in [0,T] \notag
-\end{align} 
-
 \subsection{Proof of concept}
 
 The approach was tested against synthetic data. The test consisted in simulating system \eqref{system} with growth functions \eqref{gLV growth1} and \eqref{gLV growth2} (therefore $I(x) = 1 + Ax$) for $n_1 = 10$ and $n_2 = 5$. In all figures, dotted lines represent the synthetic data, while the continuous lines represent the method's output.
@@ -1222,24 +1215,33 @@ y(t) & = g(x,s)
 Define $k_{G_1} = \left ( \frac{1}{y_1},\dots,\frac{1}{y_{nA}}\right )^\top \in \R^{n_1}$,  $k_{G_2} = \left(\frac{1}{y_{n_1+1}},\dots,\frac{1}{y_{n}}\right )^\top \in \R^{n_2}$, and
 
 \begin{align}
-A(X) & = \begin{bmatrix} 
-\diag(f(s)- D_{n\times 1} ) & 0_{n \times 3}\\
-\begin{matrix} 
+\label{A_matrix} A\left (X\right) = \begin{bmatrix}
+A_{11}(X) & A_{12}(X) \\ A_{21}(X) & A_{22}(X)
+\end{bmatrix} \\
+\label{B_matrix} B\left (X\right) = \begin{bmatrix}
+B_1(X) \\ B_2(X)
+\end{bmatrix} 
+\end{align}
+
+\begin{align}
+A_{11}(X) &= \diag(f(s)- D_{n\times 1} ) \\
+A_{21}(X) &=  \begin{bmatrix} 
 f(s)^\top \begin{bmatrix} -\diag(k_{G_1}) & 0_{n_1 \times n_2} \end{bmatrix}^\top  \\
 f(s)^\top \begin{bmatrix} \diag(k_{G_1}) & -\diag(k_{G_2}) \end{bmatrix}^\top   \\
-f(s)^\top \begin{bmatrix} 0_{n_2 \times n_1} & \diag(k_{G_2}) \end{bmatrix}^\top  \end{matrix} & \begin{matrix} \left(\frac{s_{in}}{s_1}-1\right)D & 0 & 0 \\ 
-0 &-D & 0 \\ 
-0 & 0 &-D \end{matrix}
+f(s)^\top \begin{bmatrix} 0_{n_2 \times n_1} & \diag(k_{G_2}) \end{bmatrix}^\top 
 \end{bmatrix}  \\
-B(X) & = \begin{bmatrix} \diag(f(s)\diag(x)  \\
-\begin{matrix}
+A_{12}(X) &=  0_{n \times 3} \\
+A_{22}(X) &= \begin{bmatrix} \left(\frac{s_{in}}{s_1}-1\right)D & 0 & 0 \\ 
+0 &-D & 0 \\ 
+0 & 0 &-D \end{bmatrix}
+\end{align}
+
+\begin{align}
+B_1(X) &= \diag(f(s))\diag(x)  \\
+B_2(X) &= \begin{bmatrix}
 f(s)^\top \diag(x) \begin{bmatrix} -\diag(k_{G_1}) & 0_{n_1 \times n_2} \end{bmatrix}^\top \\
 f(s)^\top \diag(x) \begin{bmatrix} \diag(k_{G_1}) & -\diag(k_{G_2}) \end{bmatrix}^\top  \\
 f(s)^\top \diag(x) \begin{bmatrix} 0_{n_2 \times n_1} & \diag(k_{G_2}) \end{bmatrix}^\top  
-\end{matrix}
-\end{bmatrix} \\
-C(X) = \begin{bmatrix}
-I_n & 0_{n\times 3} \\
 \end{bmatrix}
 \end{align}
 
@@ -1288,14 +1290,14 @@ Replacing the matrices of our problem
 \begin{align}
 \dot{P}^{[i]}(t) &= -\begin{bmatrix}
 Q & 0_{n\times 3} \\ 0_{3\times n} & 0_{3\times 3}
-\end{bmatrix}- P^{[i]}A\left (X^{[i-1]}(t)\right) -A^\top \left( X^{[i-1]}(t)\right)P^{[i]} + \frac{1}{\lambda}P^{[i]}B\left( X^{[i-1]}(t) \right)B^\top\left(X^{[i-1]}(t)\right)P^{[i]} \\
+\end{bmatrix}- P^{[i]}A\left (X^{[i-1]}(t)\right) -A^\top \left( X^{[i-1]}(t)\right)P^{[i]} + P^{[i]}B\left( X^{[i-1]}(t) \right)R^{-1}B^\top\left(X^{[i-1]}(t)\right)P^{[i]} \\
 P^{[i]}(t_f) &= \begin{bmatrix}
 0_{n\times n} & 0_{n\times 3} \\ 0_{3\times n} & 0_{3\times 3}
 \end{bmatrix}
 \end{align}
 
 \begin{align}
-\dot{s_f}^{[i]}(t) &= -\begin{bmatrix}Qz(t) \\ 0_{3\times 1} \end{bmatrix}- \left[A\left(X^{[i-1]}(t)\right) -\frac{1}{\lambda}B\left(X^{[i-1]}(t)\right)B^\top \left(X^{[i-1]}(t)\right)P^{[i]}(t) \right]^\top s_f^{[i]} \\
+\dot{s_f}^{[i]}(t) &= -\begin{bmatrix}Qz(t) \\ 0_{3\times 1} \end{bmatrix}- \left[A\left(X^{[i-1]}(t)\right) -B\left(X^{[i-1]}(t)\right)R^{-1}B^\top \left(X^{[i-1]}(t)\right)P^{[i]}(t) \right]^\top s_f^{[i]} \\
 s_f^{[i]}(t_f) &=   \begin{bmatrix}
 0_{n\times n}  & 0_{n\times 3} \\
 \end{bmatrix}^\top z(t_f)
@@ -1319,7 +1321,7 @@ B_1 \\ B_2
 \end{align}
 
 
-Where $A_{11} = \diag \left( f\left(s^{[i-1]}\right)- D_{n\times 1} \right)$, and $B_1 = \diag\left(f\left(s^{[i-1]}\right)\right)\diag \left(x^{[i-1]} \right) $ The equations for $\tilde{P}^{[i]}(t)$:
+Recall $A_{11} = \diag \left( f\left(s^{[i-1]}\right)- D_{n\times 1} \right)$, and $B_1 = \diag\left(f\left(s^{[i-1]}\right)\right)\diag \left(x^{[i-1]} \right) $ The equations for $\tilde{P}^{[i]}(t)$:
 \begin{align}
 \dot{\tilde{P}}^{[i]}(t)= -Q- \tilde{P}^{[i]}A_{11} -A_{11}^\top \tilde{P}^{[i]} + \dfrac{1}{\lambda} \tilde{P}^{[i]}B_1B_1^\top \tilde{P}^{[i]} \\
 \tilde{P}^{[i]}(t_f) = 0
