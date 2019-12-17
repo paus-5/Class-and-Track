@@ -648,6 +648,13 @@ The choice of matrices $Q$ and $R$ are always of discussion in a quadratic regul
 
 
 Figures \ref{Total Biomass no noise}, \ref{AOB no noise}, and \ref{NOB no noise} show the total biomass concentration, and the trajectories for the OTU belonging to $G_1$ and $G_2$, respectively. It can be seen that the method approaches well the trajectories. The metabolites concentration represented in figure \ref{Metabolites no noise} are in accordance with the simulated data as well. 
+\begin{figure}[h]
+	\centering	
+	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//Interactions_synthetic_data_no_noise}
+	\caption{Left: interactions of the synthetic data. Right: Interaction matrix obtained from solving problem \eqref{Parameter Identification}.}
+	\label{Comparison Interaction Matrices}
+\end{figure}
+
 
 \begin{figure}[h]
 	\centering
@@ -690,27 +697,11 @@ The resulting controls that correct the growth rate can be seen in figures \eqre
 	\label{Control NOB no noise}
 \end{figure}
 
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//221119_no_noise_iter_5_difference_fit_5_LV}
-	\caption{Difference between $u(t)$ and the $1+Ax(t)$, with $A$ shown in the right hand side of Figure \ref{Comparison Interaction Matrices}}
-	\label{Difference fit}
-\end{figure} 
 \clearpage
 
 The original interaction matrix and the fitted interaction matrix can be seen and compared in figure \eqref{Comparison Interaction Matrices}. It can be seen that the new matrix is very different from the original one, in both order of magnitude and sign. Implying that the model is probably not identifiable. The system was simulated again with the new matrix, and one can see that in general terms it captures the outcome of the system as shown in figures \ref{AOB LV simulation}, \ref{NOB LV simulation}, and \ref{Metabolites LV simulation}. The final and central message of this section is that if the interaction function is of the form $1+Ax$, one could be able to get a good fit from the data with the method here presented.
 
-\begin{figure}[h]
-	\centering	
-\begin{subfigure}[b]{0.45\textwidth}
-	\includegraphics[width=\textwidth]{Synthetic_data_no_noise//Interactions_synthetic_data_no_noise}
-\end{subfigure}
-\begin{subfigure}[b]{0.45\textwidth}
-	\includegraphics[width=\textwidth]{Synthetic_data_no_noise//Interactions_221119_no_noise_iter_5}
-\end{subfigure}
-\caption{Left: interactions of the synthetic data. Right: Interaction matrix obtained from solving problem \eqref{Parameter Identification}.}
-\label{Comparison Interaction Matrices}
-\end{figure}
+
 
 \begin{figure}
 	\centering
