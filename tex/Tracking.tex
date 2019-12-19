@@ -178,7 +178,7 @@ Notations used throughout the article are:
 	\item $s_1$ : concentration of substrate 1 in $[g/l]$.
 	\item $s_2$ : concentration of substrate 2 in $[g/l]$. 
 	\item $s_3$ : concentration of substrate 3 in $[g/l]$.
-	\item $s$:  vector $(s_1,s_2,s_3)$.
+	\item $s$:  vector $(s_1,s_2,s_3)$. Refered to as metabolites, or chemical species.
 	\item $\I_i(t,x)$ : Interaction function of OTU $i \in \{1,\dots,n\}$.
 	\item $\mu_i(s,x)$ : growth function of OTU $i \in \{1,\dots,n\}$.
 	\item $\mu = (\mu_1(s,x), \dots, \mu_n(s,x))$ vector containing the growth function of every OTU.
@@ -594,9 +594,9 @@ Since the growth of a single strain in batch experiments is driven by the substr
 
 Note $J_I(x)$ the Jacobian matrix of function $\mathcal{I}$. then a first order approximation of $\I(\cdot)$ centred at $\bar{x}$ gives: $\I(x) = \I(\bar{x}) + J_I(\bar{x})(x-\bar{x}) + o(\Vert x- \bar{x} \Vert)$. When $\bar{x}= 0$ one recovers the growth expression from the previous section (equations \eqref{gLV growth1} and \eqref{gLV growth2}) implying that $J_I(\bar{0})$ can be seen as the interaction matrix from model \eqref{system}.
 
-\subsection{Reconstructing the Interaction Function}
+\subsection{Unravelling the Interaction Function}
 
-Suppose that the functions $f_i(s)$, and the yields $y_i$ are well-known. By using experimental measurements of $x$, represented by $z(t)$, the objective is to reconstruct function $I(x)$. For doing so, the terms $I_i(x)$ are replaced by a control $u_i(t)$  and a state feedback is obtained by solving a nonlinear optimal tracking problem.	
+Suppose that the functions $f_i(s)$, and the yields $y_i$ are well-known. By using experimental measurements of $x$, represented by $z(t)$, the objective is to reconstruct function $I(x)$. For doing so, the terms $I_i(x)$ are replaced by controls $u_i(t)$, thus $I_i(x(t)) = u_i(t)$,  and a state feedback is obtained by solving a nonlinear optimal tracking problem.	
 
 Consider the observable system \eqref{Controlsystem} ($y(t)$ being the observer) where $g(\cdot)$ is a known function.
 
@@ -644,9 +644,9 @@ The feedback control $v(t)$, will be of the form $v(t) = -R^{-1}\tilde{B}^\top(t
 
 The approach was tested against synthetic data. The test consisted in simulating system \eqref{system} with growth functions \eqref{gLV growth1} and \eqref{gLV growth2} (therefore $I(x) = 1 + Ax$) for $n_1 = 10$ and $n_2 = 5$, with a randomly generated matrix $A$ in figure \ref{Interaction Matrix Simulation}. In all figures, asterisks represent the synthetic data, while the continuous lines represent the method's output.
 
-The choice of matrices $Q$ and $R$ are always of discussion in a quadratic regulator. $Q$ represents the covariance matrix of measurements, while the interpretation of $R$ is not clear. In the simulations here presented $Q = I_n$ and $R = \lambda I_n$. $\lambda$ is varied from $10^{-1}$ to $10^{-7}$ in the supplementary material section. The case $\lambda = 0.4$ is shown in here for discussion. 
+The choice of matrices $Q$ and $R$ are always of discussion in a quadratic regulator. $Q$ represents the covariance matrix of measurements, while the interpretation of $R$ is not clear. In the simulations here presented $Q = I_n$ and $R = \lambda I_n$. $\lambda$ is varied from $10^{-1}$ to $10^{-7}$ in the supplementary material section. The case $\lambda = 10^{-4}$ is shown in here for discussion. 
 
-Figures \ref{Total Biomass no noise}, \ref{AOB no noise}, and \ref{NOB no noise} show the total biomass concentration, and the trajectories for the OTU belonging to $G_1$ and $G_2$, respectively. It can be seen that the method approaches well the trajectories. The metabolites concentration represented in figure \ref{Metabolites no noise} are in accordance with the simulated data as well. 
+Figures \ref{Total Biomass no noise}, \ref{AOB no noise}, and \ref{NOB no noise} show the total biomass concentration, and the trajectories for the OTU belonging to $G_1$ and $G_2$, respectively. It can be seen that the method approaches well the trajectories. The metabolites concentration represented in figure \ref{Metabolites no noise} are in accordance with the simulated: The method is able to reconstruct the metabolites trajectories from the community measurements. 
 \begin{figure}[h]
 	\centering	
 	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//Interactions_synthetic_data_no_noise}
@@ -681,7 +681,8 @@ Figures \ref{Total Biomass no noise}, \ref{AOB no noise}, and \ref{NOB no noise}
 \end{figure}
 \clearpage
 
-The resulting controls that correct the growth rate can be seen in figures \eqref{Control AOB no noise} and \eqref{Control NOB no noise}. Note that from the structure of a quadratic regulator, since there is no cost in the final state, the end value is always 1. 
+The resulting controls that correct the growth rate can be seen in figures \eqref{Control AOB no noise} and \eqref{Control NOB no noise}. Note that from the structure of a quadratic regulator, since there is no cost in the final state, the end value is always 1. It should be noted as well that since the synthesized control is not saturated (i.e. it does not reach the imposed bounds) it is optimal.
+
 
 \begin{figure}[h]
 	\centering
@@ -697,7 +698,13 @@ The resulting controls that correct the growth rate can be seen in figures \eqre
 	\label{Control NOB no noise}
 \end{figure}
 
-
+In figure \ref{Comparison_lambda} the different controls obtained by varying $\lambda$ for two species are compared to the interaction function simulated that is $1+A(x(t))$, where $x(t)$ is the synthetic data. One can see that due to this property of the end value becoming 1, the two do not coincide, however, when $\lambda$ is decreased one can see that the control roughly approaches the respective interaction function at the cost of very sharp changes.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{Synthetic_data//Comparison_different_control}
+	\caption{Obtained controled for different $\lambda$ for two OTU and the interaction function used in the simulation of synthetic data.}
+	\label{Comparison_lambda}
+\end{figure}
 
 \clearpage
 \section{Application}
@@ -712,13 +719,25 @@ The knowledge of functions $f_i(s)$ was based on a study of nitrification's kine
 \notag  f_i(s) &= \bar{\mu}_2 \dfrac{s_2}{K_2 +s_2 } \, \forall i \in G_2
 \end{align}
 
-For the reader to gain understanding of the situation, a simulation of the system using the experiments operating parameters ($D$ and $s_{in}$) is presented without control (i.e. $v(t)= 0$) in  Figure \ref{NoControlSimulation}. $s_3$ accumulates all along the trajectory, but when compared to data it is clear that $s_3$ stops accumulating after a while. 
+For the reader to gain understanding of the situation, a simulation of the system using the experiments operating parameters ($D$ and $s_{in}$) is presented without control (i.e. $u(t)= 1$) in  Figure \ref{u=1_metabolites}. $s_3$ accumulates all along the trajectory, but when compared to data it is clear that $s_3$ stops accumulating after a while. The community dynamics is neither captured by this simulation as seen in figures \ref{u=1_AOB} and \ref{u=1_NOB}.
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width= 0.4\textwidth]{Prediction_No_Control_metabolites}
+	\includegraphics[width= 0.4\textwidth]{Application//191218_Reactor_A_metabolites_Iter_0}
 	\caption{Simulation when $u=1$. }
-	\label{NoControlSimulation}
+	\label{u=1_metabolites}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width= 0.4\textwidth]{Application//191218_Reactor_A_AOB_Iter_0}
+	\caption{Simulation when $u=1$. }
+	\label{u=1_AOB}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width= 0.4\textwidth]{Application//191218_Reactor_A_NOB_Iter_0}
+	\caption{Simulation when $u=1$. }
+	\label{u=1_NOB}
 \end{figure}
 
 When applying the presented method one obtains the simulation that can be seen in figure \ref{ControlSimulation}. The method captures the tendencies in the measured substrates, but not their absolute values. The simulation of each functional $G_1$ (AOB), and $G_2$ (NOB) can be seen in figures \ref{AOBSimulation} and \ref{NOB Simulation}, respectively. Note that the fit of $G_1$ seems better than the fit of $G_2$, which can be explained by the 1 order of magnitude difference of abundance between the members of the group.
@@ -726,7 +745,7 @@ When applying the presented method one obtains the simulation that can be seen i
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width= 0.4\textwidth]{Application//191130_Reactor_A_metabolites_Iter_10}
+	\includegraphics[width= 0.4\textwidth]{Application//191218_Reactor_A_metabolites_Iter_45}
 	\caption{Simulation applying the control strategy.}
 	\label{ControlSimulation}
 \end{figure}
@@ -734,14 +753,14 @@ When applying the presented method one obtains the simulation that can be seen i
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width= 0.4\textwidth]{Application//191130_Reactor_A_AOB_Iter_10}
+	\includegraphics[width= 0.4\textwidth]{Application//191218_Reactor_A_AOB_Iter_45}
 	\caption{Abundance of $G_1$ (AOB) simulation applying the control strategy.}
 	\label{AOBSimulation}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width= 0.4\textwidth]{Application//191130_Reactor_A_NOB_Iter_10}
+	\includegraphics[width= 0.4\textwidth]{Application//191218_Reactor_A_NOB_Iter_45}
 	\caption{Abundance of $G_2$ (NOB) simulation applying the control strategy.}
 	\label{NOB Simulation}
 \end{figure}
@@ -751,10 +770,10 @@ In figures \ref{AOB_control} and \ref{NOB_control} it can be seen the obtained c
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width= 0.4\textwidth]{Application//191130_Reactor_A_Control_AOB_Iter_10}
+	\includegraphics[width= 0.4\textwidth]{Application//191218_Reactor_A_Control_AOB_Iter_45}
 	\caption{Control obtained for OTU in $G_1$ (AOB).}
 	\label{AOB_control}
-	\includegraphics[width= 0.4\textwidth]{Application//191130_Reactor_A_Control_NOB_Iter_10}
+	\includegraphics[width= 0.4\textwidth]{Application//191218_Reactor_A_Control_NOB_Iter_45}
 	\caption{Control obtained for OTU in $G_2$ (NOB).}
 	\label{NOB_control}
 \end{figure}
@@ -768,7 +787,7 @@ Last decades advances in genetic sequencing and microbial ecology has opened a g
 The tracking model was proposed  in a chemostat setting as a way to correct a substrate limited expression. However the technique could be used in contexts where less information on the growth function of microbes is known. If one supposes nothing on the growth expression but the fact that is bounded (life cannot grow infinitely fast) the model actually becomes a linear model and one recovers a classic quadratic regulator for linear systems. Nevertheless, even in the former case, the synthesis of the optimal bounded control remains an open theoretical challenge.
 
 The interaction function introduced tries to address the issue of prediction from the genetic sequencing, leaving the partial conclusion that linear pairwise interaction model do not capture the complexity of the particular nitrifying chemostat analysed. Furthermore from the proof of concept section, one might conjecture that models with a large number of parameters such as an gLV model may be unidentifiable, thus proving to be a real problem in calibration, and therefore of reduced applicability. Furthermore the ecological interpretations to be drawn from the sign of the interaction matrix might be useless. This opens the question for a broader class of interaction functions that could fit well complex microbial ecosystems. The experimental study in chemostat systems seems a good compromise between completely open ecosystems (nature) and controlled conditions (laboratory) in order to explore expressions that could account for microbial interactions.
-
+It is not then possible to reconstruct the original interaction matrix in the current form of the optimal control problem, thus suggesting to take the derivative of the control in the cost function, instead of the control itself.
 The interpretation of the correction term as interactions is not the only possible reading. In other contexts the correction term might also be interpreted as a non accounted phenomena ranging from environmental factors (e.g. temperature, pH) to other biological factors (viruses, flock formation, pathogens). Alternative hypothesis for explaining the observed patterns in the microbial community should be considered as well.  
 
 Discussion on how to use the method for calibration.
@@ -1305,6 +1324,7 @@ v^{[i]}(t)_j = \max \left\{ -1,\min\left\{0,\left( -\dfrac{1}{\lambda}B_1^\top\l
 \end{align} 
 
 They were solved using standard backward numerical integration.
+
 \section{References}
 \bibliographystyle{elsarticle-num}
 \bibliography{mybibfile}
