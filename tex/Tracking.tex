@@ -699,6 +699,7 @@ The resulting controls that correct the growth rate can be seen in figures \eqre
 \end{figure}
 
 In figure \ref{Comparison_lambda} the different controls obtained by varying $\lambda$ for two species are compared to the interaction function simulated that is $1+A(x(t))$, where $x(t)$ is the synthetic data. One can see that due to this property of the end value becoming 1, the two do not coincide, however, when $\lambda$ is decreased one can see that the control roughly approaches the respective interaction function at the cost of very sharp changes.
+
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\textwidth]{Synthetic_data//Comparison_different_control}
@@ -723,16 +724,17 @@ For the reader to gain understanding of the situation, a simulation of the syste
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width= 0.4\textwidth]{Application//191218_Reactor_A_metabolites_Iter_0}
+	\begin{subfigure}{0.45 \textwidth}
+	\includegraphics[width= \textwidth]{Application//191218_Reactor_A_metabolites_Iter_0}
 	\caption{Simulation when $u=1$. }
 	\label{u=1_metabolites}
+	\end{subfigure}
+	\begin{subfigure}{0.45 \textwidth}
+	\includegraphics[width=\textwidth]{Application//191218_Reactor_A_Biomass_iter_0}
+	\label{biomass_no_control}
+	\end{subfigure}
 \end{figure}
-\begin{figure}[h]
-	\centering
-	\includegraphics[width= 0.4\textwidth]{Application//191218_Reactor_A_AOB_Iter_0}
-	\caption{Simulation when $u=1$. }
-	\label{u=1_AOB}
-\end{figure}
+
 \begin{figure}[h]
 	\centering
 	\includegraphics[width= 0.4\textwidth]{Application//191218_Reactor_A_NOB_Iter_0}
@@ -745,7 +747,12 @@ When applying the presented method one obtains the simulation that can be seen i
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width= 0.4\textwidth]{Application//191218_Reactor_A_metabolites_Iter_45}
+	\begin{subfigure}{0.45 \textwidth}
+		\includegraphics[width=\textwidth]{Application//191218_Reactor_A_metabolites_Iter_45}
+	\end{subfigure}
+	\begin{subfigure}{0.45 \textwidth}
+		\includegraphics[width=\textwidth]{Application//191218_Reactor_A_Biomass_Iter_45}
+	\end{subfigure}
 	\caption{Simulation applying the control strategy.}
 	\label{ControlSimulation}
 \end{figure}
@@ -753,28 +760,54 @@ When applying the presented method one obtains the simulation that can be seen i
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width= 0.4\textwidth]{Application//191218_Reactor_A_AOB_Iter_45}
+	\begin{subfigure}{0.45 \textwidth}
+		\includegraphics[width =\textwidth]{Application//191218_Reactor_A_AOB_iter_45_plot_1}
+	\end{subfigure}
+	\begin{subfigure}{0.45 \textwidth}
+	\includegraphics[width =\textwidth]{Application//191218_Reactor_A_AOB_iter_45_plot_2}
+	\end{subfigure}
+	\begin{subfigure}{0.45 \textwidth}
+	\includegraphics[width =\textwidth]{Application//191218_Reactor_A_AOB_iter_45_plot_3}
+	\end{subfigure}
+	\begin{subfigure}{0.45 \textwidth}
+	\includegraphics[width =\textwidth]{Application//191218_Reactor_A_AOB_iter_45_plot_4}
+	\end{subfigure}
 	\caption{Abundance of $G_1$ (AOB) simulation applying the control strategy.}
 	\label{AOBSimulation}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width= 0.4\textwidth]{Application//191218_Reactor_A_NOB_Iter_45}
+	\includegraphics[width= 0.4\textwidth]{Application//191218_Reactor_A_NOB_iter_45_plot_1}
 	\caption{Abundance of $G_2$ (NOB) simulation applying the control strategy.}
 	\label{NOB Simulation}
 \end{figure}
 
 
-In figures \ref{AOB_control} and \ref{NOB_control} it can be seen the obtained controls for each functional group. Both controls saturate at certain points, but in general terms they vary throughout the dynamic. 
+In figures \ref{AOB_control} and \ref{NOB_control} it can be seen the obtained controls for each functional group. Both controls saturate at certain points, but in general terms they vary throughout the dynamic. At this point one can not be sure that the control is indeed optimal. Also note that when compared to the shape of controls obtained in the proof of concept section one might hypothesize that a gLV model can not capture the dynamic of the system.
+
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width= 0.4\textwidth]{Application//191218_Reactor_A_Control_AOB_Iter_45}
-	\caption{Control obtained for OTU in $G_1$ (AOB).}
+	\begin{subfigure}{0.45 \textwidth}
+		\includegraphics[width =\textwidth]{Application//191218_Reactor_A_Control_AOB_iter_45_plot_1}
+	\end{subfigure}
+	\begin{subfigure}{0.45 \textwidth}
+		\includegraphics[width =\textwidth]{Application//191218_Reactor_A_Control_AOB_iter_45_plot_2}
+	\end{subfigure}
+	\begin{subfigure}{0.45 \textwidth}
+		\includegraphics[width =\textwidth]{Application//191218_Reactor_A_Control_AOB_iter_45_plot_3}
+	\end{subfigure}
+	\begin{subfigure}{0.45 \textwidth}
+		\includegraphics[width =\textwidth]{Application//191218_Reactor_A_Control_AOB_iter_45_plot_4}
+	\end{subfigure}
+	\caption{Control obtained of $G_1$ (AOB).}
 	\label{AOB_control}
-	\includegraphics[width= 0.4\textwidth]{Application//191218_Reactor_A_Control_NOB_Iter_45}
-	\caption{Control obtained for OTU in $G_2$ (NOB).}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width= 0.4\textwidth]{Application//191218_Reactor_A_Control_NOB_iter_45_plot_1}
+	\caption{Control obtained of $G_2$ (NOB).}
 	\label{NOB_control}
 \end{figure}
 
@@ -786,8 +819,9 @@ Last decades advances in genetic sequencing and microbial ecology has opened a g
 
 The tracking model was proposed  in a chemostat setting as a way to correct a substrate limited expression. However the technique could be used in contexts where less information on the growth function of microbes is known. If one supposes nothing on the growth expression but the fact that is bounded (life cannot grow infinitely fast) the model actually becomes a linear model and one recovers a classic quadratic regulator for linear systems. Nevertheless, even in the former case, the synthesis of the optimal bounded control remains an open theoretical challenge.
 
-The interaction function introduced tries to address the issue of prediction from the genetic sequencing, leaving the partial conclusion that linear pairwise interaction model do not capture the complexity of the particular nitrifying chemostat analysed. Furthermore from the proof of concept section, one might conjecture that models with a large number of parameters such as an gLV model may be unidentifiable, thus proving to be a real problem in calibration, and therefore of reduced applicability. Furthermore the ecological interpretations to be drawn from the sign of the interaction matrix might be useless. This opens the question for a broader class of interaction functions that could fit well complex microbial ecosystems. The experimental study in chemostat systems seems a good compromise between completely open ecosystems (nature) and controlled conditions (laboratory) in order to explore expressions that could account for microbial interactions.
+The interaction function introduced tries to address the issue of prediction from the genetic sequencing. The analysis of the gLV model proposed by \cite{Dumont2016}.   From the application section one can retain the hypothesis that linear pairwise interaction model do not capture the complexity of the particular nitrifying chemostat analysed.  This opens the question for a broader class of interaction functions that could fit well complex microbial ecosystems. The experimental study in chemostat systems seems a good compromise between completely open ecosystems (nature) and controlled conditions (laboratory) in order to explore expressions that could account for microbial interactions.
 It is not then possible to reconstruct the original interaction matrix in the current form of the optimal control problem, thus suggesting to take the derivative of the control in the cost function, instead of the control itself.
+
 The interpretation of the correction term as interactions is not the only possible reading. In other contexts the correction term might also be interpreted as a non accounted phenomena ranging from environmental factors (e.g. temperature, pH) to other biological factors (viruses, flock formation, pathogens). Alternative hypothesis for explaining the observed patterns in the microbial community should be considered as well.  
 
 Discussion on how to use the method for calibration.
