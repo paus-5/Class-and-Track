@@ -37,44 +37,69 @@ legend(legend_tags_biomass,'fontsize',12);
 fig.PaperUnits = 'inches';
 fig.PaperPosition = [0 0 9 3];
 fig.PaperPositionMode = 'auto';
-print(sprintf('Images\\%s',sprintf('%s_Biomass_Iter_%.0f',...
+print(sprintf('Images\\%s',sprintf('%s_Biomass_iter_%.0f',...
     name_file,iter)),'-dpng','-r0')
 %%AOB
-figure
-hold on
-AOB_plot = plot(t_new,x_new(:,1:nA),'LineWidth',1.5);
-AOB_data_plot = plot(t_OTU(index_t_OTU),biomass_filtered(index_t_OTU,1:nA),'*','LineWidth',0.7);
-xlabel('\fontsize{15}Time [days]'),...
-    ylabel('\fontsize{15}  Concentration [g/l]'),...
-    title(sprintf('Tracking results AOB iteration:%.0f',iter));
-%     title(sprintf('Simulation v(t) = -1'));
-set(gca,'fontsize',15),
-set(AOB_plot,{'Color'}, colors_AOB)
-set(AOB_data_plot,{'Color'}, colors_AOB) 
-legend(legend_tags_AOB,'fontsize',10,'Location','bestoutside');
-fig.PaperUnits = 'inches';
-fig.PaperPosition = [0 0 9 3];
-fig.PaperPositionMode = 'auto';
-print(sprintf('Images\\%s',sprintf('%s_AOB_Iter_%.0f',...
-    name_file,iter)),'-dpng','-r0')
+number_of_AOB_plots = floor(nA/10) + logical(rem(nA,10));
+for k = 1:number_of_AOB_plots
+    OTU_plot_index = (10*(k-1)+1):(10*(k-1)+10);
+    if k == number_of_AOB_plots && logical(rem(nA,10)) == 1;
+        OTU_plot_index = (10*(k-1)+1):(10*(k-1)+rem(nA,10));
+    end
+    numbering_AOB = strsplit(num2str(OTU_plot_index)) ;
+    legend_tags_AOB = strsplit(strcat(sprintf('OTU %s (tracking),', numbering_AOB{:}),...
+    sprintf(',OTU %s (data)', numbering_AOB{:})),',');
+    colors_AOB =  mat2cell(hsv(length(OTU_plot_index)),...
+        ones(1,length(OTU_plot_index)), 3);
+    figure
+    hold on
+    AOB_plot = plot(t_new,x_new(:,OTU_plot_index),'LineWidth',1.5);
+    AOB_data_plot = plot(t_OTU(index_t_OTU),biomass_filtered(index_t_OTU,OTU_plot_index),'*','LineWidth',0.7);
+    xlabel('\fontsize{15}Time [days]'),...
+        ylabel('\fontsize{15}  Concentration [g/l]'),...
+        title(sprintf('Tracking results AOB iteration:%.0f',iter));
+    %     title(sprintf('Simulation v(t) = -1'));
+    set(gca,'fontsize',15),
+    set(AOB_plot,{'Color'}, colors_AOB)
+    set(AOB_data_plot,{'Color'}, colors_AOB)
+    legend(legend_tags_AOB,'fontsize',10,'Location','bestoutside');
+    fig.PaperUnits = 'inches';
+    fig.PaperPosition = [0 0 9 3];
+    fig.PaperPositionMode = 'auto';
+    print(sprintf('Images\\%s',sprintf('%s_AOB_iter_%.0f_plot_%.0f',...
+        name_file,iter,k)),'-dpng','-r0')
+end
 %%NOB
-figure
-hold on
-NOB_plot = plot(t_new,x_new(:,nA+1:n),'LineWidth',1.5);
-NOB_data_plot = plot(t_OTU(index_t_OTU),biomass_filtered(index_t_OTU,nA+1:end),'*','LineWidth',0.7);
-xlabel('\fontsize{15}Time [days]'),...
-    ylabel('\fontsize{15}  Concentration [g/l]'),...
-    title(sprintf('Tracking results NOB iteration:%.0f',iter));
-%     title(sprintf('Simulation v(t) = -1'));
-set(gca,'fontsize',15),
-set(NOB_plot,{'Color'}, colors_NOB)
-set(NOB_data_plot,{'Color'}, colors_NOB) 
-legend(legend_tags_NOB,'fontsize',10,'Location','bestoutside');
-fig.PaperUnits = 'inches';
-fig.PaperPosition = [0 0 9 3];
-fig.PaperPositionMode = 'auto';
-print(sprintf('Images\\%s',sprintf('%s_NOB_Iter_%.0f',...
-    name_file,iter)),'-dpng','-r0')
+number_of_NOB_plots = floor(nB/10) + logical(rem(nB,10));
+for k = 1:number_of_NOB_plots
+    OTU_plot_index = (10*(k-1)+1):(10*(k-1)+10);
+    if k == number_of_NOB_plots && logical(rem(nB,10)) == 1;
+        OTU_plot_index = (10*(k-1)+1):(10*(k-1)+rem(nB,10));
+    end
+    OTU_plot_index = OTU_plot_index + nA;
+    numbering_NOB = strsplit(num2str(OTU_plot_index)) ;
+    legend_tags_NOB = strsplit(strcat(sprintf('OTU %s (tracking),', numbering_NOB{:}),...
+    sprintf(',OTU %s (data)', numbering_NOB{:})),',');
+    colors_NOB =  mat2cell(hsv(length(OTU_plot_index)),...
+        ones(1,length(OTU_plot_index)), 3);
+    figure
+    hold on
+    NOB_plot = plot(t_new,x_new(:,OTU_plot_index),'LineWidth',1.5);
+    NOB_data_plot = plot(t_OTU(index_t_OTU),biomass_filtered(index_t_OTU,OTU_plot_index),'*','LineWidth',0.7);
+    xlabel('\fontsize{15}Time [days]'),...
+        ylabel('\fontsize{15}  Concentration [g/l]'),...
+        title(sprintf('Tracking results AOB iteration:%.0f',iter));
+    %     title(sprintf('Simulation v(t) = -1'));
+    set(gca,'fontsize',15),
+    set(NOB_plot,{'Color'}, colors_NOB)
+    set(NOB_data_plot,{'Color'}, colors_NOB)
+    legend(legend_tags_NOB,'fontsize',10,'Location','bestoutside');
+    fig.PaperUnits = 'inches';
+    fig.PaperPosition = [0 0 9 3];
+    fig.PaperPositionMode = 'auto';
+    print(sprintf('Images\\%s',sprintf('%s_NOB_iter_%.0f_plot_%.0f',...
+        name_file,iter,k)),'-dpng','-r0')
+end
 %%Metabolites
 figure
 hold on
