@@ -54,6 +54,8 @@ dynamic = @(t,X) Ax(X,nA,nB,kA,kB,muA,muB,kSA,kSB,kI,s_in_interp(t),...
     d_interp(t))*X ;
 options = odeset('NonNegative',(1:n+3)');
 [t_new,x_new] = ode15s(dynamic,[t0 tF], x0,options);
+iter = 0;
+save(sprintf('MAT_files\\%s_iter_%.0f',name_file,iter))
 x_fun = @(t) interp1(t_new,x_new,t)';
 B = @(t) Bx(x_fun(t),nA,nB,kA,kB,muA,muB,kSA,kSB,kI);
 PtF = F;
@@ -81,7 +83,7 @@ x_cell = arrayfun(x_fun,t_new,'UniformOutput',false);
 X = reshape(cell2mat(x_cell),length(t_new),n+3);
 x_old = X;
 csTolerance = 0.5; %cauchy sequence tolerance
-iter = 1;
+iter = iter+1;
 difference = norm(x_old - x_new,'fro'); %L2 norm
 disp(difference)
 save(sprintf('MAT_files\\%s_iter_%.0f',name_file,iter))
