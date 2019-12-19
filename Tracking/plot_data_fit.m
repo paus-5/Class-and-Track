@@ -1,28 +1,19 @@
 %plotting
 clear
 close all
-name_file_in = 'MAT_Files\\191211_no_noise_iter_10';
+name_file_in = 'MAT_Files\\191218_Reactor_A_iter_45';
 load(name_file_in);
-numbering_AOB = strsplit(num2str(1:nA)) ;
-legend_tags_AOB = strsplit(strcat(sprintf('OTU %s (tracking),', numbering_AOB{:}),...
-    sprintf(',OTU %s (data)', numbering_AOB{:})),',');
-numbering_NOB = strsplit(num2str(nA+1:n)) ;
-legend_tags_NOB = strsplit(strcat(sprintf('OTU %s (tracking),', numbering_NOB{:}),...
-    sprintf(',OTU %s (data)', numbering_NOB{:})),',');
 legend_tags_biomass{1} = 'Data: Sum of species biomass';
 legend_tags_biomass{2} = 'Tracking: Sum of species biomass';
-legend_tags_AOB_control = strsplit(sprintf('Control OTU %s,', numbering_AOB{:}),',');
-legend_tags_AOB_control(end) = [];
-legend_tags_NOB_control = strsplit(sprintf('Control OTU %s,', numbering_NOB{:}),',');
-legend_tags_NOB_control(end) = [];
-colors_OTU = mat2cell([autumn(nA); winter(nB)], ones(1,n), 3);
-colors_AOB = mat2cell(autumn(nA), ones(1,nA), 3);
-colors_NOB = mat2cell(winter(nB), ones(1,nB), 3);
-colors2 = mat2cell(hsv(3), ones(1,3),3);
-% xFun = @(t) interp1(tNew,xNew,t)';    
-% control = @(t) trackingControl(lambda,B(t),P(t),xFun(t),sfInterpol(t),n);
-% controlEval = arrayfun(control,tNew,'UniformOutput',false);
 index_t_OTU = find(t_OTU<max(tS) & t_OTU>min(tS));
+%%Control
+x_fun = @(t) interp1(t_new,x_new,t)';
+B = @(t) Bx(x_fun(t),nA,nB,kA,kB,muA,muB,kSA,kSB,kI);
+control = @(t) tracking_control(lambda,B(t),P(t),x_fun(t),sf_interp(t),n);
+tic
+control_eval = arrayfun(control,t_new,'UniformOutput',false);
+toc
+control_eval_reshape = reshape(cell2mat(control_eval),n,length(t_new));
 %%Total Biomass
 figure
 hold on
@@ -39,7 +30,7 @@ fig.PaperPosition = [0 0 9 3];
 fig.PaperPositionMode = 'auto';
 print(sprintf('Images\\%s',sprintf('%s_Biomass_iter_%.0f',...
     name_file,iter)),'-dpng','-r0')
-%%AOB
+%%AOB 
 number_of_AOB_plots = floor(nA/10) + logical(rem(nA,10));
 for k = 1:number_of_AOB_plots
     OTU_plot_index = (10*(k-1)+1):(10*(k-1)+10);
@@ -58,7 +49,6 @@ for k = 1:number_of_AOB_plots
     xlabel('\fontsize{15}Time [days]'),...
         ylabel('\fontsize{15}  Concentration [g/l]'),...
         title(sprintf('Tracking results AOB iteration:%.0f',iter));
-    %     title(sprintf('Simulation v(t) = -1'));
     set(gca,'fontsize',15),
     set(AOB_plot,{'Color'}, colors_AOB)
     set(AOB_data_plot,{'Color'}, colors_AOB)
@@ -68,6 +58,22 @@ for k = 1:number_of_AOB_plots
     fig.PaperPositionMode = 'auto';
     print(sprintf('Images\\%s',sprintf('%s_AOB_iter_%.0f_plot_%.0f',...
         name_file,iter,k)),'-dpng','-r0')
+    %Control
+    legend_tags_AOB_control = strsplit(sprintf('Control OTU %s,', numbering_AOB{:}),',');
+    legend_tags_AOB_control(end) = [];
+    figure
+    control_plot_AOB = plot(t_new,control_eval_reshape(OTU_plot_index,:)+1,'LineWidth',1.5);
+    xlabel('\fontsize{12}Time [days]'),...
+        ylabel('\fontsize{12}  u(t)'),...
+        title(sprintf('Control for AOB iter: %.0f',iter))
+    set(gca,'fontsize',15),
+    set(control_plot_AOB,{'Color'}, colors_AOB),
+    legend(legend_tags_AOB_control,'fontsize',10,'Location','bestoutside');
+    fig.PaperUnits = 'inches';
+    fig.PaperPosition = [0 0 9 3];
+    fig.PaperPositionMode = 'auto';
+    print(sprintf('Images\\%s',sprintf('%s_Control_AOB_iter_%.0f_plot_%.0f',...
+        name_file,iter)),'-dpng','-r0')
 end
 %%NOB
 number_of_NOB_plots = floor(nB/10) + logical(rem(nB,10));
@@ -99,6 +105,22 @@ for k = 1:number_of_NOB_plots
     fig.PaperPositionMode = 'auto';
     print(sprintf('Images\\%s',sprintf('%s_NOB_iter_%.0f_plot_%.0f',...
         name_file,iter,k)),'-dpng','-r0')
+        %Control
+    legend_tags_NOB_control = strsplit(sprintf('Control OTU %s,', numbering_NOB{:}),',');
+    legend_tags_NOB_control(end) = [];
+    figure
+    control_plot_NOB = plot(t_new,control_eval_reshape(OTU_plot_index,:)+1,'LineWidth',1.5);
+    xlabel('\fontsize{12}Time [days]'),...
+        ylabel('\fontsize{12}  u(t)'),...
+        title(sprintf('Control for AOB iter: %.0f',iter))
+    set(gca,'fontsize',15),
+    set(control_plot_NOB,{'Color'}, colors_NOB),
+    legend(legend_tags_NOB_control,'fontsize',10,'Location','bestoutside');
+    fig.PaperUnits = 'inches';
+    fig.PaperPosition = [0 0 9 3];
+    fig.PaperPositionMode = 'auto';
+    print(sprintf('Images\\%s',sprintf('%s_Control_AOB_iter_%.0f_plot_%.0f',...
+        name_file,iter)),'-dpng','-r0')
 end
 %%Metabolites
 figure
@@ -116,38 +138,4 @@ fig.PaperUnits = 'inches';
 fig.PaperPosition = [0 0 9 3];
 fig.PaperPositionMode = 'auto';
 print(sprintf('Images\\%s',sprintf('%s_metabolites_Iter_%.0f',...
-    name_file,iter)),'-dpng','-r0')
-%%Control
-x_fun = @(t) interp1(t_new,x_new,t)';
-B = @(t) Bx(x_fun(t),nA,nB,kA,kB,muA,muB,kSA,kSB,kI);
-control = @(t) tracking_control(lambda,B(t),P(t),x_fun(t),sf_interp(t),n);
-control_eval = arrayfun(control,t_new,'UniformOutput',false);
-control_eval_reshape = reshape(cell2mat(control_eval),n,length(t_new));
-%%Control AOB
-figure
-control_plot_AOB = plot(t_new,control_eval_reshape(1:nA,:)+1,'LineWidth',1.5);
-xlabel('\fontsize{12}Time [days]'),...
-    ylabel('\fontsize{12}  u(t)'),...
-    title(sprintf('Control for AOB iter: %.0f',iter))
-set(gca,'fontsize',15),
-set(control_plot_AOB,{'Color'}, colors_AOB),
-legend(legend_tags_AOB_control,'fontsize',10,'Location','bestoutside');
-fig.PaperUnits = 'inches';
-fig.PaperPosition = [0 0 9 3];
-fig.PaperPositionMode = 'auto';
-print(sprintf('Images\\%s',sprintf('%s_Control_AOB_Iter_%.0f',...
-    name_file,iter)),'-dpng','-r0')
-%%Control NOB
-figure
-control_plot_NOB = plot(t_new,control_eval_reshape(nA+1:end,:)+1,'LineWidth',1.5);
-xlabel('\fontsize{12}Time [days]'),...
-    ylabel('\fontsize{12}  u(t)'),...
-    title(sprintf('Control for NOB iter: %.0f',iter))
-set(gca,'fontsize',15),
-set(control_plot_NOB,{'Color'}, colors_NOB),
-legend(legend_tags_NOB_control,'fontsize',10,'Location','bestoutside');
-fig.PaperUnits = 'inches';
-fig.PaperPosition = [0 0 9 3];
-fig.PaperPositionMode = 'auto';
-print(sprintf('Images\\%s',sprintf('%s_Control_NOB_Iter_%.0f',...
     name_file,iter)),'-dpng','-r0')
