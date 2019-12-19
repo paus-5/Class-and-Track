@@ -22,7 +22,6 @@ total_biomass_plot2 = plot(t_new,sum(x_new(:,1:n),2),'k.-','LineWidth',1.5);
 xlabel('\fontsize{15}Time [days]'),...
     ylabel('\fontsize{15}  Concentration [g/l]'),...
     title(sprintf('Tracking results total biomass iteration:%.0f',iter));
-%     title(sprintf('Simulation v(t) = -1'));
 set(gca,'fontsize',15),
 legend(legend_tags_biomass,'fontsize',12);
 fig.PaperUnits = 'inches';
@@ -73,7 +72,7 @@ for k = 1:number_of_AOB_plots
     fig.PaperPosition = [0 0 9 3];
     fig.PaperPositionMode = 'auto';
     print(sprintf('Images\\%s',sprintf('%s_Control_AOB_iter_%.0f_plot_%.0f',...
-        name_file,iter)),'-dpng','-r0')
+        name_file,iter,k)),'-dpng','-r0')
 end
 %%NOB
 number_of_NOB_plots = floor(nB/10) + logical(rem(nB,10));
@@ -119,8 +118,8 @@ for k = 1:number_of_NOB_plots
     fig.PaperUnits = 'inches';
     fig.PaperPosition = [0 0 9 3];
     fig.PaperPositionMode = 'auto';
-    print(sprintf('Images\\%s',sprintf('%s_Control_AOB_iter_%.0f_plot_%.0f',...
-        name_file,iter)),'-dpng','-r0')
+    print(sprintf('Images\\%s',sprintf('%s_Control_NOB_iter_%.0f_plot_%.0f',...
+        name_file,iter,k)),'-dpng','-r0')
 end
 %%Metabolites
 figure
