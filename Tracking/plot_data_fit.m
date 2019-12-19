@@ -57,7 +57,7 @@ for k = 1:number_of_AOB_plots
     fig.PaperPositionMode = 'auto';
     print(sprintf('Images\\%s',sprintf('%s_AOB_iter_%.0f_plot_%.0f',...
         name_file,iter,k)),'-dpng','-r0')
-    %Control
+%%Control
     legend_tags_AOB_control = strsplit(sprintf('Control OTU %s,', numbering_AOB{:}),',');
     legend_tags_AOB_control(end) = [];
     figure
@@ -93,8 +93,7 @@ for k = 1:number_of_NOB_plots
     NOB_data_plot = plot(t_OTU(index_t_OTU),biomass_filtered(index_t_OTU,OTU_plot_index),'*','LineWidth',0.7);
     xlabel('\fontsize{15}Time [days]'),...
         ylabel('\fontsize{15}  Concentration [g/l]'),...
-        title(sprintf('Tracking results AOB iteration:%.0f',iter));
-    %     title(sprintf('Simulation v(t) = -1'));
+        title(sprintf('Tracking results NOB iteration:%.0f',iter));
     set(gca,'fontsize',15),
     set(NOB_plot,{'Color'}, colors_NOB)
     set(NOB_data_plot,{'Color'}, colors_NOB)
@@ -104,14 +103,14 @@ for k = 1:number_of_NOB_plots
     fig.PaperPositionMode = 'auto';
     print(sprintf('Images\\%s',sprintf('%s_NOB_iter_%.0f_plot_%.0f',...
         name_file,iter,k)),'-dpng','-r0')
-        %Control
+%%Control
     legend_tags_NOB_control = strsplit(sprintf('Control OTU %s,', numbering_NOB{:}),',');
     legend_tags_NOB_control(end) = [];
     figure
     control_plot_NOB = plot(t_new,control_eval_reshape(OTU_plot_index,:)+1,'LineWidth',1.5);
     xlabel('\fontsize{12}Time [days]'),...
         ylabel('\fontsize{12}  u(t)'),...
-        title(sprintf('Control for AOB iter: %.0f',iter))
+        title(sprintf('Control for NOB iter: %.0f',iter))
     set(gca,'fontsize',15),
     set(control_plot_NOB,{'Color'}, colors_NOB),
     legend(legend_tags_NOB_control,'fontsize',10,'Location','bestoutside');
@@ -136,5 +135,5 @@ legend('s_1 tracking','s_2 tracking','s_3 tracking','s_1 data','s_2 data','s_3 d
 fig.PaperUnits = 'inches';
 fig.PaperPosition = [0 0 9 3];
 fig.PaperPositionMode = 'auto';
-print(sprintf('Images\\%s',sprintf('%s_metabolites_Iter_%.0f',...
+print(sprintf('Images\\%s',sprintf('%s_metabolites_iter_%.0f',...
     name_file,iter)),'-dpng','-r0')
