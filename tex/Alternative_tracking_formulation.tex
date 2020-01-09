@@ -1,0 +1,329 @@
+\documentclass[3p,times]{article}
+
+\usepackage{fullpage}
+% Title Page
+\title{Alternative Tracking}
+\author{Pablo Ugalde Salas}
+\usepackage{amssymb}%% The amsthm package provides extended theorem environments
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{algorithm2e}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage[version=4]{mhchem}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\I}{\mathcal{I}}
+\newcommand{\diag}{\textbf{diag}}
+\newtheorem{defn}{Definition}
+\newtheorem{hypo}{H}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theo}{Theorem}
+
+\begin{document}
+\maketitle
+
+\section{Alternative Tracking Problem}
+
+
+\begin{align} 
+\label{Controlsystem}
+\begin{array}{cl}
+\dot{x_i} &= \left(f_i(s)u_i(t) -D \right)x_i \quad \forall i \in G_1\\
+\dot{x_i} &= \left(f_i(s)u_i(t) -D \right)x_i \quad \forall i \in G_2\\
+\dot{s_1} &= \displaystyle (s_{in}-s_1)D-\sum\limits_{i \in G_1}\frac{1}{y_i}f_i(s)u_i(t) x_i  \\
+\dot{s_2} &= \displaystyle -s_2D+\sum\limits_{i \in G_1}\frac{1}{y_i}f_i(s)u_i(t)	-\sum\limits_{i \in G_2}\frac{1}{y_i}f_i(s)u_i(t) x_i  \\
+\dot{s_3} &=  \displaystyle -s_3D+\sum\limits_{i \in G_2}\frac{1}{y_i}f_i(s)u_i(t) x_i \\
+\dot{u_i} &= v_i\\
+y(t) & = g(x,s)
+\end{array}
+\end{align}	
+
+
+\begin{align}
+\label{Optimal Control} \begin{array}{cc} \min &  \int \limits_{0}^{T} \Vert g(x,s) - z \Vert_Q + \Vert v \Vert_R dt\\
+s.t.& 
+(x,s_1,s_2,s_3,u) \mbox{ solution of \eqref{Controlsystem}} \\
+&v_i(t) \in \R
+\end{array}	
+\end{align} 
+
+Following the work of Cimen one rewrites system \eqref{Controlsystem} as 
+\begin{align}
+\dot{X} &= A(X)X + B(X)v \\
+y(x) & = C(X)X
+\end{align}
+And the cost functional as
+
+
+Where the state $X = (x,s_1,s_2,s_3,u)$, and $A(X)$ and $B(X)$ are represented below
+\begin{align}
+\label{A_matrix} A\left (X\right) = \begin{bmatrix}
+A_{11}(X) & A_{12}(X) & A_{13}(X)\\ A_{21}(X) & A_{22}(X) & A_{23}(X) \\
+A_{31}(X) & A_{32}(X) & A_{33}(X)
+\end{bmatrix} \\
+\label{B_matrix} B\left (X\right) = \begin{bmatrix}
+B_1(X) \\ B_2(X)
+\end{bmatrix} 
+\end{align}
+
+\begin{align} 
+A_{11}(X) &= \diag(\diag(u)f(s)- D_{n\times 1} )\\
+A_{12}(X) &= 0_{n\times 3} \\
+A_{13}(X) &= 0_{n\times n} \\
+A_{21}(X) &= \begin{pmatrix} (\diag(u)f(s))^\top \begin{bmatrix} -\diag(k_{G_1}) & 0_{n_1 \times n_2} \end{bmatrix}^\top \\ (\diag(u)f(s))^\top \begin{bmatrix} \diag(k_{G_1}) & -\diag(k_{G_2}) \end{bmatrix}^\top   \\ 
+(\diag(u)f(s))^\top \begin{bmatrix} 0_{n_2 \times n_1} & \diag(k_{G_2}) \end{bmatrix}^\top  \end{pmatrix} \\
+ A_{22}(X) &=  \begin{pmatrix} \left(\frac{s_{in}}{s_1}-1\right)D & 0 & 0 \\ 
+0 &-D & 0 \\ 
+0 & 0 &-D \end{pmatrix} \\
+A_{31}(X) &=   0_{n \times n} \\
+A_{32}(X) &= 0_{n\times 3}\\
+A_{33} (X) &= 0_{n\times n}
+\end{align}
+
+\begin{align} 
+B(X) & = \begin{bmatrix} 
+0_{(n+3)\times n} \\
+I_n
+\end{bmatrix}  
+\end{align}
+
+\begin{align}
+C(X) = \begin{bmatrix} 
+I_n & 0_{n \times (n+3)}
+\end{bmatrix}
+\end{align} 
+
+Define 
+\begin{align}
+\dot{X}^{[i]} &= A(X^{[i]})X^{[i]} + B(X^{[i]})v^{[i]} \quad i\in \N \\
+y^{[i]} &= X^{[i]} \quad i\in \N \\
+X^{[i]}(t_0) &= X_0 \quad i\in \N
+\end{align} 
+
+And for $i = -1$ define $X^{[-1]}(t) = X_0$.
+
+The control law is given by
+\begin{align}
+v^{[i]}(t)_j = \left( -R^{-1}B^\top\left(X^{[i-1]}(t)\right)\left(P^{[i]}(t)X^{[i]}(t)-s_f^{[i]}(t)\right)\right)_j  \forall j \in [n]
+\end{align} 
+
+Where $P^{[i]}(t) \in \mathcal{M}_{2n+3\times 2n+3}(\R)$ and $s_f^{[i]}(t)\in \R^{2n+3}$ are the solution to the differential equations:
+\begin{align}
+\dot{P}^{[i]} &= -C^T\left(X^{[i-1]}(t)\right)QC\left(X^{[i-1]}(t)\right) - P^{[i]}A\left (X^{[i-1]}(t)\right) -A^\top \left( X^{[i-1]}(t)\right)P^{[i]} \\&+ P^{[i]}B\left( X^{[i-1]}(t) \right)R^{-1}B^\top\left(X^{[i-1]}(t)\right)P^{[i]} \\
+P^{[i]}(t_f) &= C^\top \left( X^{[i-1]}(t_f) \right) F C \left( X^{[i-1]}(t_f) \right)
+\end{align}
+
+\begin{align}
+\dot{s_f^{[i]}} &= - C^\top\left(X^{[i-1]}(t)\right)Qz(t)- \left[A\left(X^{[i-1]}(t)\right) -B\left(X^{[i-1]}(t)\right)R^{-1}B^\top \left(X^{[i-1]}(t)\right)P^{[i]}(t) \right]^\top s_f^{[i]} \\
+s_f^{[i]}(t_f) &= C^\top\left(X^{[i-1]}(t_f)\right)Fz(t_f)
+\end{align}
+
+
+Note \begin{align} 
+P &= \begin{bmatrix}
+P_{11} & P_{12} & P_{13} \\
+P_{21} & P_{22} & P_{23} \\
+P_{31} & P_{32} & P_{33}
+\end{bmatrix}\\
+P_{11} &\in M_{n\times n} \\
+P_{12} &\in M_{n\times 3} \\
+P_{13} &\in M_{n \times n} \\
+P_{21} &\in M_{3 \times n} \\
+P_{22} &\in M_{3 \times 3} \\
+P_{23} &\in M_{3 \times n} \\
+P_{31} &\in M_{n \times n} \\
+P_{32} &\in M_{n\times 3} \\
+P_{33} &\in M_{n \times n}
+\end{align} 
+Replacing the matrices of the problem (and dropping the state dependence notation. Note that $A_{12}, A_{13}, A_{23}, A_{31}, A_{32}, A_{33}$ are all zero.
+
+\begin{align}
+\dot{P}^{[i]}(t) &= -\begin{bmatrix}
+Q & 0_{n\times (3+n)} \\ 0_{(3+n)\times n} & 0_{(3+n)\times (3+n)}
+\end{bmatrix}- \begin{bmatrix}
+P_{11} & P_{12} & P_{13} \\
+P_{21} & P_{22} & P_{23} \\
+P_{31} & P_{32} & P_{33}
+\end{bmatrix}\begin{bmatrix}
+A_{11} & A_{12} & A_{13}\\ A_{21} & A_{22} & A_{23} \\
+A_{31} & A_{32} & A_{33}
+\end{bmatrix} \\
+&-\begin{bmatrix}
+A_{11} & A_{12} & A_{13}\\ A_{21} & A_{22} & A_{23} \\
+A_{31} & A_{32} & A_{33}
+\end{bmatrix}^\top \begin{bmatrix}
+P_{11} & P_{12} & P_{13} \\
+P_{21} & P_{22} & P_{23} \\
+P_{31} & P_{32} & P_{33}
+\end{bmatrix} \\ &+\begin{bmatrix}
+P_{11} & P_{12} & P_{13} \\
+P_{21} & P_{22} & P_{23} \\
+P_{31} & P_{32} & P_{33}
+\end{bmatrix}\begin{bmatrix} 
+0_{(n+3)\times n} \\
+I_n
+\end{bmatrix}  R^{-1} \begin{bmatrix} 
+0_{(n+3)\times n} \\
+I_n
+\end{bmatrix}^{\top} \begin{bmatrix}
+P_{11} & P_{12} & P_{13} \\
+P_{21} & P_{22} & P_{23} \\
+P_{31} & P_{32} & P_{33}
+\end{bmatrix} \\
+P^{[i]}(t_f) &= 0_{(2n+3)\times(2n+3)}
+\end{align}
+
+\begin{align}
+\dot{P}^{[i]}(t) &= -\begin{bmatrix}
+Q & 0_{n\times (3+n)} \\ 0_{(3+n)\times n} & 0_{(3+n)\times (3+n)}
+\end{bmatrix}
+-\begin{bmatrix}\begin{bmatrix}
+P_{11} & P_{12} \\
+P_{21} & P_{22}
+\end{bmatrix}\begin{bmatrix}
+A_{11} & A_{12} \\ A_{21} & A_{22} 
+\end{bmatrix}   & 0_{(n+3)\times n} \\ 
+0_{n \times (n+3)} & 0_{n \times n}\end{bmatrix} \\
+&-\begin{bmatrix} \begin{bmatrix}
+A_{11} & A_{12} \\ A_{21} & A_{22} 
+\end{bmatrix}^{\top}\begin{bmatrix}
+P_{11} & P_{12} \\
+P_{21} & P_{22}
+\end{bmatrix}  & 0_{(n+3)\times n} \\ 
+0_{n \times (n+3)} & 0_{n \times n}\end{bmatrix}\\ 
+&+\begin{bmatrix}
+P_{11} & P_{12} & P_{13} \\
+P_{21} & P_{22} & P_{23} \\
+P_{31} & P_{32} & P_{33}
+\end{bmatrix}
+\begin{bmatrix} 0_{(n+3) \times (n+3)} & 0_{(n+3) \times n} \\ 0_{n \times n+3} & R^{-1 }
+\end{bmatrix}\begin{bmatrix}
+P_{11} & P_{12} & P_{13} \\
+P_{21} & P_{22} & P_{23} \\
+P_{31} & P_{32} & P_{33}
+\end{bmatrix}
+ \\
+P^{[i]}(t_f) &= 0_{(2n+3)\times(2n+3)}
+\end{align}
+
+
+\begin{align}
+\dot{P}^{[i]}(t) &= -\begin{bmatrix}
+\begin{bmatrix} Q & 0_{n\times 3} \\ 0_{3\times n} & 0_{3 \times 3}\end{bmatrix} & 0_{n+3\times n} \\ 0_{n\times n+3} & 0_{n\times n}
+\end{bmatrix}
+-\begin{bmatrix}\begin{bmatrix}
+P_{11} & P_{12} \\
+P_{21} & P_{22}
+\end{bmatrix}\begin{bmatrix}
+A_{11} & A_{12} \\ A_{21} & A_{22} 
+\end{bmatrix}   & 0_{(n+3)\times n} \\ 
+0_{n \times (n+3)} & 0_{n \times n}\end{bmatrix} \\
+&-\begin{bmatrix} \begin{bmatrix}
+A_{11} & A_{12} \\ A_{21} & A_{22} 
+\end{bmatrix}^{\top}\begin{bmatrix}
+P_{11} & P_{12} \\
+P_{21} & P_{22}
+\end{bmatrix}  & 0_{(n+3)\times n} \\ 
+0_{n \times (n+3)} & 0_{n \times n}\end{bmatrix}\\ 
+&+\begin{bmatrix}
+\begin{bmatrix}
+P_{13} \\ P_{23}
+\end{bmatrix}
+R^{-1} 
+\begin{bmatrix}
+P_{31} & P_{32}
+\end{bmatrix}
+&
+\begin{bmatrix}
+P_{13} \\ P_{23}
+\end{bmatrix}R^{-1} P_{33} \\
+P_{33}R^{-1}\begin{bmatrix}
+P_{31} & P_{32}
+\end{bmatrix} & P_{33}R^{-1}P_{33}
+\end{bmatrix}
+\\
+P^{[i]}(t_f) &= 0_{(2n+3)\times(2n+3)}
+\end{align}
+
+
+\begin{align}
+\dot{P}^{[i]}(t) &= -\begin{bmatrix}
+\begin{bmatrix} Q & 0_{n\times 3} \\ 0_{3\times n} & 0_{3 \times 3}\end{bmatrix} & 0_{n+3\times n} \\ 0_{n\times n+3} & 0_{n\times n}
+\end{bmatrix}
+-\begin{bmatrix}\begin{bmatrix}
+P_{11}A_{11} + P_{12}A_{21} & P_{12}A_{22} \\
+P_{21}A_{11} + P_{22}A_{21} & P_{22}A_{22} \\
+\end{bmatrix}   & 0_{(n+3)\times n} \\ 
+0_{n \times (n+3)} & 0_{n \times n}\end{bmatrix} \\
+&-\begin{bmatrix} \begin{bmatrix}
+A_{11}^\top P_{11} + A_{21}^\top P_{21} & A_{11}^\top P_{12} + A_{21}^\top P_{22} \\
+A_{22}^\top P_{21} & A_{22}^\top P_{22} \\
+\end{bmatrix}  & 0_{(n+3)\times n} \\ 
+0_{n \times (n+3)} & 0_{n \times n}\end{bmatrix}\\ 
+&+\begin{bmatrix}
+\begin{bmatrix}
+P_{13} \\ P_{23}
+\end{bmatrix}
+R^{-1} 
+\begin{bmatrix}
+P_{31} & P_{32}
+\end{bmatrix}
+&
+\begin{bmatrix}
+P_{13} \\ P_{23}
+\end{bmatrix}R^{-1} P_{33} \\
+P_{33}R^{-1}\begin{bmatrix}
+P_{31} & P_{32}
+\end{bmatrix} & P_{33}R^{-1}P_{33}
+\end{bmatrix}
+\\
+P^{[i]}(t_f) &= 0_{(2n+3)\times(2n+3)}
+\end{align}
+
+
+
+One can see that $P_{12}$, $P_{21}$ and $P_{22}$ identically zero solve the equation, and therefore by existence and uniqueness, they are zero. Therefore the only entry to be calculated is $P_{11}$, but one can further reduce that system and noticing that only diagonal elements of $P_{11}$ become zero as solution.
+
+System reduction theorem:
+
+\begin{align}
+P_{12} &= 0\\
+P_{13} &= 0\\
+P_{21} &= 0\\
+P_{22} &= 0\\
+P_{23} &= 0\\
+P_{31} &= 0\\
+P_{32} &= 0\\
+P_{33} &= 0
+\end{align}
+
+\begin{align}
+\dot{s_f}^{[i]}(t) &= -\begin{bmatrix}Qz(t) \\ 0_{(n+3)\times 1} \end{bmatrix}- \left[A\left(X^{[i-1]}(t)\right) -\begin{bmatrix} 
+0_{(n+3)\times n} \\
+I_n
+\end{bmatrix}R^{-1}\begin{bmatrix} 
+0_{(n+3)\times n} \\
+I_n
+\end{bmatrix}^{\top}   P^{[i]}(t) \right]^\top s_f^{[i]} \\
+s_f^{[i]}(t_f) &=   0_{(2n+3) \times 1}
+\end{align}
+
+Which in turns implies
+\begin{align}
+\dot{s_f}(t) &= -\begin{bmatrix}Qz(t) \\ 0_{(n+3)\times 1} \end{bmatrix}- \left[A\left(X^{[i-1]}(t)\right) -\begin{bmatrix} 
+0_{(n+3)\times n} \\
+I_n
+\end{bmatrix}R^{-1}\begin{bmatrix} 
+0_{(n+3)\times n} \\
+I_n
+\end{bmatrix}^{\top}   P^{[i]}(t) \right]^\top s_f^{[i]} \\
+s_f^{[i]}(t_f) &=   0_{(2n+3) \times 1}
+\end{align}
+
+
+
+
+\end{document}          
