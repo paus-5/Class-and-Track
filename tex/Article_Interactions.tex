@@ -152,13 +152,13 @@
 
 Microbial communities and their interactions play a central role in the understanding of microbial ecosystems \cite{West2007}, and a current challenge is integrating genetic sequencing data in a deterministic modelling framework \cite{Widder2016,WADE201664}. A thorough review in current methodologies in the deterministic modelling approaches of microbial community dynamics is presented by Song \textit{et al.} \cite{Song2014}. Using their terminology this articles deals with population-based approaches where species are taken as the interacting units.
 
-The classical ecological concept of species and niche in the microbial world is an elusive one: In the macro world one can clearly identify one species of another for reproductive reasons and their ability to give birth to offspring. In the case of bacteria and archea, reproduction goes simply by mitosis and exchange of some functional genes (the ability to synthesize or metabolize substances) can be acquired in evolutionary scale through lateral gene transfer \cite{Boucher2003}. Therefore as an ecological problem is hard to precise the 'niche' of 'species'.
+The classical ecological concept of species and niche in the microbial world is an elusive one: In the macro world one can clearly identify one species of another for reproductive reasons and their ability to give birth to offspring. In the case of bacteria and archea, reproduction goes simply by binary fission and exchange of some functional genes (the ability to synthesize or metabolize substances) can be acquired in evolutionary scale through lateral gene transfer \cite{Boucher2003}. Therefore as an ecological problem is hard to precise the 'niche' of 'species'.
 
-These obstacles can be circumvented by considering the microbiologist concept of operative taxonomic unit (OTU) based in 16sRNA analysis. There is a core genome in Bacteria, which is in turn related to the main metabolism of Bacteria. The abundance of the present OTU allows to account for a group of Bacteria that behave similarly in terms of which substances catabolyzes and at which growth rates and substrate to biomass conversion yields \cite{Muyzer1993}.
+These obstacles can be circumvented by considering the microbiologist concept of operative taxonomic unit (OTU) based on the clustering of organisms sharing similar sequences of 16S rDNA marker gene. There is a core genome in Bacteria, which is in turn related to the main metabolism of Bacteria\iffalse cette phrase n'est pas claire, on pourrait éventuellement simplement la retirer \fi. The abundance of the present OTU allows to account for a group of Bacteria that behave similarly in terms of which substances catabolyzes and at which growth rates and substrate to biomass conversion yields \cite{Muyzer1993}.
 
 In the past years considerable efforts have been made to measure the bacterial community composition. Tests such as fluorescence in situ hybridization, polymerase chain reaction (PCR) dependent techniques, and PCR independent techniques for the analysis of DNA, RNA, proteins, and metabolites have become a standard tool for studying  microbial diversity\cite{FERRERA2016790}. 
 
-The contribution of this article is a new method to integrate the microbial community measurements in chemostat models, based on any sequencing technique that can quantify the species abundances through time. This is a first step towards developing predictive models of a reactor's outcome based on the microbial community structure.
+The contribution of this article is a new method to integrate the microbial community measurements in chemostat models, based on any sequencing or fingerprinting technique that can quantify the species abundances through time. This is a first step towards developing predictive models of a reactor's outcome based on the microbial community structure.
 
 As a departing point the work of Dumont et al.\cite{Dumont2016} is reinspected in section 2. They model a chemostat experiment where nitrification takes place by considering a generalized Lotka-Volterra (gLV) model \cite{Hernandez-Bermejo1997} coupled with a substrate limited growth expression. Section 3 deals with the mathematical analysis of their model. It is shown that the number of possible equilibrium points grows exponentially with the number of species. Finally after a numerical analysis it is conjectured that there always exists a single stable equilibrium point depending on the operational parameters.  
 
@@ -489,7 +489,7 @@ The algorithm implicitly assumes that every submatrix $A'$ is invertible.
 
 Operating diagrams are an illustrative way of representing the long term behaviour of a reactor depending on operating parameters. Operating diagrams are created by running algorithm \eqref{StabilityAnalysis} for different pairs $(s_{in},D)$ \cite{lobry2017chemostat}. One then regroups all the pairs such that the set of non-active coordinates of the points of the set $PSP$ are the same and have the same stability properties. This regrouping represents graphically the coexistence of the different OTU in a $D-s_{in}$ plot. In particular for the biological process of nitrification, this allows to represent when partial nitrification (PN) or complete nitrification (CN) may arise \cite{KHIN2004519}. PN refers to the state when nitrite $s_2$, accumulates because the OTU of $G_2$ concentration is very low and thus almost no conversion from $s_2$  to $s_3$ takes place. On the contrary CN is when nitrate ($s_3$) accumulates because of the presence of OTU of $G_2$.
 
-The operating diagram from one of the sets of the parameter identification (obtained with a Bayesian estimation method) from Dumont et al. is presented in figure \ref{OD Dumont}. Their fit describes well the dynamics of the OTU, which is not the case for measured chemical species. Two OTU per functional group were considered. One can see that coexistence in the same functional group is never attained. However when using a different set of parameters one can see a more complex situation where coexistence in the same functional group is possible as seen in figure \ref{OD modified}. In the latter case CN can be achieved at a more elevated dilution rats than in the former case. Parameters of cases 1 and 2 can be seen in table \ref{Parameters Dumont} and \ref{Parameters Modified}, respectively. 
+The operating diagram from one of the sets of the parameter identification (obtained with a Bayesian estimation method) from Dumont et al. is presented in figure \ref{OD Dumont}. Their fit describes well the dynamics of the OTU, which is not the case for measured chemical species. Two OTU per functional group were considered. One can see that coexistence in the same functional group is never attained. However when using a different set of parameters one can see a more complex situation where coexistence in the same functional group is possible as seen in figure \ref{OD modified}. In the latter case CN can be achieved at a more elevated dilution rate than in the former case. Parameters of cases 1 and 2 can be seen in table \ref{Parameters Dumont} and \ref{Parameters Modified}, respectively. 
 
 The model is also  able to overcome the  competitive exclusion principle \cite{lobry2017chemostat} (CEP) paradigm. The CEP roughly states that if two species are growing on the same limiting resource, and their growth laws are non-decreasing in the resource, then only one of them will survive in the long run. However reports on wastewater treatment plants have shown coexistence between species in nitrifying reactors \cite{Wagner2002}, thus implying that a more complex growth law is required to include microbial diversity.
 
@@ -516,7 +516,7 @@ The model is also  able to overcome the  competitive exclusion principle \cite{l
 	\begin{subfigure}[b]{0.45\textwidth}
 	\includegraphics[width=\textwidth]{OD_parameters_Dumont}
 	\end{subfigure}
-	\caption{Left: interactions of the system. Right: operating diagram of Model \eqref{system}, with parameters in Table \ref{Parameters Dumont}. The different zones represent the surviving species in the steady state. PN takes place when neither $x_3$ nor $x_4$ are present. CN takes place if $x_3$ or $x_4$ are present.}
+	\caption{Left: interaction matrix associated with model \eqref{system} as estimated in Dumont el al. \cite{Dumont2016} for a consortia of 4 bacterial species where $x_1$ and $x_2$ are AOB and $x_3$ and $x_4$ are NOB. Right: associated operating diagram with parameters in Table \ref{Parameters Dumont}. The different zones represent the surviving species in the steady state. PN takes place when neither $x_3$ nor $x_4$ are present. CN takes place if $x_3$ or $x_4$ are present.}
 	\label{OD Dumont}
 \end{figure}
 
@@ -542,7 +542,7 @@ The model is also  able to overcome the  competitive exclusion principle \cite{l
 	\begin{subfigure}[b]{0.45\textwidth}
 		\includegraphics[width=\textwidth]{OD_parameters_modified}
 	\end{subfigure}
-	\caption{Left: interactions of the system. Right: operating diagram of Model \eqref{system}, with parameters in Table \ref{Parameters Modified}. The 8 different zones represent the surviving species in the steady state. PN takes place when neither $x_3$ nor $x_4$ are present. CN takes place if $x_3$ or $x_4$ are present.}
+	\caption{Left: random interaction matrix associated with model \eqref{system} for a consortia of 4 bacterial species where $x_1$ and $x_2$ are AOB and $x_3$ and $x_4$ are NOB. Right: associated operating diagram with parameters in Table \ref{Parameters Modified}. The 8 different zones represent the surviving species in the steady state. PN takes place when neither $x_3$ nor $x_4$ are present. CN takes place if $x_3$ or $x_4$ are present.}
 	\label{OD modified}
 \end{figure}
 \clearpage
@@ -555,7 +555,7 @@ The model here presented serves to illustrate that by considering a more complex
 \section{Generalized approach for modelling interactions}
 In the previous sections interactions were modelled as an affine function of the OTU concentration that multiplies a substrate dependent growth equation. 
 
-More generally the interaction function is defined. It represents how the growth rate of species $i$ is affected by the concentration of other species, $x$:
+More generally the interaction function represents how the growth rate of species $i$ is affected by the concentration of other species, $x$:
 
 Given a vector $(v_1,\dots,v_n)^\top$ the interaction function $\I$ is noted as:
 \begin{align}
@@ -650,7 +650,7 @@ Figures \ref{Total Biomass no noise}, \ref{AOB no noise}, and \ref{NOB no noise}
 \begin{figure}[h]
 	\centering	
 	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//Interactions_synthetic_data_no_noise}
-	\caption{Interaction Matrix of the synthetic data.}
+	\caption{Interaction matrix associated with model \eqref{system} for a simulated consortia of 15 bacterial species where $x_1$-$x_{10}$ are AOB and $x_{11}$-$x_{15}$ are NOB.}
 	\label{Interaction Matrix Simulation}
 \end{figure}
 
@@ -658,13 +658,13 @@ Figures \ref{Total Biomass no noise}, \ref{AOB no noise}, and \ref{NOB no noise}
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\textwidth]{Synthetic_data//lambda_=_e-4//191209_no_noise_Biomass_Iter_10}
-	\caption{Total biomass. Dotted line: simulated data. Continuous line: the tracking procedure results.}
+	\caption{Dotted line: simulated total biomass for model \eqref{system} with interactions shown in Figure \ref{Interaction Matrix Simulation} and parameters\iffalse quels paramètres ?\fi. Continuous line: total biomass as predicted  by the tracking procedure.}
 	\label{Total Biomass no noise}
 \end{figure}
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\textwidth]{Synthetic_data//lambda_=_e-4//191209_no_noise_AOB_Iter_10}
-	\caption{AOB biomass. Dotted line: simulated data. Continuous line: the tracking procedure results.}
+	\caption{Dotted line: simulated AOB biomass. Continuous line: the tracking procedure results.}
 	\label{AOB no noise}
 \end{figure}
 \begin{figure}[h]
@@ -710,11 +710,11 @@ In figure \ref{Comparison_lambda} the different controls obtained by varying $\l
 \clearpage
 \section{Application}
  
-The method was stopped after 10 iterations where each iteration took approximately 800 seconds of computing time in a computer equipped with 8gb of RAM memory and Intel core i3-7100U CPU 2,40 GHz.
+The method was stopped after 10 iterations where each iteration took approximately 800 seconds of computing time in a computer equipped with 8gb of RAM memory and Intel core i3-7100U CPU 2,40 GHz.\iffalse Cette phrase devrait figurer dans la partie précédente ?\fi
 
-The tracking problem was applied to data coming from a nitrification process; the experimental conditions are described in \cite{dumont2008observers}. For exploring the hypothesis of interactions as drivers of bioreactors performance environmental conditions should be kept as constant as possible. Therefore only data from day $183$ onwards was used because a change in the operating temperature happened at that point, which is known to have an effect on the kinetics. For choosing which species belong in which functional group, the procedure described in \cite{Ugalde-Salas2019} was used: from day $183$ to day $315$: 30 OTU were identified in the $G_1$ group (known as Ammonium oxidizing bacteria AOB) and 5 in the $G_2$ functional group (known as Nitrite oxidizing bacteria NOB). The system state dimension becomes 38.
+The tracking problem was applied to data coming from a nitrification process; the experimental conditions are described in \cite{dumont2008observers}. For exploring the hypothesis of interactions as drivers of bioreactors performance environmental conditions should be kept as constant as possible. Therefore only data from day $183$ onwards was used because a change in the operating temperature happened at that point, which is known to have an effect on the kinetics. For choosing which species belong in which functional group, the procedure described in \cite{Ugalde-Salas2019} was used: from day $183$ to day $315$: 30 OTU were identified in the $G_1$ group (AOB) and 5 in the $G_2$ functional group (NOB). The system state dimension becomes 38.
 
-The knowledge of functions $f_i(s)$ was based on a study of nitrification's kinetic parameters\cite{Wiesmann1994}. Particularly given the system's ammonium and nitrate concentration a Monod function (eq \eqref{monod}) was used for $G_1$ and $G_2$. 
+The knowledge of functions $f_i(s)$ was based on a study of nitrification's kinetic parameters\cite{Wiesmann1994}\iffalse est-ce que tu donnes les paramètres quelquepart ?\fi. Particularly given the system's ammonium and nitrate concentration a Monod function (eq \eqref{monod}) was used for $G_1$ and $G_2$. 
 \begin{align}
 \label{monod} f_i(s) &= \bar{\mu}_2 \dfrac{s_1}{K_1 +s_1} \, \forall i \in G_1 \\
 \notag  f_i(s) &= \bar{\mu}_2 \dfrac{s_2}{K_2 +s_2 } \, \forall i \in G_2
@@ -742,7 +742,7 @@ For the reader to gain understanding of the situation, a simulation of the syste
 	\label{u=1_NOB}
 \end{figure}
 \pagebreak
-When applying the presented method one obtains the simulation that can be seen in figure \ref{ControlSimulation}. The method captures the tendencies in the measured substrates. The simulation of each functional $G_1$ (AOB), and $G_2$ (NOB) can be seen in figures \ref{AOBSimulation} and \ref{NOB Simulation}, respectively. Note that the fit of $G_1$ seems better than the fit of $G_2$, which can be explained by the 1 order of magnitude difference of abundance between the members of the group.
+When applying the presented method one obtains the simulation that can be seen in figure \ref{ControlSimulation}. The method captures the tendencies in the measured substrates and products. The simulation of each functional $G_1$ (AOB), and $G_2$ (NOB) can be seen in figures \ref{AOBSimulation} and \ref{NOB Simulation}, respectively. Note that the fit of $G_1$ seems better than the fit of $G_2$, which can be explained by the 1 order of magnitude difference of abundance between the members of the group.
 
 
 \begin{figure}[h]
@@ -819,7 +819,7 @@ Last decades advances in genetic sequencing and microbial ecology has opened a g
 
 The tracking model was proposed  in a chemostat setting as a way to correct a substrate limited expression. However the technique could be used in contexts where less information on the growth function of microbes is known. If one supposes nothing on the growth expression but the fact that is bounded (life cannot grow infinitely fast) the model becomes a linear model and one recovers a classic quadratic regulator for linear systems. Nevertheless, even in the former case, the synthesis of the optimal bounded control remains an open theoretical challenge.
 
-The interaction function introduced tries to address the issue of prediction from genetic sequencing. The analysis of the gLV model proposed by Dumont \textit{et al.} \cite{Dumont2016} shows a new mechanism by which the CEP may not hold, however we conjecture that the system seems to have only one positive stable equilibrium. From the application section one can see that by correcting the growth rate one is able to recuperate the chemical species dynamics, implying that interactions are driving the system. The former correction varies strongly and when compared to the proof of section one may hypothesise that linear pairwise interaction model can not capture the complexity of the particular chemostat analysed. This opens the question for a broader class of interaction functions that could fit well complex microbial ecosystems. The experimental study in chemostat systems seems a good compromise between completely open ecosystems (nature) and controlled conditions (laboratory) in order to explore expressions that could account for microbial interactions.
+The interaction function introduced tries to address the issue of prediction from genetic sequencing. The analysis of the gLV model proposed by Dumont \textit{et al.} \cite{Dumont2016} shows a new mechanism by which the CEP may not hold, however we conjecture that the system seems to have only one positive stable equilibrium. From the application section one can see that by correcting the growth rate one is able to recuperate the chemical species dynamics, implying that interactions are driving the system. The former correction varies strongly and when compared to the proof of section one may hypothesise that linear pairwise interaction model such as the gLV model can not capture the complexity of the particular chemostat analysed. This opens the question for a broader class of interaction functions that could fit well complex microbial ecosystems. The experimental study in chemostat systems seems a good compromise between completely open ecosystems (nature) and controlled conditions (laboratory) in order to explore expressions that could account for microbial interactions.
 
 The interpretation of the correction term as interactions is not the only possible reading. In other contexts the correction term might also be interpreted as a non accounted phenomena ranging from environmental factors (e.g. temperature, pH) to other biological factors (viruses, flock formation, pathogens). Alternative hypothesis for explaining the observed patterns in the microbial community should be considered as well.  
 
