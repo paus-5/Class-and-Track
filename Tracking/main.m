@@ -2,8 +2,8 @@
 %main: process and filter data to model.
 close all
 clear
-load('MAT_files\synthetic_data_no_noise')
-name_file = '191211_no_noise';
+load('MAT_files\Classification_day_183_315_gurobi')
+name_file = '200116_day_183_315_gurobi';
 nA = round(sum(class_AOB));
 nB = round(sum(class_NOB)); 
 n = nA+nB;
