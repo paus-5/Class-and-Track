@@ -127,7 +127,7 @@
 \dochead{}
 %% Use \dochead if there is an article header, e.g. \dochead{Short communication}
 
-\title{Microbial interactions as drivers of a chemostat ecosystem}
+\title{Microbial interactions as drivers of a nitrifying ecosystem in a chemostat}
 %% \title{Correcting/Improving chemostat models from microbial interactions}
 %% Including microbial ecology in a chemostat model: tracking microbial interactions
 %% 
@@ -142,7 +142,7 @@
 \address{}
 
 \begin{abstract}
-	This article deals with the inclusion of microbial ecology advances in bioprocess modelling. The first part presents the mathematical analysis of a model that may be framed within the class of Lotka-Volterra models fitted to experimental data in a chemostat setting. The limitations and the insights of such an approach are discussed. The main novelty of this work lies in the second part, where the use of an optimal tracking technique for the integration of genetic sequencing in chemostat models is presented. The method revisits the experimental data used for the first model. 
+	This article deals with the inclusion of microbial ecology advances in bioprocess modelling. The first part presents the mathematical analysis of a model that may be framed within the class of Lotka-Volterra models fitted to experimental data in a chemostat setting. The limitations and the insights of such an approach are discussed. The main novelty of this work lies in the second part, where the use of an optimal tracking technique (developed within the framework of control theory) for the integration of genetic sequencing in chemostat models is presented. The method revisits the data used in the aforementioned chemostat setting. 
 \end{abstract}
 
 \end{frontmatter}
@@ -154,17 +154,17 @@ Microbial communities and their interactions play a central role in the understa
 
 The classical ecological concept of species and niche in the microbial world is an elusive one: In the macro world one can clearly identify one species of another for reproductive reasons and their ability to give birth to offspring. In the case of bacteria and archea, reproduction goes simply by binary fission and exchange of some functional genes (the ability to synthesize or metabolize substances) can be acquired in evolutionary scale through lateral gene transfer \cite{Boucher2003}. Therefore as an ecological problem is hard to precise the 'niche' of 'species'.
 
-These obstacles can be circumvented by considering the microbiologist concept of operative taxonomic unit (OTU) based on the clustering of organisms sharing similar sequences of 16S rDNA marker gene. There is a core genome in Bacteria, which is in turn related to the main metabolism of Bacteria\iffalse cette phrase n'est pas claire, on pourrait éventuellement simplement la retirer \fi. The abundance of the present OTU allows to account for a group of Bacteria that behave similarly in terms of which substances catabolyzes and at which growth rates and substrate to biomass conversion yields \cite{Muyzer1993}.
+These obstacles can be circumvented by considering the microbiologist concept of operative taxonomic unit (OTU) based on the clustering of organisms sharing similar sequences of 16S rDNA marker gene. There is a core genome in Bacteria, which is in turn related to the main metabolism of Bacteria, and thus their 'function' within a given ecosystem. The function of an OTU, from an engineering perspective, is given by which substances are transformed and at which growth rates and substrate to biomass conversion yields \cite{Muyzer1993}.
 
 In the past years considerable efforts have been made to measure the bacterial community composition. Tests such as fluorescence in situ hybridization, polymerase chain reaction (PCR) dependent techniques, and PCR independent techniques for the analysis of DNA, RNA, proteins, and metabolites have become a standard tool for studying  microbial diversity\cite{FERRERA2016790}. 
 
-The contribution of this article is a new method to integrate the microbial community measurements in chemostat models, based on any sequencing or fingerprinting technique that can quantify the species abundances through time. This is a first step towards developing predictive models of a reactor's outcome based on the microbial community structure.
+The contribution of this article is a new method to integrate the microbial community measurements in chemostat models, based on any sequencing or fingerprinting technique that can quantify the species abundances over time. This is a first step towards developing predictive models of a reactor's outcome based on the microbial community structure.
 
 As a departing point the work of Dumont et al.\cite{Dumont2016} is reinspected in section 2. They model a chemostat experiment where nitrification takes place by considering a generalized Lotka-Volterra (gLV) model \cite{Hernandez-Bermejo1997} coupled with a substrate limited growth expression. Section 3 deals with the mathematical analysis of their model. It is shown that the number of possible equilibrium points grows exponentially with the number of species. Finally after a numerical analysis it is conjectured that there always exists a single stable equilibrium point depending on the operational parameters.  
 
-Section 4 is the article's core contribution. The concept of interaction function is developed such that it generalizes the gLV model. For the identification of the interaction function a method of optimal control theory was adapted: The growth rate of each species is modulated by a constrained regular control of the system, thus the growth rate of each OTU is corrected in order to fit the experimental data. The regular control is composed of a feedback part on the species state variable, and a feed forward part, or tracking, on the measurement of abundances of each species, it is solved via state-dependent ricatti equations \cite{Cimen2008}. 
+Section 4 is the article's core contribution. The concept of interaction function is developed such that it generalizes the gLV model. For the identification of the interaction function a method of optimal control theory was adapted: The growth rate of each species is modulated by a constrained regular control of the system, thus the growth rate of each OTU is corrected in order to fit the experimental data. The regular control is composed of a feedback part on the species state variable, and a feed forward part, or tracking, on the measurement of abundances of each species, it is solved via state-dependent Ricatti equations \cite{Cimen2008}. 
 
-In section 5 the methodology from section 4 is applied to all of the data from the experiments performed by Dumont \textit{et al}\cite{Dumont2009} and not just to the most abundant species as it was the case of the model analysed in section 2\cite{Dumont2016}. The method shows that by following the community dynamics one can reconstruct the dynamics of the chemical species. The article ends with a discussion on the scope of applicability of the method and perspectives. 
+In section 5 the methodology from section 4 is applied to all of the data from the experiments performed by Dumont \textit{et al}\cite{Dumont2009} and not just to the most abundant species as it was the case of the model analysed in section 2\cite{Dumont2016}. The method shows that by following the community dynamics one can reconstruct the dynamics of the chemical substrate. The article ends with a discussion on the scope of applicability of the method and perspectives. 
 
 \section{Model Definition}
 
@@ -189,6 +189,7 @@ Notations used throughout the article:
 	\item $k$: vector $k_1,\dots,k_n$.
 	\item For integers $m_1$ and $m_2$ and $a \in \R$, $a_{m_1 \times m_2}$ represents a matrix of $m_1$ rows and $m_2$ columns with $a$ in every entry. 
 	\item Let $m$ be an integer then $I_m$ is the identity matrix of size $m$.
+	\item Let $A$ be a finite set with $m \in \N$ elements. Then $\vert A \vert := m$. 
 \end{enumerate}
 
 \subsection{Stoichiometric Equations}
@@ -199,16 +200,16 @@ A cascade (bio)reaction process is considered. Suppose $n$ different OTU are pre
 
 The situation is described as simplified reactions \eqref{Reaction1} and \eqref{Reaction2}. The reactions are simplified in the sense that they do not attempt to represent a balanced chemical reaction, rather it represents the direction of the bioprocess and the proportions of different consumed and formed compounds of interest. 
 
-The terms $y_i$ are known as yields, it represents the number of grams of biomass produced per gram of substrate consumed. In this work the unit grams of dry biomass per gram of substrate is used for yields. Furthermore, for each $ i \in [n]$, OTU $i$ is characterized by its process rate (also known as growth function) $\mu_i(s,x)$. Notice that for being as generic as possible, the growth rate may be a function of the whole state in order to model the influence of all OTU on the growth rates of others.
+The terms $y_i$ are known as yields, they represent the number of grams of biomass produced per gram of substrate consumed for OTU $i$. In this work the unit grams of dry biomass per gram of substrate is used for yields. Furthermore, for each $ i \in [n]$, OTU $i$ is characterized by its process rate (also known as growth function) $\mu_i(s,x)$. Notice that for being as generic as possible, the growth rate may be a function of the whole state in order to model the influence of all OTU on the growth rates of others.
 \begin{align}
 \label{Reaction1} \tag{R G1} 	s_1 \stackrel{\mu_i(s,x)}{\longrightarrow} s_2 + y_ix_1 \quad \forall i \in G_1 \\
 \label{Reaction2} \tag{R G2} s_2\stackrel{\mu_i(s,x)}{\longrightarrow} s_3 + y_ix_i \quad \forall i \in G_2
 \end{align}
 
-An example of this process is the nitrification process where group $G_1$ is known as Ammonium oxidizer Bacteria (AOB), and group $G_2$ is known as Nitrite oxidizing Bacteria (NOB) \cite{SHARMA1977897}.
+An example of this process is the nitrification process where group $G_1$ is known as Ammonium oxidizing Bacteria (AOB), and group $G_2$ is known as Nitrite oxidizing Bacteria (NOB) \cite{SHARMA1977897}.
 \subsection{Mass Balance Equations}
 
-Consider the scenario of an continuous and homogeneous reactor: the input flow is the same as the output flow, with a dilution rate of $D$. The input flow contains a concentration $s_{in}$ of substrate $s_1$. Note that $s_{in}$ and $D$ are time dependent. Each OTU grows at a rate $\mu_i(s,x)$. System \eqref{system} represents this situation. A specific case of $\mu_i(s,x)$ is given in the next subsection. 
+Consider the scenario of an continuous and homogeneous reactor: the input flow is the same as the output flow, with a dilution rate $D$. The input flow contains a concentration $s_{in}$ of substrate $s_1$. Note that $s_{in}$ and $D$ are time dependent. Each OTU grows at a rate $\mu_i(s,x)$. System \eqref{system} represents this situation. A specific case of $\mu_i(s,x)$ is given in the next subsection. 
 
 \begin{align} 
 \label{system}
@@ -229,7 +230,7 @@ In the work of Dumont \textit{et al.} \cite{Dumont2016} the growth rate seen in 
 \label{gLV growth2}\mu_i(s,x) &= \bar{\mu}_i \dfrac{s_2}{K_i + s_2}\left(1+\sum \limits_{j\in [n]} a_{ij} x_{j} \right) \quad \forall i \in G_2 
 \end{align}
 
-The term $\left(1+\sum \limits_{j\in [n]} a_{ij} x_{j} \right)$ accounts for pairwise interactions affecting the growth rate of each OTU. Let $A$ denote the matrix
+The term $\left(1+\sum \limits_{j\in [n]} a_{ij} x_{j} \right)$ accounts for pairwise interactions affecting the growth rate of each OTU, while the term $\bar{\mu}_i\dfrac{s_j}{K_i + s_j}$ represents the substrate limitation \cite{monod1942recherches}. Let $A$ denote the matrix
 with entries $a_{ij}$, which will be referred to as the interaction matrix. The following section of this article deals with the mathematical analysis of model \eqref{system} with growth rates given by \eqref{gLV growth1} and \eqref{gLV growth2}.
 
 \section{Mathematical Analysis}
@@ -242,7 +243,7 @@ The system of equations \eqref{system} is defined in the region
 
 First sufficient conditions for the system to be well posed are established: meaning that solutions remain bounded and non-negative in time, this ultimately implies that the solution exists for every $t \geq 0$ \cite{Khalil1996}. 
 
-Second the equilibria of the system are derived. Possible equilibrium points for this system grow exponentially with the number of OTU considered ($n$).  Stability is not analytically addressed, a numerical scheme calculating every equilibrium point and the system's Jacobian eigenvalues at the equilibrium point were implemented for studying the system. 
+Second the equilibria of the system are derived. Possible equilibrium points for this system grow exponentially with the number of OTU considered ($n$).  Stability is not analytically addressed, a numerical scheme calculating every equilibrium point and the system's Jacobian eigenvalues at the equilibrium point was implemented for studying the system. 
 
 
 \subsection{Properties of the system}
@@ -308,7 +309,8 @@ f_i(s) = \begin{cases}
 \bar{\mu}_i \dfrac{s_2}{K_i + s_2} \quad \forall i \in G_2
 \end{cases}
 \end{align}
-With the above system \eqref{system}, is rewritten in equations \eqref{Eq1}, \eqref{Eq2}, \eqref{Eq3}, and \eqref{Eq4}.
+
+with the above system \eqref{system}, is rewritten in equations \eqref{Eq1}, \eqref{Eq2}, \eqref{Eq3}, and \eqref{Eq4}. 
 
 \begin{align}
 \label{Eq1}	\dot{x} = & \diag(x)(\diag(f(s))(1_{n\times 1} + Ax) - D_{n\times 1}) \\
@@ -483,15 +485,16 @@ The former discussion proposes an algorithm for finding the positive stable equi
 		\If{$(x,s_1,s_2,s_3) \geq 0$}{eig = Eigenvalues of $J(x,s_1,s_2,s_3)$ \\
 			\If{$Real(eig) < 0$}{$PSP = PSP \cup (x,s_1,s_2,s_3)$}}}
 	\label{StabilityAnalysis}
+	\caption{Algorithm for evaluating the possible equilibrium points of system \eqref{system}.}
 \end{algorithm}
 
 The algorithm implicitly assumes that every submatrix $A'$ is invertible.
 
-Operating diagrams are an illustrative way of representing the long term behaviour of a reactor depending on operating parameters. Operating diagrams are created by running algorithm \eqref{StabilityAnalysis} for different pairs $(s_{in},D)$ \cite{lobry2017chemostat}. One then regroups all the pairs such that the set of non-active coordinates of the points of the set $PSP$ are the same and have the same stability properties. This regrouping represents graphically the coexistence of the different OTU in a $D-s_{in}$ plot. In particular for the biological process of nitrification, this allows to represent when partial nitrification (PN) or complete nitrification (CN) may arise \cite{KHIN2004519}. PN refers to the state when nitrite $s_2$, accumulates because the OTU of $G_2$ concentration is very low and thus almost no conversion from $s_2$  to $s_3$ takes place. On the contrary CN is when nitrate ($s_3$) accumulates because of the presence of OTU of $G_2$.
+Operating diagrams are an illustrative way of representing the long term behaviour of a reactor depending on operating parameters. Operating diagrams are created by running algorithm \ref{StabilityAnalysis} for different pairs $(s_{in},D)$ \cite{lobry2017chemostat}. One then regroups all the pairs such that the set of non-active coordinates of the points of the set $PSP$ are the same and have the same stability properties. This regrouping represents graphically the coexistence of the different OTU in a $D-s_{in}$ plot. In particular for the biological process of nitrification, this allows to represent when partial nitrification (PN) or complete nitrification (CN) may arise \cite{KHIN2004519}. PN refers to the state when nitrite $s_2$, accumulates because the OTU of $G_2$ concentration is very low and thus almost no conversion from $s_2$  to $s_3$ takes place. On the contrary CN is when nitrate ($s_3$) accumulates because of the presence of OTU of $G_2$.
 
-The operating diagram from one of the sets of the parameter identification (obtained with a Bayesian estimation method) from Dumont et al. is presented in figure \ref{OD Dumont}. Their fit describes well the dynamics of the OTU, which is not the case for measured chemical species. Two OTU per functional group were considered. One can see that coexistence in the same functional group is never attained. However when using a different set of parameters one can see a more complex situation where coexistence in the same functional group is possible as seen in figure \ref{OD modified}. In the latter case CN can be achieved at a more elevated dilution rate than in the former case. Parameters of cases 1 and 2 can be seen in table \ref{Parameters Dumont} and \ref{Parameters Modified}, respectively. 
+The operating diagram from one of the sets of the parameter identification (obtained with a Bayesian estimation method) from Dumont et al. is presented in figure \ref{OD Dumont}. Their fit describes well the dynamics of the OTU, but is not the case for measured substrates. Two OTU per functional group were considered. One can see that coexistence in the same functional group is never attained for one of the parameter set obtained (their method provided several sets of parameters). On the contrary, when using a random interaction matrix, and modifying the kinetic coefficients  (note that $x_1$ and $x_3$ have the same $\mu_i$ and $K_i$ in case 1 and 2) one can see a more complex situation where coexistence in the same functional group is possible as seen in figure \ref{OD modified}. In the latter case CN can be achieved at a more elevated dilution rate than in the former case. Parameters of cases 1 and 2 can be seen in table \ref{Parameters Dumont} and \ref{Parameters Modified}, respectively. 
 
-The model is also  able to overcome the  competitive exclusion principle \cite{lobry2017chemostat} (CEP) paradigm. The CEP roughly states that if two species are growing on the same limiting resource, and their growth laws are non-decreasing in the resource, then only one of them will survive in the long run. However reports on wastewater treatment plants have shown coexistence between species in nitrifying reactors \cite{Wagner2002}, thus implying that a more complex growth law is required to include microbial diversity.
+The model is also  able to overcome the  competitive exclusion principle \cite{lobry2017chemostat} (CEP) paradigm. The CEP roughly states that if two species are growing on the same limiting resource, and their growth laws are non-decreasing in the resource, then only one of them will survive in the long run. However reports on wastewater treatment plants have shown coexistence between species in nitrifying reactors \cite{Wagner2002}, thus implying that a more complex growth law or model structure involving other biological processes is required to include microbial diversity.
 
 
 \begin{table}[ht]
@@ -549,7 +552,7 @@ The model is also  able to overcome the  competitive exclusion principle \cite{l
 
 \subsection{Remarks}
 
-The model here presented serves to illustrate that by considering a more complex growth rate that tries to model ecological interactions one might explain differences in reactors operating under similar conditions. It also shows a new mechanism by which the CEP no longer holds. The operating diagrams always show a single stable equilibrium point for each pair $(s_{in},D)$, however no proof is offered to such conjecture. Since the gLV model discussed (and calibrated in \cite{Dumont2016}) fails to completely capture the dynamics observed in the chemostat experiments, 
+The model here presented serves to illustrate that by considering a more complex growth rate that tries to model ecological interactions one might explain differences in reactors operating under similar conditions. It also shows a new mechanism by which the CEP no longer holds. The operating diagrams always show a single stable equilibrium point- with possible coexistence of all species- for each pair $(s_{in},D)$, however no proof is offered to such conjecture. Since the gLV model discussed (and calibrated in \cite{Dumont2016}) fails to completely capture the dynamics observed in the chemostat experiments, the next section proposes a model to study.
 
 
 \section{Generalized approach for modelling interactions}
@@ -592,7 +595,7 @@ Since the growth of a single strain in batch experiments is driven by the substr
 \end{hypo}
 
 
-Note $J_I(x)$ the Jacobian matrix of function $\mathcal{I}$. then a first order approximation of $\I(\cdot)$ centred at $\bar{x}$ gives: $\I(x) = \I(\bar{x}) + J_I(\bar{x})(x-\bar{x}) + o(\Vert x- \bar{x} \Vert)$. When $\bar{x}= 0$ one recovers the growth expression from the previous section (equations \eqref{gLV growth1} and \eqref{gLV growth2}) implying that $J_I(\bar{0})$ can be seen as the interaction matrix from model \eqref{system}.
+Note $J_I(x)$ the Jacobian matrix of function $\mathcal{I}$, then a first order approximation of $\I(\cdot)$ centred at $\bar{x}$ gives: $\I(x) = \I(\bar{x}) + J_I(\bar{x})(x-\bar{x}) + o(\Vert x- \bar{x} \Vert)$. When $\bar{x}= 0$ one recovers the growth expression from the previous section (equations \eqref{gLV growth1} and \eqref{gLV growth2}) implying that $J_I(\bar{0})$ can be seen as the interaction matrix from model \eqref{system}.
 
 \subsection{Unravelling the Interaction Function}
 
@@ -612,22 +615,21 @@ y(t) & = g(x,s)
 \end{array}
 \end{align}	
 
-For this model $g(x,s) = x$, since we are observing measurements coming from genetic sequencing. Consider the weighted norms defined by positive definite matrices $Q$ and $R$, represented by $\Vert \cdot \Vert_Q$ and $\Vert \cdot \Vert_R$, respectively, and a positive real $a$. The optimal tracking problem is defined as: 
+For this model $g(x,s) = x$, since we are observing measurements coming from genetic sequencing. Consider the weighted norms defined by positive definite matrices $Q$ and $R$, represented by $\Vert \cdot \Vert_Q$ and $\Vert \cdot \Vert_R$, respectively, and a positive real $\bar{u}$. The optimal tracking problem is defined as: 
 
 \begin{align}
 \label{Optimal Control} \begin{array}{cc} \min &  \int \limits_{0}^{T} \Vert g(x,s) - z \Vert_Q + \Vert(u -\vec{1}) \Vert_R dt\\
 s.t.& 
 (x,s_1,s_2,s_3)\mbox{ solution of \eqref{Controlsystem}} \\
-&u_i(t) \in [0,a]
+&u_i(t) \in [0,\bar{u}]
 \end{array}	
 \end{align} 
 
 The control $u(t)$ is intended to drive the system to be near a desired output $z(t)$, which in this context are the measurements of the concentrations of OTU. The term $\lambda \Vert(u -\vec{1}) \Vert_R$, was added for two reasons:
-
-First because the interest is testing the idea that interactions could be driving the system. Therefore adding a penalization in the objective function for each control to remain near $1$ can be seen as an attempt to explain data without any interaction.
-
-Second, to force a regularized control. Otherwise note that $u$ is linear in \eqref{Controlsystem}, therefore if the integral cost does not have a non-linear expression of $u$ the optimal control will be of a bang-bang type with possibly singular arcs. Since the objective is to find a differentiable expression of $I(x)$ the addition of the regularization term is deemed necessary.
-
+\begin{itemize}
+\item First because the interest is testing the idea that interactions could be driving the system. Therefore adding a penalization in the objective function for each control to remain near $1$ can be seen as an attempt to explain data without any interaction.
+\item Second, to force a regularized control. Otherwise note that $u$ is linear in \eqref{Controlsystem}, therefore if the integral cost does not have a non-linear expression of $u$ the optimal control will be of a bang-bang type with possibly singular arcs. Since the objective is to find a differentiable expression of $I(x)$ the addition of the regularization term is deemed necessary.
+\end{itemize} 
 The problem of approximating the solution of the system to a desired reference ($z$ in this case) is called the optimal tracking problem. For solving such a problem the approach developed by Cimen \textit{et al.} \cite{Cimen2004, Cimen2008} was adapted to our problem. The method proposed involves the resolution of Approximating Sequences of Ricatti Equations (ASRE). 
 
 The method consists on iteratively calculating trajectories of system \eqref{Controlsystem} with a certain control and feeding a non-autonomous Ricatti differential equation with the resulting trajectory. Then a control law that uses the Ricatti equation is proposed and a new trajectory is calculated. The iteration is stopped when a convergence in the output or in the control is observed.
