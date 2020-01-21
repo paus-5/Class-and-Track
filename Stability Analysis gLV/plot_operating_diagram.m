@@ -1,14 +1,14 @@
 clear
 close all
-file_name_in = 'Parameters_modified';
+file_name_in = 'synthetic_data_no_noise_200121';
 load(sprintf('MAT_files\\Operating_Diagram_%s',file_name_in))
 figure;
 cmap1 = hsv(length(map_zones));
-[X,Y] = meshgrid(sIn_vector,D_vector);
+[X,Y] = meshgrid(s_in_vector,D_vector);
 surfc(X,Y,zones','EdgeColor','none','LineStyle','none','FaceLighting','phong');%view(2)
 colormap(cmap1)
-tickLabels = cell(1,length(mapZones));
-for i = mapZones.keys
+tickLabels = cell(1,length(map_zones));
+for i = map_zones.keys
     vec_aux = str2num(char(i));
     index_aux = find(vec_aux);
     str_aux = sprintf('x_{%.0f} ',index_aux);
@@ -17,9 +17,9 @@ for i = mapZones.keys
     else
     label = sprintf('CN: %s',str_aux);
     end
-    tickLabels(mapZones(char(i))) = cellstr(label);
+    tickLabels(map_zones(char(i))) = cellstr(label);
 end
-colorbar('Ticks',1:length(mapZones),...
+colorbar('Ticks',1:length(map_zones),...
          'TickLabels',tickLabels,...
          'FontSize',9)
 view(2)
