@@ -628,7 +628,7 @@ s.t.&
 The control $u(t)$ is intended to drive the system to be near a desired output $z(t)$, which in this context are the measurements of the concentrations of OTU. The term $\lambda \Vert(u -\vec{1}) \Vert_R$, was added for two reasons:
 \begin{itemize}
 \item First because the interest is testing the idea that interactions could be driving the system. Therefore adding a penalization in the objective function for each control to remain near $1$ can be seen as an attempt to explain data without any interaction.
-\item Second, to force a regularized control. Otherwise note that $u$ is linear in \eqref{Controlsystem}, therefore if the integral cost does not have a non-linear expression of $u$ the optimal control will be of a bang-bang type with possibly singular arcs. Since the objective is to find a differentiable expression of $I(x)$ the addition of the regularization term is deemed necessary.
+\item Second, to force a regularized control. Otherwise note that $u$ is linear in \eqref{Controlsystem}, therefore if the integral cost does not have a non-linear expression of $u$ the optimal control will be of a bang-bang type with possibly singular arcs \cite{harmand2019optimal}. Since the objective is to find a differentiable expression of $I(x)$ the addition of the regularization term is deemed necessary.
 \end{itemize} 
 The problem of approximating the solution of the system to a desired reference ($z$ in this case) is called the optimal tracking problem. For solving such a problem the approach developed by Cimen \textit{et al.} \cite{Cimen2004, Cimen2008} was adapted to our problem. The method proposed involves the resolution of Approximating Sequences of Ricatti Equations (ASRE). 
 
@@ -638,23 +638,65 @@ The tracking problem does not consider a constrained control. Nevertheless, the 
 
 Another departure from their method is that in their formulation an approximation of the dynamics for calculating the trajectories is used. They proved that such a linearisation converged to the original dynamics. In the case here presented the linearisation of the dynamics was not necessary.
 
-The change of variable $u_i(t) = v_i(t) + 1$ is used for technical reasons explained in the appendix section. This in turn implies $v_i(t) \in [-1,a-1]$.
+The change of variable $u_i(t) = v_i(t) + 1$ is used for technical reasons explained in the supplementary material section. This in turn implies $v_i(t) \in [-1,\bar{u}-1]$.
 
 The feedback control $v(t)$, will be of the form $v(t) = -R^{-1}\tilde{B}^\top(t)\left(\tilde{P}(t)x(t)-s_f(t)\right)$. Where matrix $P(t)$ and vector $s_f(t)$ solve differential equations. In the appendix it is proved that because of the structure of the system one only needs to calculate $2n$ differential equations for the synthesis of the control, instead of $(n+3)^2 + (n+3)$ that would imply the direct application of the method. Which renders the method- at least theoretically- scalable for a growing number of OTU.
 
 \subsection{Proof of concept}
 
-The approach was tested against synthetic data. The test consisted in simulating system \eqref{system} with growth functions \eqref{gLV growth1} and \eqref{gLV growth2} (therefore $I(x) = 1 + Ax$) for $n_1 = 10$ and $n_2 = 5$, with a randomly generated matrix $A$ in figure \ref{Interaction Matrix Simulation}. In all figures, asterisks represent the synthetic data, while the continuous lines represent the method's output.
+The approach was tested against synthetic data. The test consisted in simulating system \eqref{system} with growth functions \eqref{gLV growth1} and \eqref{gLV growth2}, therefore the interaction function $I(x) = 1 + Ax$), $f_i(s) = \dfrac{s_1}{K_i +s_1}$ for $i \in G_1$, and $f_i(s) = \dfrac{s_2}{K_i +s_2}$ for $i \in G_2$, for $n_1 = 10$ and $n_2 = 5$, with a randomly generated matrix $A$ in figure \ref{Interaction Matrix Simulation}. Parameters of the simulation can be seen in table . A simulation of the synthetic data is presented in figure \ref{fig:nonoise200121aobplot} and figure \ref{fig:nonoise200121nobplot} depending on operating parameters $D$ and $s_{in}$. 
 
-The choice of matrices $Q$ and $R$ are always of discussion in a quadratic regulator. $Q$ represents the covariance matrix of measurements, while the interpretation of $R$ is not clear. In the simulations here presented $Q = I_n$ and $R = \lambda I_n$. $\lambda$ is varied from $10^{-1}$ to $10^{-7}$ in the supplementary material section. The case $\lambda = 10^{-4}$ is shown in here for discussion. 
 
-Figures \ref{Total Biomass no noise}, \ref{AOB no noise}, and \ref{NOB no noise} show the total biomass concentration, and the trajectories for the OTU belonging to $G_1$ and $G_2$, respectively. It can be seen that the method approaches well the trajectories. The metabolites concentration represented in figure \ref{Metabolites no noise} are in accordance with the simulated: The method is able to reconstruct the metabolites trajectories from the community measurements. 
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{|l|l|l|l|}
+		\hline
+		Modified Parameters  & $\mu_i\,[1/day]$ & $K_i\,[mg/L]$ & $k_i =\frac{1}{y_i} \, [gr/gr]$ \\ \hline
+		$x_i \in G_1$ &0.77  &0.07  & 3.94 \\ \hline
+		$x_i\in G_2$ & 0.621 & 0.0147 & 16.12 \\ \hline
+	\end{tabular}
+	\caption{Kinetic parameters of model \eqref{system} modified from \cite{Dumont2016}.}
+	\label{Parameters_synthetic_data}
+\end{table}
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{0.45 \linewidth}
+	\includegraphics[width=\linewidth]{Images/proof_of_concept/no_noise_200121_AOB_plot}
+	\caption{}
+	\label{fig:nonoise200121aobplot}
+	\end{subfigure}
+	\begin{subfigure}{0.45 \linewidth}
+	\centering
+	\includegraphics[width=\linewidth]{Images/proof_of_concept/no_noise_200121_NOB_plot}
+	\caption{}
+	\label{fig:nonoise200121nobplot}
+	\end{subfigure}
+\caption{}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{Images/proof_of_concept/no_noise_200121_metabolites}
+	\caption{}
+	\label{fig:nonoise200121metabolites}
+\end{figure}
+
 \begin{figure}[h]
 	\centering	
-	\includegraphics[width=0.5\textwidth]{Synthetic_data_no_noise//Interactions_synthetic_data_no_noise}
-	\caption{Interaction matrix associated with model \eqref{system} for a simulated consortia of 15 bacterial species where $x_1$-$x_{10}$ are AOB and $x_{11}$-$x_{15}$ are NOB.}
-	\label{Interaction Matrix Simulation}
+	\begin{subfigure}{0.45 \linewidth}
+		\includegraphics[width=\linewidth]{Synthetic_data_no_noise//Interactions_synthetic_data_no_noise}
+		\caption{Interaction matrix associated with model \eqref{system} for a simulated consortia of 15 bacterial species where $x_1$-$x_{10}$ are AOB and $x_{11}$-$x_{15}$ are NOB.}
+		\label{Interaction Matrix Simulation}
+	\end{subfigure}
 \end{figure}
+
+
+In all figures, asterisks represent the synthetic data, while the continuous lines represent the method's output.
+
+For applying the optimal tracking approach, the choice of matrices $Q$ and $R$ are always of discussion in a quadratic regulator. $Q$ represents the covariance matrix of measurements, while $R$ is subject to interpretations depending on the context: in the case here it does not have a definite meaning, however its behaviour is studied when $\rho(R) \rightarrow 0$, with $\rho(R)$ being the spectral radius of matrix $R$. In the simulations here presented $Q = I_n$ and $R = \lambda I_n$. $\lambda$ is varied from $10^{-1}$ to $10^{-7}$ in the supplementary material section. The case $\lambda = 10^{-4}$ is shown in here for discussion. 
+
+Figures \ref{Total Biomass no noise}, \ref{AOB no noise}, and \ref{NOB no noise} show the total biomass concentration, and the trajectories for the OTU belonging to $G_1$ and $G_2$, respectively. It can be seen that the method approaches well the trajectories. The metabolites concentration represented in figure \ref{Metabolites no noise} are in accordance with the simulated: The method is able to reconstruct the metabolites trajectories from the community measurements. 
 
 
 \begin{figure}[h]
@@ -821,9 +863,9 @@ Last decades advances in genetic sequencing and microbial ecology has opened a g
 
 The tracking model was proposed  in a chemostat setting as a way to correct a substrate limited expression. However the technique could be used in contexts where less information on the growth function of microbes is known. If one supposes nothing on the growth expression but the fact that is bounded (life cannot grow infinitely fast) the model becomes a linear model and one recovers a classic quadratic regulator for linear systems. Nevertheless, even in the former case, the synthesis of the optimal bounded control remains an open theoretical challenge.
 
-The interaction function introduced tries to address the issue of prediction from genetic sequencing. The analysis of the gLV model proposed by Dumont \textit{et al.} \cite{Dumont2016} shows a new mechanism by which the CEP may not hold, however we conjecture that the system seems to have only one positive stable equilibrium. From the application section one can see that by correcting the growth rate one is able to recuperate the chemical species dynamics, implying that interactions are driving the system. The former correction varies strongly and when compared to the proof of section one may hypothesise that linear pairwise interaction model such as the gLV model can not capture the complexity of the particular chemostat analysed. This opens the question for a broader class of interaction functions that could fit well complex microbial ecosystems. The experimental study in chemostat systems seems a good compromise between completely open ecosystems (nature) and controlled conditions (laboratory) in order to explore expressions that could account for microbial interactions.
+The interaction function introduced tries to address the issue of prediction from genetic sequencing. The analysis of the gLV model proposed by Dumont \textit{et al.} \cite{Dumont2016} shows a new mechanism by which the CEP may not hold, however we conjecture that the system seems to have only one positive stable equilibrium. From the application section one can see that by correcting the growth rate one is able to recuperate the substrates dynamics, implying that interactions are driving the system. The former correction varies strongly and when compared to the proof of section one may hypothesise that linear pairwise interaction model such as the gLV model can not capture the complexity of the particular chemostat analysed. This opens the question for a broader class of interaction functions that could fit well complex microbial ecosystems. The experimental study in chemostat systems seems a good compromise between completely open ecosystems (nature) and controlled conditions (laboratory) in order to explore expressions that could account for microbial interactions.
 
-The interpretation of the correction term as interactions is not the only possible reading. In other contexts the correction term might also be interpreted as a non accounted phenomena ranging from environmental factors (e.g. temperature, pH) to other biological factors (viruses, flock formation, pathogens). Alternative hypothesis for explaining the observed patterns in the microbial community should be considered as well.  
+The interpretation of the correction term as interactions is not the only possible reading. In other contexts the correction term might also be interpreted as a non accounted phenomena ranging from environmental factors (e.g. temperature, pH) to other biological factors (viruses, flock formation, pathogens). Alternative hypothesis for explaining the observed patterns in the microbial community should be considered as well. 
 
 One of the next steps in this line of research would be to synthesize a control that is able to reconstruct interactions functions, and not just the dynamics of the species as is the case presented. One might bypass the end point issue of the current control scheme, by, for example, taking the derivative of the control in the cost function, instead of the control itself, or alternatively by eliminating the control cost and making a very thorough use of the pontryagin maximum principle and the switch function for the synthesis of the controls.
 
