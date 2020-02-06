@@ -488,7 +488,7 @@ The former discussion proposes an algorithm for finding the positive stable equi
 	\caption{Algorithm for evaluating the possible equilibrium points of system \eqref{system}.}
 \end{algorithm}
 
-The algorithm implicitly assumes that every submatrix $A'$ is invertible.
+Algorithm \ref{StabilityAnalysis} implicitly assumes that every submatrix $A'$ is invertible.
 
 Operating diagrams are an illustrative way of representing the long term behaviour of a reactor depending on operating parameters. Operating diagrams are created by running algorithm \ref{StabilityAnalysis} for different pairs $(s_{in},D)$ \cite{lobry2017chemostat}. One then regroups all the pairs such that the set of non-active coordinates of the points of the set $PSP$ are the same and have the same stability properties. This regrouping represents graphically the coexistence of the different OTU in a $D-s_{in}$ plot. In particular for the biological process of nitrification, this allows to represent when partial nitrification (PN) or complete nitrification (CN) may arise \cite{KHIN2004519}. PN refers to the state when nitrite $s_2$, accumulates because the OTU of $G_2$ concentration is very low and thus almost no conversion from $s_2$  to $s_3$ takes place. On the contrary CN is when nitrate ($s_3$) accumulates because of the presence of OTU of $G_2$.
 
@@ -496,6 +496,7 @@ The operating diagram from one of the sets of the parameter identification (obta
 
 The model is also  able to overcome the  competitive exclusion principle \cite{lobry2017chemostat} (CEP) paradigm. The CEP roughly states that if two species are growing on the same limiting resource, and their growth laws are non-decreasing in the resource, then only one of them will survive in the long run. However reports on wastewater treatment plants have shown coexistence between species in nitrifying reactors \cite{Wagner2002}, thus implying that a more complex growth law or model structure involving other biological processes is required to include microbial diversity.
 
+As shown in operating diagram \ref{Parameters Modified}, there exists a bi stability zone, which is corroborated from a simulation: depending on the initial conditions of the system the predicted outcome might vary. The therefores
 
 \begin{table}[ht]
 	\centering
@@ -519,7 +520,7 @@ The model is also  able to overcome the  competitive exclusion principle \cite{l
 	\begin{subfigure}[b]{0.45\textwidth}
 	\includegraphics[width=\textwidth]{OD_parameters_Dumont}
 	\end{subfigure}
-	\caption{Left: interaction matrix associated with model \eqref{system} as estimated in Dumont el al. \cite{Dumont2016} for a consortia of 4 bacterial species where $x_1$ and $x_2$ are AOB and $x_3$ and $x_4$ are NOB. Right: associated operating diagram with parameters in Table \ref{Parameters Dumont}. The different zones represent the surviving species in the steady state. PN takes place when neither $x_3$ nor $x_4$ are present. CN takes place if $x_3$ or $x_4$ are present.}
+	\caption{Left: interaction matrix associated with model \eqref{system} as estimated in Dumont el al. \cite{Dumont2016} for a consortia of 4 bacterial species where $x_1$ and $x_2$ are AOB and $x_3$ and $x_4$ are NOB. Right: associated operating diagram with parameters in Table \ref{Parameters Dumont}. The different zones represent the surviving species in the steady state. PN takes place when neither $x_3$ nor $x_4$ are present. CN takes place if $x_3$ or $x_4$ are/ present.}
 	\label{OD Dumont}
 \end{figure}
 
@@ -552,8 +553,7 @@ The model is also  able to overcome the  competitive exclusion principle \cite{l
 
 \subsection{Remarks}
 
-The model here presented serves to illustrate that by considering a more complex growth rate that tries to model ecological interactions one might explain differences in reactors operating under similar conditions. It also shows a new mechanism by which the CEP no longer holds. The operating diagrams always show a single stable equilibrium point- with possible coexistence of all species- for each pair $(s_{in},D)$, however no proof is offered to such conjecture. Since the gLV model discussed (and calibrated in \cite{Dumont2016}) fails to completely capture the dynamics observed in the chemostat experiments, the next section proposes a model to study.
-
+The model here presented serves to illustrate that by considering a more complex growth rate that tries to model ecological interactions one might explain differences in reactors operating under similar conditions. It also shows a new mechanism by which the CEP no longer holds. The operating diagrams almost always show a single stable equilibrium point- with possible coexistence of all species- for each pair $(s_{in},D)$, however a thin zone is presented where two stable equilibriums coexist, thus the behaviour of the system depends on the initial conditions. Since the gLV model discussed (and calibrated in \cite{Dumont2016}) fails to completely capture the dynamics observed in the chemostat experiments, the next section proposes a new model to study.
 
 \section{Generalized approach for modelling interactions}
 In the previous sections interactions were modelled as an affine function of the OTU concentration that multiplies a substrate dependent growth equation. 
@@ -632,9 +632,9 @@ The control $u(t)$ is intended to drive the system to be near a desired output $
 \end{itemize} 
 The problem of approximating the solution of the system to a desired reference ($z$ in this case) is called the optimal tracking problem. For solving such a problem the approach developed by Cimen \textit{et al.} \cite{Cimen2004, Cimen2008} was adapted to our problem. The method proposed involves the resolution of Approximating Sequences of Ricatti Equations (ASRE). 
 
-The method consists on iteratively calculating trajectories of system \eqref{Controlsystem} with a certain control and feeding a non-autonomous Ricatti differential equation with the resulting trajectory. Then a control law that uses the Ricatti equation is proposed and a new trajectory is calculated. The iteration is stopped when a convergence in the output or in the control is observed.
+The method consists on iteratively calculating trajectories of system \eqref{Controlsystem} with a certain control and feeding a non-autonomous Ricatti differential equation with the resulting trajectory. Then a control law that uses the solution of the Ricatti equation is proposed and a new trajectory is calculated. The iteration is stopped when a convergence in the output or  the control is observed.
 
-The tracking problem does not consider a constrained control. Nevertheless, the methods of Cimen \textit{et al.}\cite{Cimen2004} were directly used with an explicit constraint in the synthesis of the control. Even though this is probably suboptimal when the control reaches its bounds, one at least is certain of its optimality when the control never activates its constraints.
+The tracking problem does not consider a constrained control. Nevertheless, the methods of Cimen \textit{et al.}\cite{Cimen2004} were directly used with an explicit constraint in the synthesis of the control. Even though this is probably suboptimal when the control reaches its bounds, one at least is certain of its optimality when the control never reaches its constraints.
 
 Another departure from their method is that in their formulation an approximation of the dynamics for calculating the trajectories is used. They proved that such a linearisation converged to the original dynamics. In the case here presented the linearisation of the dynamics was not necessary.
 
