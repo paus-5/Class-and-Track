@@ -1,27 +1,22 @@
 clear
 close all
-file_name_in = 'synthetic_data_no_noise_200121';
+file_name_in = 'parameters_Dumont';
 load(sprintf('MAT_files\\Operating_Diagram_%s',file_name_in))
 figure;
-cmap1 = hsv(length(map_zones));
+number_of_zones = length(unique(zones));
+cmap1 = cool(number_of_zones);
 [X,Y] = meshgrid(s_in_vector,D_vector);
 surfc(X,Y,zones','EdgeColor','none','LineStyle','none','FaceLighting','phong');%view(2)
 colormap(cmap1)
-tickLabels = cell(1,length(map_zones));
-for i = map_zones.keys
-    vec_aux = str2num(char(i));
-    index_aux = find(vec_aux);
-    str_aux = sprintf('x_{%.0f} ',index_aux);
-    if max(index_aux) <= nA;
-    label = sprintf('PN: %s',str_aux);
-    else
-    label = sprintf('CN: %s',str_aux);
-    end
-    tickLabels(map_zones(char(i))) = cellstr(label);
+if number_of_zones == 2
+    tick_labels = {'Partial Nitrification','Complete Nitrification'};
+    tick_position = [0.2, 0.8]+1;
+else
+    tick_labels = {'Partial Nitrification','Complete Nitrification','Both equilibria present'};
+    tick_position = [0.25, 0.5, 0.75]+1;
 end
-colorbar('Ticks',1:length(map_zones),...
-         'TickLabels',tickLabels,...
-         'FontSize',9)
+colorbar('Ticks',tick_position,...
+         'TickLabels',tick_labels)
 view(2)
 xlabel('S_{in} [g/l]');
 ylabel('Dilution Rate [day^{-1}]')
