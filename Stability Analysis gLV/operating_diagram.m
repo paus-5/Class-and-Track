@@ -1,9 +1,9 @@
 close all
 clear
-file_name_in = 'parameters_synthetic_data_no_noise_200121';
+file_name_in = 'parameters_Dumont';
 load(sprintf('MAT_files\\%s',file_name_in));
-file_name_out = 'parameters_synthetic_data_no_noise_200121';
-number_of_points = 80;
+file_name_out = 'parameters_Dumont';
+number_of_points = 50;
 d_initial = 0.7/6.5;
 d_final = 2.2/6.5;
 s_in_initial = 0.5;
@@ -14,7 +14,10 @@ n1 = length(s_in_vector);
 n2 = length(D_vector);
 %Structure to save points.
 map_zones = containers.Map;
-zones = zeros(n1,n2);
+map_zones('PN') = 0;
+map_zones('CN') = 1;
+map_zones('B') = 2;
+zones = zeros(n1,n2) -1;
 percentage = round(linspace(1,n1,11));
 tic
 for i = 1:n1
@@ -22,22 +25,28 @@ for i = 1:n1
         [possible_x, possible_s1, possible_s2, possible_s3] = equilibria(A,...
             nA,nB,kA,kB,muA,muB,kSA,kSB,D_vector(j),s_in_vector(i));
         possible_equilibria = [possible_x; possible_s1; possible_s2; possible_s3];
-        keyString = [];
+        flag_PN = 0;
+        flag_CN = 0;
         for k=1:length(possible_equilibria(1,:))
             if all(possible_equilibria(:,k) >=0) && isreal(possible_equilibria(:,k))
                 J = dynamic_jacobian(possible_equilibria(:,k),A,nA,nB,kA,kB,muA,muB,kSA,kSB,D_vector(j));
                 if all(real(eig(J)) <0)
                     positive_equilibria = (possible_x(:,k)>0)';
-                    keyString = strcat(keyString,num2str(positive_equilibria));
+                    index_aux = find(positive_equilibria);
+                    if max(index_aux) <= nA
+                        flag_PN = 1;
+                    else
+                        flag_CN = 1;
+                    end
                 end
             end
         end
-        if  isKey(map_zones,keyString)
-            zones(i,j) = map_zones(keyString);
-        else
-            count = length(map_zones);
-            map_zones(keyString) = count + 1;
-            zones(i,j) = map_zones(keyString);
+        if flag_PN && ~flag_CN
+          zones(i,j) = 0;
+        elseif ~flag_PN && flag_CN
+            zones(i,j) = 1;
+        elseif flag_PN && flag_CN
+            zones(i,j) = 2;
         end
     end
     if any( i == percentage)
