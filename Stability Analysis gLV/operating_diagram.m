@@ -1,9 +1,9 @@
 close all
 clear
-file_name_in = 'parameters_Dumont';
+file_name_in = 'parameters_synthetic_data_no_noise_200121';
 load(sprintf('MAT_files\\%s',file_name_in));
-file_name_out = 'parameters_Dumont';
-number_of_points = 50;
+file_name_out = 'parameters_synthetic_data_no_noise_200121';
+number_of_points = 10;
 d_initial = 0.7/6.5;
 d_final = 2.2/6.5;
 s_in_initial = 0.5;
@@ -42,11 +42,11 @@ for i = 1:n1
             end
         end
         if flag_PN && ~flag_CN
-          zones(i,j) = 0;
+          zones(i,j) = 2;
         elseif ~flag_PN && flag_CN
             zones(i,j) = 1;
         elseif flag_PN && flag_CN
-            zones(i,j) = 2;
+            zones(i,j) = 0;
         end
     end
     if any( i == percentage)
