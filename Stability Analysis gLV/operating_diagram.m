@@ -1,9 +1,9 @@
 close all
 clear
-file_name_in = 'parameters_modified';
+file_name_in = 'parameters_modified_2';
 load(sprintf('MAT_files\\%s',file_name_in));
-file_name_out = 'parameters_modified';
-number_of_points = 50;
+file_name_out = 'parameters_modified_2';
+number_of_points = 300;
 d_initial = 0.7/6.5;
 d_final =  2.2/6.5;
 s_in_initial = 0.5;
@@ -14,7 +14,7 @@ n1 = length(s_in_vector);
 n2 = length(D_vector);
 %Structure to save points.
 map_equilibria = containers.Map;
-zones = zeros(n1,n2) -1;
+zones = ones(n1,n2) ;
 percentage = round(linspace(1,n1,11));
 tic
 for i = 1:n1
@@ -42,15 +42,15 @@ for i = 1:n1
             end
         end
         if ~flag_PN && flag_CN
-            zones(i,j) = 1;
+            zones(i,j) = 2;
         elseif flag_PN && flag_CN
-            zones(i,j) = 2;   
+            zones(i,j) = 3;   
         elseif flag_PN && ~flag_CN
-            zones(i,j) = 3;
+            zones(i,j) = 4;
         elseif flag_washout && flag_PN
-            zones(i,j) = 4;           
+            zones(i,j) = 5;           
         elseif flag_washout && ~flag_PN
-            zones(i,j) = 5;
+            zones(i,j) = 6;
         end
     end
     if any( i == percentage)
