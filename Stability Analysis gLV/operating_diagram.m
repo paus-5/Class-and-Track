@@ -1,8 +1,8 @@
 close all
 clear
-file_name_in = 'parameters_modified_2';
+file_name_in = 'parameters_modified';
 load(sprintf('MAT_files\\%s',file_name_in));
-file_name_out = 'parameters_modified_2';
+file_name_out = 'parameters_modified';
 number_of_points = 300;
 d_initial = 0.7/6.5;
 d_final =  2.2/6.5;

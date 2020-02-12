@@ -471,7 +471,7 @@ All the former discussion leads to a potential number of   $ (2^{n_1}-1)\cdot (4
 \end{align}
 
 \subsection{Local Stability and Operating Diagrams}
-For checking local asymptotic stability of the equilibria points, the Jacobian of the system is provided and evaluated at each of these points. The resulting matrix's eigenvalues must have negative real part. A general formula for this Jacobian is presented in the supplementary material.
+For checking local asymptotic stability of the equilibria points, the Jacobian of the system is provided and evaluated at each of these points. The resulting matrix's eigenvalues must have negative real part. A general formula for this Jacobian is presented in the supplementary material \eqref{Jacobian_system}.
 
 The former discussion proposes an algorithm for finding the positive stable equilibrium points 
 
@@ -490,13 +490,13 @@ The former discussion proposes an algorithm for finding the positive stable equi
 
 Algorithm \ref{StabilityAnalysis} implicitly assumes that every submatrix $A'$ is invertible.
 
-Operating diagrams are an illustrative way of representing the long term behaviour of a reactor depending on operating parameters. Operating diagrams are created by running algorithm \ref{StabilityAnalysis} for different pairs $(s_{in},D)$ \cite{lobry2017chemostat}. One then regroups all the pairs such that the set of non-active coordinates of the points of the set $PSP$ are the same and have the same stability properties. This regrouping represents graphically the coexistence of the different OTU in a $D-s_{in}$ plot. In particular for the biological process of nitrification, this allows to represent when partial nitrification (PN) or complete nitrification (CN) may arise \cite{KHIN2004519}. PN refers to the state when nitrite $s_2$, accumulates because the OTU of $G_2$ concentration is very low and thus almost no conversion from $s_2$  to $s_3$ takes place. On the contrary CN is when nitrate ($s_3$) accumulates because of the presence of OTU of $G_2$.
+Operating diagrams are an illustrative way of representing the long term behaviour of a reactor depending on operating parameters. Operating diagrams are created by running algorithm \ref{StabilityAnalysis} for different pairs $(s_{in},D)$ \cite{lobry2017chemostat}. One then regroups all the pairs such that the set of non-active coordinates of the points of the set $PSP$ are the same and have the same stability properties. This regrouping allows to represent when partial nitrification (PN),complete nitrification (CN), or washout (WO) may arise \cite{KHIN2004519}. PN refers to the state when nitrite $s_2$, accumulates because the OTU of $G_2$ concentration is very low (washout of $G_2$) and thus almost no conversion from $s_2$  to $s_3$ takes place. On the contrary CN is when nitrate ($s_3$) accumulates because of the presence of OTU of $G_2$.
 
 The operating diagram from one of the sets of the parameter identification (obtained with a Bayesian estimation method) from Dumont et al. is presented in figure \ref{OD Dumont}. Their fit describes well the dynamics of the OTU, but is not the case for measured substrates. Two OTU per functional group were considered. One can see that coexistence in the same functional group is never attained for one of the parameter set obtained (their method provided several sets of parameters). On the contrary, when using a random interaction matrix, and modifying the kinetic coefficients  (note that $x_1$ and $x_3$ have the same $\mu_i$ and $K_i$ in case 1 and 2) one can see a more complex situation where coexistence in the same functional group is possible as seen in figure \ref{OD modified}. In the latter case CN can be achieved at a more elevated dilution rate than in the former case. Parameters of cases 1 and 2 can be seen in table \ref{Parameters Dumont} and \ref{Parameters Modified}, respectively. 
 
 The model is also  able to overcome the  competitive exclusion principle \cite{lobry2017chemostat} (CEP) paradigm. The CEP roughly states that if two species are growing on the same limiting resource, and their growth laws are non-decreasing in the resource, then only one of them will survive in the long run. However reports on wastewater treatment plants have shown coexistence between species in nitrifying reactors \cite{Wagner2002}, thus implying that a more complex growth law or model structure involving other biological processes is required to include microbial diversity.
 
-As shown in operating diagram \ref{Parameters Modified}, there exists a bi stability zone, which is corroborated from a simulation: depending on the initial conditions of the system the predicted outcome might vary. The therefores
+As shown in operating diagram \ref{Parameters Modified}, there exists a bi stability zone, which is corroborated from a simulation: depending on the initial conditions of the system the predicted outcome might vary.
 
 \begin{table}[ht]
 	\centering
@@ -548,6 +548,10 @@ As shown in operating diagram \ref{Parameters Modified}, there exists a bi stabi
 	\end{subfigure}
 	\caption{Left: random interaction matrix associated with model \eqref{system} for a consortia of 4 bacterial species where $x_1$ and $x_2$ are AOB and $x_3$ and $x_4$ are NOB. Right: associated operating diagram with parameters in Table \ref{Parameters Modified}. The 8 different zones represent the surviving species in the steady state. PN takes place when neither $x_3$ nor $x_4$ are present. CN takes place if $x_3$ or $x_4$ are present.}
 	\label{OD modified}
+\end{figure}
+
+\begin{figure}
+		\includegraphics[width=\textwidth]{ED_parameters_modified}
 \end{figure}
 \clearpage
 
@@ -1204,9 +1208,9 @@ x \rightarrow & \diag(f(s))\left(1_{n\times 1}+ Ax\right)-D_{n\times 1}
 \end{align*}
 
 The first $n$ equations of system \eqref{system} may be written then as$\dot{x} =  h(x) = h_1(\diag(x), h_2(x))$, by the chain rule: 
-\begin{align*} J_h(x) &= D_M h_1(\diag(x),h_2(x))\circ D_x \diag (x) + D_yh_1(\diag(x),h_2(x))\circ D_xh_2(x)  \\ &=
+\begin{align} J_h(x) &= D_M h_1(\diag(x),h_2(x))\circ D_x \diag (x) + D_yh_1(\diag(x),h_2(x))\circ D_xh_2(x)  \\ &=
 \diag(h_2(x))+\diag(x)\diag(f(s))A  \label{n2_entries}
-\end{align*}
+\end{align}
 
 Expression \eqref{n2_entries} corresponds to the first $n\times n$ entries of the Jacobian of system \eqref{system}.
 
@@ -1216,13 +1220,16 @@ f_B' := \left( \dfrac{\partial f_{n_1+1}}{\partial s_2}, \dots, \dfrac{\partial 
 \end{align*}
 
 Then the Jacobian of the system may be expressed as:
-$J(x,s_1,s_2,s_3) = \begin{bmatrix}
+\begin{align}
+\label{Jacobian_system}
+ J(x,s_1,s_2,s_3) = \begin{bmatrix}
 J_{11} & J_{12} & J_{13} & J_{14} \\
 J_{21} & J_{22} & J_{23} & J_{24} \\
 J_{31} & J_{32} & J_{33} & J_{34} \\
 J_{41} & J_{42} & J_{43} & J_{44} 
-\end{bmatrix} $
-
+\end{bmatrix} 
+\end{align} 
+with 
 \begin{align}
 J_{11} &=  \diag(\diag(f(s))(1_{n\times 1} +Ax)-D_{n\times 1})
 +\diag(f(s))\diag(x)A \\
