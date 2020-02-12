@@ -3,11 +3,11 @@ close all
 file_name_in = 'parameters_modified';
 load(sprintf('MAT_files\\Operating_Diagram_%s',file_name_in))
 figure;
-present_zones = unique(zones);
+present_zones = unique(zones_OD);
 number_of_zones = length(present_zones);
 cmap1 = hsv(number_of_zones);
 [X,Y] = meshgrid(s_in_vector,D_vector);
-surfc(X,Y,zones','EdgeColor','none','LineStyle','none','FaceLighting','phong');
+surfc(X,Y,zones_OD','EdgeColor','none','LineStyle','none','FaceLighting','phong');
 %view(2)
 colormap(cmap1)
 %     tick_labels = {'Partial Nitrification','Complete Nitrification'};

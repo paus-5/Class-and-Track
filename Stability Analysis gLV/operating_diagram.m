@@ -13,8 +13,9 @@ D_vector =  linspace(d_initial,d_final,number_of_points);
 n1 = length(s_in_vector);
 n2 = length(D_vector);
 %Structure to save points.
-map_equilibria = containers.Map;
-zones = ones(n1,n2) ;
+map_zones_ED = containers.Map;
+zones_OD = ones(n1,n2);
+zones_ED = zeros(n1,n2);
 percentage = round(linspace(1,n1,11));
 tic
 for i = 1:n1
@@ -25,12 +26,14 @@ for i = 1:n1
         flag_PN = 0;
         flag_CN = 0;
         flag_washout = 0;
+        key_string = [];
         for k=1:length(possible_equilibria(1,:))
             if all(possible_equilibria(:,k) >=0) && isreal(possible_equilibria(:,k))
                 J = dynamic_jacobian(possible_equilibria(:,k),A,nA,nB,kA,kB,muA,muB,kSA,kSB,D_vector(j));
                 if all(real(eig(J)) <0)
                     positive_equilibria = (possible_x(:,k)>0)';
                     index_aux = find(positive_equilibria);
+                    key_string = strcat(key_string,num2str(positive_equilibria),',');
                     if isempty(index_aux);
                         flag_washout = 1;
                     elseif max(index_aux) <= nA
@@ -42,15 +45,22 @@ for i = 1:n1
             end
         end
         if ~flag_PN && flag_CN
-            zones(i,j) = 2;
+            zones_OD(i,j) = 2;
         elseif flag_PN && flag_CN
-            zones(i,j) = 3;   
+            zones_OD(i,j) = 3;   
         elseif flag_PN && ~flag_CN
-            zones(i,j) = 4;
+            zones_OD(i,j) = 4;
         elseif flag_washout && flag_PN
-            zones(i,j) = 5;           
+            zones_OD(i,j) = 5;           
         elseif flag_washout && ~flag_PN
-            zones(i,j) = 6;
+            zones_OD(i,j) = 6;
+        end
+        if  isKey(map_zones_ED,key_string)
+            zones_ED(i,j) = map_zones_ED(key_string);
+        else
+            count = length(map_zones_ED);
+            map_zones_ED(key_string) = count + 1;
+            zones_ED(i,j) = map_zones_ED(key_string);
         end
     end
     if any( i == percentage)
