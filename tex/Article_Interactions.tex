@@ -470,33 +470,37 @@ All the former discussion leads to a potential number of   $ (2^{n_1}-1)\cdot (4
 \begin{align} \overbrace{(2^{n_1}-1)}^{\substack{\text{nonempty subsets} \\ \text{of }G_1 }} (\underbrace{4}_{\substack{\text{possible} \\ \text{solutions of} \\ \text{equation \eqref{Poly4}}}} \cdot\overbrace{(2^{n_2}-1)}^{\substack{\text{nonempty subsets} \\ \text{of  }G_2}}+\underbrace{2}_{\substack{G_2 \\ \text{Washout}}})+\overbrace{1}^\text{Washout} 
 \end{align}
 
-\subsection{Local Stability and Operating Diagrams}
-For checking local asymptotic stability of the equilibria points, the Jacobian of the system is provided and evaluated at each of these points. The resulting matrix's eigenvalues must have negative real part. A general formula for this Jacobian is presented in the supplementary material \eqref{Jacobian_system}.
+\subsection{Stability: Operating and Ecological Diagrams}
 
-The former discussion proposes an algorithm for finding the positive stable equilibrium points 
+In this subsection the stability of the equilibrium points is addressed. Operating and ecological diagrams are created from this stability analysis. Both are an illustrative way of representing the long term behaviour of a reactor depending on operating parameters, namely $D$ and $s_{in}$. 
+
+For checking local asymptotic stability of the equilibria points, the Jacobian of the system is provided and evaluated at each of these points. The resulting matrix's eigenvalues must have negative real part. A general formula for this Jacobian is presented in the supplementary material \eqref{Jacobian_system}. Algorithm \ref{StabilityAnalysis} summarizes such a procedure. Algorithm \ref{StabilityAnalysis} implicitly assumes that every submatrix $A'$ is invertible.
 
 \begin{algorithm}[H]
 	\KwData{$A \in M_{n\times n}(\R)$, $D, s_{in}, \bar{\mu}_i,K_i, k_i,  \in \R \, i\in [n], $, $n_1, n_2 \in \N$}
-	\KwResult{Set PSP containing all Positive Stable Equilibrium Points}
-	$PSP = \emptyset$ \\
+	\KwResult{Set $\mathcal{P}$ containing all Positive Stable Equilibrium Points}
+	$\mathcal{P} = \emptyset$ \\
 	eig = Eigenvalues of $J(0,s_{in},0,0)$. \\
 	\If{$Real(eig) < 0$}{$PSP = PSP \cup (0,s_{in},0,0)$} 
 	\For{$A'$ square submatrix of $A$}{	Calculate $(x,s_1,s_2,s_3)$ from equations \eqref{Poly4}, \eqref{S2(S1)}, \eqref{s1s2s3}, and \eqref{xEquilibria} \\
 		\If{$(x,s_1,s_2,s_3) \geq 0$}{eig = Eigenvalues of $J(x,s_1,s_2,s_3)$ \\
-			\If{$Real(eig) < 0$}{$PSP = PSP \cup (x,s_1,s_2,s_3)$}}}
+			\If{$Real(eig) < 0$}{$\mathcal{P} = \mathcal{P} \cup (x,s_1,s_2,s_3)$}}}
 	\label{StabilityAnalysis}
 	\caption{Algorithm for evaluating the possible equilibrium points of system \eqref{system}.}
 \end{algorithm}
 
-Algorithm \ref{StabilityAnalysis} implicitly assumes that every submatrix $A'$ is invertible.
 
-Operating diagrams are an illustrative way of representing the long term behaviour of a reactor depending on operating parameters. Operating diagrams are created by running algorithm \ref{StabilityAnalysis} for different pairs $(s_{in},D)$ \cite{lobry2017chemostat}. One then regroups all the pairs such that the set of non-active coordinates of the points of the set $PSP$ are the same and have the same stability properties. This regrouping allows to represent when partial nitrification (PN),complete nitrification (CN), or washout (WO) may arise \cite{KHIN2004519}. PN refers to the state when nitrite $s_2$, accumulates because the OTU of $G_2$ concentration is very low (washout of $G_2$) and thus almost no conversion from $s_2$  to $s_3$ takes place. On the contrary CN is when nitrate ($s_3$) accumulates because of the presence of OTU of $G_2$.
+Operating and ecological diagrams are created by running algorithm \ref{StabilityAnalysis} for different pairs $(s_{in},D)$ \cite{lobry2017chemostat}. In the case of operating diagrams all the pairs $(s_{in},D)$ are regrouped such that the points of the set $\mathcal{P}$ represent when partial nitrification (PN), complete nitrification (CN), washout (WO), or a combination of them may arise \cite{KHIN2004519}. PN refers to the state when nitrite $s_2$, accumulates because the OTU of $G_2$ are washed out and thus no conversion from $s_2$  to $s_3$ takes place. On the contrary CN is when nitrate ($s_3$) accumulates because of the presence of OTU of $G_2$. 
 
-The operating diagram from one of the sets of the parameter identification (obtained with a Bayesian estimation method) from Dumont et al. is presented in figure \ref{OD Dumont}. Their fit describes well the dynamics of the OTU, but is not the case for measured substrates. Two OTU per functional group were considered. One can see that coexistence in the same functional group is never attained for one of the parameter set obtained (their method provided several sets of parameters). On the contrary, when using a random interaction matrix, and modifying the kinetic coefficients  (note that $x_1$ and $x_3$ have the same $\mu_i$ and $K_i$ in case 1 and 2) one can see a more complex situation where coexistence in the same functional group is possible as seen in figure \ref{OD modified}. In the latter case CN can be achieved at a more elevated dilution rate than in the former case. Parameters of cases 1 and 2 can be seen in table \ref{Parameters Dumont} and \ref{Parameters Modified}, respectively. 
+In the case of ecological diagrams the pairs are regrouped such that the points in the set $\mathcal{P}$ have the same non-active coordinates. Ecological diagrams have more information than operating diagrams, in the sense that one can infer the operating diagram from an ecological diagram. However for exposure of the subject both of them are shown.
 
-The model is also  able to overcome the  competitive exclusion principle \cite{lobry2017chemostat} (CEP) paradigm. The CEP roughly states that if two species are growing on the same limiting resource, and their growth laws are non-decreasing in the resource, then only one of them will survive in the long run. However reports on wastewater treatment plants have shown coexistence between species in nitrifying reactors \cite{Wagner2002}, thus implying that a more complex growth law or model structure involving other biological processes is required to include microbial diversity.
+The operating diagram from one of the sets of the parameter identification (they proposed a distribution of parameters obtained with a Bayesian estimation method) from Dumont \textit{et al.} \cite{Dumont2016} is presented in figure \ref{OD Dumont}. Their fit describes well the dynamics of the OTU, but is not the case for measured substrates. Two OTU per functional group were considered. Parameters of cases 1 and 2 can be seen in table \ref{Parameters Dumont} and \ref{Parameters Modified}, respectively. In the latter case CN can be achieved at a more elevated dilution rate than in the former case, which can be explained by noting that the interactions of $x_1$ on $x_3$ and $x_4$ are strongly positive in case 2, thus helping them survive through bigger dilution rates. 
 
-As shown in operating diagram \ref{Parameters Modified}, there exists a bi stability zone, which is corroborated from a simulation: depending on the initial conditions of the system the predicted outcome might vary.
+Ecological diagrams show that the model is able to overcome the  competitive exclusion principle \cite{lobry2017chemostat} (CEP) paradigm. The CEP roughly states that if two species are growing on the same limiting resource, and their growth laws are non-decreasing in the resource, then only one of them will survive in the long run. However reports on wastewater treatment plants have shown coexistence between species in nitrifying reactors \cite{Wagner2002}, thus implying that a more complex growth law or model structure involving other biological processes is required to include microbial diversity. One can see that coexistence in the same functional group is never attained for one of the parameter set shown. On the contrary, when using a random interaction matrix, and modifying the kinetic coefficients note that $x_1$ and $x_3$ have the same $\mu_i$ and $K_i$ in case 1 and 2) one can see a more complex situation where coexistence in the same functional group is possible as seen in figure \ref{OD modified}.
+
+Multiple equilibrium points have been found stable for the same pair $D-s_{in}$ in this type of model. Meaning that in those zones the outcome of the reactor is dependent on initial conditions. In the operating diagram this is shown in the 
+
+As shown in operating diagram \ref{Parameters Modified}, there exists a bi stability zone.
 
 \begin{table}[ht]
 	\centering
@@ -520,7 +524,7 @@ As shown in operating diagram \ref{Parameters Modified}, there exists a bi stabi
 	\begin{subfigure}[b]{0.45\textwidth}
 	\includegraphics[width=\textwidth]{OD_parameters_Dumont}
 	\end{subfigure}
-	\caption{Left: interaction matrix associated with model \eqref{system} as estimated in Dumont el al. \cite{Dumont2016} for a consortia of 4 bacterial species where $x_1$ and $x_2$ are AOB and $x_3$ and $x_4$ are NOB. Right: associated operating diagram with parameters in Table \ref{Parameters Dumont}. The different zones represent the surviving species in the steady state. PN takes place when neither $x_3$ nor $x_4$ are present. CN takes place if $x_3$ or $x_4$ are/ present.}
+	\caption{Left: interaction matrix associated with model \eqref{system} as estimated in Dumont el al. \cite{Dumont2016} for a consortia of 4 bacterial species where $x_1$ and $x_2$ are AOB and $x_3$ and $x_4$ are NOB. Right: associated operating diagram with parameters in Table \ref{Parameters Dumont}. The different zones represent the surviving species in the steady state. PN takes place when neither $x_3$ nor $x_4$ are present. CN takes place if $x_3$ or $x_4$ are present.}
 	\label{OD Dumont}
 \end{figure}
 
@@ -552,12 +556,14 @@ As shown in operating diagram \ref{Parameters Modified}, there exists a bi stabi
 
 \begin{figure}
 		\includegraphics[width=\textwidth]{ED_parameters_modified}
+		\caption{Ecological Diagram for system. A complex situation emerges in ecological terms, depending on the operating parameters the community can go from a single species surviving in the chemostat to full coexistence.}
+		\label{ED_modified}
 \end{figure}
 \clearpage
 
 \subsection{Remarks}
 
-The model here presented serves to illustrate that by considering a more complex growth rate that tries to model ecological interactions one might explain differences in reactors operating under similar conditions. It also shows a new mechanism by which the CEP no longer holds. The operating diagrams almost always show a single stable equilibrium point- with possible coexistence of all species- for each pair $(s_{in},D)$, however a thin zone is presented where two stable equilibriums coexist, thus the behaviour of the system depends on the initial conditions. Since the gLV model discussed (and calibrated in \cite{Dumont2016}) fails to completely capture the dynamics observed in the chemostat experiments, the next section proposes a new model to study.
+The model here presented serves to illustrate that by considering a more complex growth rate that tries to model ecological interactions one might explain differences in reactors operating under similar conditions. It also shows a new mechanism by which the CEP no longer holds and where multiple stable equilibria may appear. Since the gLV model discussed (and calibrated in \cite{Dumont2016}) fails to completely capture the dynamics observed in the chemostat experiments, the next section proposes a new model to study.
 
 \section{Generalized approach for modelling interactions}
 In the previous sections interactions were modelled as an affine function of the OTU concentration that multiplies a substrate dependent growth equation. 
