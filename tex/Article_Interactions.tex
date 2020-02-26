@@ -492,83 +492,99 @@ For checking local asymptotic stability of the equilibria points, the Jacobian o
 
 Operating and ecological diagrams are created by running algorithm \ref{StabilityAnalysis} for different pairs $(s_{in},D)$ \cite{lobry2017chemostat}. In the case of operating diagrams all the pairs $(s_{in},D)$ are regrouped such that the points of the set $\mathcal{P}$ represent when partial nitrification (PN), complete nitrification (CN), washout (WO), or a combination of them may arise \cite{KHIN2004519}. PN refers to the state when nitrite $s_2$, accumulates because the OTU of $G_2$ are washed out and thus no conversion from $s_2$  to $s_3$ takes place. On the contrary CN is when nitrate ($s_3$) accumulates because of the presence of OTU of $G_2$. 
 
-In the case of ecological diagrams the pairs are regrouped such that the points in the set $\mathcal{P}$ have the same non-active coordinates. Ecological diagrams have more information than operating diagrams, in the sense that one can infer the operating diagram from an ecological diagram. However for exposure of the subject both of them are shown.
+In the case of ecological diagrams the pairs are regrouped such that the points in the set $\mathcal{P}$ have the same non-active coordinates. Ecological diagrams provide more information than operating diagrams, in the sense that one can infer the operating diagram from an ecological diagram. However for exposure of the subject both of them are shown.
 
-The operating diagram from one of the sets of the parameter identification (they proposed a distribution of parameters obtained with a Bayesian estimation method) from Dumont \textit{et al.} \cite{Dumont2016} is presented in figure \ref{OD Dumont}. Their fit describes well the dynamics of the OTU, but is not the case for measured substrates. Two OTU per functional group were considered. Parameters of cases 1 and 2 can be seen in table \ref{Parameters Dumont} and \ref{Parameters Modified}, respectively. In the latter case CN can be achieved at a more elevated dilution rate than in the former case, which can be explained by noting that the interactions of $x_1$ on $x_3$ and $x_4$ are strongly positive in case 2, thus helping them survive through bigger dilution rates. 
+Two examples are used for illustrating the diversity of situations that may arise from this type of system. Kinetic parameters of cases 1 and 2 can be seen in table \ref{kinetic_parameters}. Interaction matrices of each case are shown in figure \ref{Interactions}. Case 1 was taken from Dumont \textit{et al.}\cite{Dumont2016} where they proposed a distribution of parameters obtained with a Bayesian estimation method. Their fit describes well the dynamics of the OTU two most abundant OTU in each functional group, but is not the case for measured substrates. 
 
-Ecological diagrams show that the model is able to overcome the  competitive exclusion principle \cite{lobry2017chemostat} (CEP) paradigm. The CEP roughly states that if two species are growing on the same limiting resource, and their growth laws are non-decreasing in the resource, then only one of them will survive in the long run. However reports on wastewater treatment plants have shown coexistence between species in nitrifying reactors \cite{Wagner2002}, thus implying that a more complex growth law or model structure involving other biological processes is required to include microbial diversity. One can see that coexistence in the same functional group is never attained for one of the parameter set shown. On the contrary, when using a random interaction matrix, and modifying the kinetic coefficients note that $x_1$ and $x_3$ have the same $\mu_i$ and $K_i$ in case 1 and 2) one can see a more complex situation where coexistence in the same functional group is possible as seen in figure \ref{OD modified}.
-
-Multiple equilibrium points have been found stable for the same pair $D-s_{in}$ in this type of model. Meaning that in those zones the outcome of the reactor is dependent on initial conditions. In the operating diagram this is shown in the 
-
-As shown in operating diagram \ref{Parameters Modified}, there exists a bi stability zone.
 
 \begin{table}[ht]
 	\centering
 	\begin{tabular}{|l|l|l|l|}
 		\hline
-		Parameters Dumont & $\mu_i\,[1/day]$ & $K_i\,[mg/L]$ & $\frac{1}{y_i} \, [gr/gr]$ \\ \hline
+		Case 1 & $\mu_i\,[1/day]$ & $K_i\,[mg/L]$ & $\frac{1}{y_i} \, [gr/gr]$ \\ \hline
 		$x_1 \in G_1$ & 0.828  & 0.147 & 3.85  \\ \hline
 		$x_2\in G_1$ &0.828   & 0.147 &  3.85\\ \hline
 		$x_3\in G_2$ & 0.18 & 0.026 &  100 \\ \hline
 		$x_4\in G_2$ & 0.18 & 0.026 &  100 \\ \hline
 	\end{tabular}
-	\caption{Kinetic parameters of model \eqref{system} from \cite{Dumont2016}.}
-	\label{Parameters Dumont}
+~
+\begin{tabular}{|l|l|l|l|}
+	\hline
+	Case 2  & $\mu_i\,[1/day]$ & $K_i\,[mg/L]$ & $\frac{1}{y_i} \, [gr/gr]$ \\ \hline
+	$x_1 \in G_1$ &0.828  &0.147  & 5 \\ \hline
+	$x_2\in G_1$ & 0.621 & 0.0147 & 3 \\ \hline
+	$x_3\in G_2$ & 0.18 & 0.026 & 110 \\ \hline
+	$x_4\in G_2$ & 0.135& 0.0026& 90 \\ \hline
+\end{tabular}
+
+	\caption{Kinetic parameters of model \eqref{system}. Case 1 is taken from Dumont \textit{et al} \cite{Dumont2016}. Case 2 is a modification of the original parameters for model exploration.}
+	\label{kinetic_parameters}
 \end{table}
+
+\begin{figure}[h]
+\begin{subfigure}[b]{0.45\textwidth}
+	\includegraphics[width=\textwidth]{Interactions_Parameters_Dumont}
+	\caption{Case 1 interaction matrix.}
+	\label{Interaction_1}
+\end{subfigure}
+~
+\begin{subfigure}[b]{0.45\textwidth}
+	\includegraphics[width=\textwidth]{Interactions_Parameters_modifed}
+	\caption{Case 2 interaction matrix.}
+	\label{Interaction_2}
+\end{subfigure}
+	\caption{Interaction matrices for each case for a consortia of 4 bacterial species where $x_1$ and $x_2$ are AOB and $x_3$ and $x_4$ are NOB. Note how OTU 1 affect very positively OTU 3 and 4 in figure \ref{Interaction_2} with respect to case \ref{Interaction_1}, this seems the key factor in the difference seen in the operating diagrams.}
+	\label{Interactions}
+\end{figure} 
+
+The ecological diagrams for each case are presented in figure \ref{ecological_diagrams}. One can see that coexistence in the same functional group is never attained for case 1, whereas for case 2 a more complex situation takes places; even a zone where more than one stable equilibria is found, implying that the outcome in that zone depends on initial conditions of the system. Ecological diagrams show that the model is able to overcome the competitive exclusion principle \cite{lobry2017chemostat} (CEP) paradigm. The CEP roughly states that if two species are growing on the same limiting resource, and their growth laws are non-decreasing in the resource, then only one of them will survive in the long run. However reports on wastewater treatment plants have shown coexistence between species in nitrifying reactors \cite{Wagner2002}, thus implying that a more complex growth law (as shown in here) or model structure involving other biological processes is required to include microbial diversity. 
+
+Operating diagrams can be seen in \ref{operating_diagrams} note CN can be achieved at a more elevated dilution rate in case 2 than in case 1, which can be explained by noting that the interactions of $x_1$ on $x_3$ and $x_4$ are positive and stronger in case 2, thus helping them survive through bigger dilution rates. The appearance of a zone in case 2 where both CN and PN might take place (depending on the initial conditions of the system) is due to the presence of multiple stable equilibrium at that operating conditions. 
+
+
+
 
 \begin{figure}[ht]
 	\centering
 	\begin{subfigure}[b]{0.45\textwidth}
-		\includegraphics[width=\textwidth]{Interactions_Parameters_Dumont}
+		\includegraphics[width=\textwidth]{ED_parameters_Dumont}
+		\caption{Case 1 ecological diagram.}
 	\end{subfigure}
+~
 	\begin{subfigure}[b]{0.45\textwidth}
-	\includegraphics[width=\textwidth]{OD_parameters_Dumont}
+	\includegraphics[width=\textwidth]{ED_parameters_modified}
+	\caption{Case 2 ecological diagram.}
 	\end{subfigure}
-	\caption{Left: interaction matrix associated with model \eqref{system} as estimated in Dumont el al. \cite{Dumont2016} for a consortia of 4 bacterial species where $x_1$ and $x_2$ are AOB and $x_3$ and $x_4$ are NOB. Right: associated operating diagram with parameters in Table \ref{Parameters Dumont}. The different zones represent the surviving species in the steady state. PN takes place when neither $x_3$ nor $x_4$ are present. CN takes place if $x_3$ or $x_4$ are present.}
-	\label{OD Dumont}
+	\caption{Ecological diagrams for both cases. The different zones represent the combination of surviving species in the steady state. PN takes place when neither $x_3$ nor $x_4$ are present. MSE means multiple stable equilibria. CN takes place if $x_3$ or $x_4$ are present. A complex situation emerges in ecological terms for case 2, depending on the operating parameters the community can go from a single species surviving in the chemostat to full coexistence. }
+	\label{ecological_diagrams}
 \end{figure}
 
 
-\begin{table}[ht]
-	\centering
-	\begin{tabular}{|l|l|l|l|}
-		\hline
-		Modified Parameters  & $\mu_i\,[1/day]$ & $K_i\,[mg/L]$ & $\frac{1}{y_i} \, [gr/gr]$ \\ \hline
-		$x_1 \in G_1$ &0.828  &0.147  & 5 \\ \hline
-		$x_2\in G_1$ & 0.621 & 0.0147 & 3 \\ \hline
-		$x_3\in G_2$ & 0.18 & 0.026 & 110 \\ \hline
-		$x_4\in G_2$ & 0.135& 0.0026& 90 \\ \hline
-	\end{tabular}
-	\caption{Kinetic parameters of model \eqref{system} modified from \cite{Dumont2016}.}
-	\label{Parameters Modified}
-\end{table}
 \begin{figure}[ht]
 	\centering	
 	\begin{subfigure}[b]{0.45\textwidth}
-		\includegraphics[width=\textwidth]{Interactions_Parameters_modifed}
+		\includegraphics[width=\textwidth]{OD_parameters_Dumont}
+		\caption{Case 1 operating diagram.}
 	\end{subfigure}
+~
 	\begin{subfigure}[b]{0.45\textwidth}
 		\includegraphics[width=\textwidth]{OD_parameters_modified}
+		\caption{Case 2 operating diagram.}
 	\end{subfigure}
-	\caption{Left: random interaction matrix associated with model \eqref{system} for a consortia of 4 bacterial species where $x_1$ and $x_2$ are AOB and $x_3$ and $x_4$ are NOB. Right: associated operating diagram with parameters in Table \ref{Parameters Modified}. The 8 different zones represent the surviving species in the steady state. PN takes place when neither $x_3$ nor $x_4$ are present. CN takes place if $x_3$ or $x_4$ are present.}
-	\label{OD modified}
+	\caption{Operating Diagrams for both cases. Case 1 Operating diagram coincides with the ecological diagram. Note how in case 2 CN might occur at bigger dilution rates than case 1. There is also a thin line where both CN and PN may arise depending on initial conditions.}
+	\label{operating_diagrams}
 \end{figure}
 
-\begin{figure}
-		\includegraphics[width=\textwidth]{ED_parameters_modified}
-		\caption{Ecological Diagram for system. A complex situation emerges in ecological terms, depending on the operating parameters the community can go from a single species surviving in the chemostat to full coexistence.}
-		\label{ED_modified}
-\end{figure}
-\clearpage
+
+
 
 \subsection{Remarks}
 
 The model here presented serves to illustrate that by considering a more complex growth rate that tries to model ecological interactions one might explain differences in reactors operating under similar conditions. It also shows a new mechanism by which the CEP no longer holds and where multiple stable equilibria may appear. Since the gLV model discussed (and calibrated in \cite{Dumont2016}) fails to completely capture the dynamics observed in the chemostat experiments, the next section proposes a new model to study.
 
-\section{Generalized approach for modelling interactions}
-In the previous sections interactions were modelled as an affine function of the OTU concentration that multiplies a substrate dependent growth equation. 
 
-More generally the interaction function represents how the growth rate of species $i$ is affected by the concentration of other species, $x$:
+\section{Generalized approach for modelling interactions}
+In the previous sections interactions were modelled as an affine function of the OTU concentration that multiplies a substrate dependent growth equation. More generally the interaction function represents how the growth rate of species $i$ is affected by the concentration of other species, $x$: 
 
 Given a vector $(v_1,\dots,v_n)^\top$ the interaction function $\I$ is noted as:
 \begin{align}
