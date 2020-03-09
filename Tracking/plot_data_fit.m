@@ -9,11 +9,20 @@ index_t_OTU = find(t_OTU<max(tS) & t_OTU>min(tS));
 %%Control
 x_fun = @(t) interp1(t_new,x_new,t)';
 B = @(t) Bx(x_fun(t),nA,nB,kA,kB,muA,muB,kSA,kSB,kI);
+s_vec = x_new(:,(n+1):end);
+growth_AOB = @(s) growth_monod(s,muA,kSA)';
+growth_NOB = @(s) growth_monod(s,muB,kSB)';
+growth_cell_AOB = arrayfun(growth_AOB,s_vec(:,1),'UniformOutput',false);
+growth_cell_NOB = arrayfun(growth_NOB,s_vec(:,1),'UniformOutput',false);
+growth_mat_AOB = cell2mat(growth_cell_AOB);
+growth_mat_NOB = cell2mat(growth_cell_NOB);
+growth_mat = [growth_mat_AOB growth_mat_NOB];
 control = @(t) tracking_control(lambda,B(t),P(t),x_fun(t),sf_interp(t),n);
 tic
 control_eval = arrayfun(control,t_new,'UniformOutput',false);
 toc
 control_eval_reshape = reshape(cell2mat(control_eval),n,length(t_new));
+growth_times_control = growth_mat'.*(control_eval_reshape+1);
 %%Total Biomass
 figure
 hold on
@@ -36,7 +45,7 @@ for k = 1:number_of_AOB_plots
     if k == number_of_AOB_plots && logical(rem(nA,10)) == 1;
         OTU_plot_index = (10*(k-1)+1):(10*(k-1)+rem(nA,10));
     end
-    numbering_AOB = strsplit(num2str(OTU_plot_index)) ;
+    numbering_AOB = strsplit(num2str(OTU_plot_index));
     legend_tags_AOB = strsplit(strcat(sprintf('OTU %s (tracking),', numbering_AOB{:}),...
     sprintf(',OTU %s (data)', numbering_AOB{:})),',');
     colors_AOB =  mat2cell(hsv(length(OTU_plot_index)),...
@@ -73,8 +82,23 @@ for k = 1:number_of_AOB_plots
     fig.PaperPositionMode = 'auto';
     print(sprintf('Images\\%s',sprintf('%s_Control_AOB_iter_%.0f_plot_%.0f',...
         name_file,iter,k)),'-dpng','-r0')
-end
-%%NOB
+%%Growth rate
+    legend_tags_AOB_growth = strsplit(sprintf('Growth OTU %s,',  numbering_AOB{:}),',');
+    legend_tags_AOB_growth(end) = [];
+    figure
+    growth_plot_AOB = plot(t_new,growth_times_control(OTU_plot_index,:),'LineWidth',1.5);
+    xlabel('\fontsize{12}Time [days]'),...
+        ylabel('\fontsize{12}  f_i(s_1(t))u(t) [day^{-1}]'),...
+        title(sprintf('Growth for AOB iter: %.0f',iter))
+    set(gca,'fontsize',15),
+    set(control_plot_AOB,{'Color'}, colors_AOB),
+    legend(legend_tags_AOB_growth,'fontsize',10,'Location','bestoutside');
+    fig.PaperUnits = 'inches';
+    fig.PaperPosition = [0 0 9 3];
+    fig.PaperPositionMode = 'auto';
+    print(sprintf('Images\\%s',sprintf('%s_growth_AOB_iter_%.0f_plot_%.0f',...
+        name_file,iter,k)),'-dpng','-r0')
+end%%NOB
 number_of_NOB_plots = floor(nB/10) + logical(rem(nB,10));
 for k = 1:number_of_NOB_plots
     OTU_plot_index = (10*(k-1)+1):(10*(k-1)+10);
@@ -118,6 +142,22 @@ for k = 1:number_of_NOB_plots
     fig.PaperPosition = [0 0 9 3];
     fig.PaperPositionMode = 'auto';
     print(sprintf('Images\\%s',sprintf('%s_Control_NOB_iter_%.0f_plot_%.0f',...
+        name_file,iter,k)),'-dpng','-r0')
+%%Growth rate
+    legend_tags_NOB_growth = strsplit(sprintf('Growth OTU %s,', numbering_NOB{:}),',');
+    legend_tags_NOB_growth(end) = [];
+    figure
+    growth_plot_NOB = plot(t_new,growth_times_control(OTU_plot_index,:),'LineWidth',1.5);
+    xlabel('\fontsize{12}Time [days]'),...
+        ylabel('\fontsize{12}  f_i(s_2(t))u(t) [day^{-1}]'),...
+        title(sprintf('Growth for NOB iter: %.0f',iter))
+    set(gca,'fontsize',15),
+    set(control_plot_NOB,{'Color'}, colors_NOB),
+    legend(legend_tags_NOB_growth,'fontsize',10,'Location','bestoutside');
+    fig.PaperUnits = 'inches';
+    fig.PaperPosition = [0 0 9 3];
+    fig.PaperPositionMode = 'auto';
+    print(sprintf('Images\\%s',sprintf('%s_growth_NOB_iter_%.0f_plot_%.0f',...
         name_file,iter,k)),'-dpng','-r0')
 end
 %%Metabolites
