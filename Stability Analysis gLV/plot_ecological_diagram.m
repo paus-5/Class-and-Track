@@ -1,6 +1,6 @@
 clear
 close all
-file_name_in = 'parameters_modified';
+file_name_in = 'default_case';
 load(sprintf('MAT_files\\Operating_Diagram_%s',file_name_in))
 figure;
 number_of_zones = length(map_zones_ED);

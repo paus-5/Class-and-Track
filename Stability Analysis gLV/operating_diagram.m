@@ -1,9 +1,9 @@
 close all
 clear
-file_name_in = 'parameters_modified';
+file_name_in = 'default_case';
 load(sprintf('MAT_files\\%s',file_name_in));
-file_name_out = 'parameters_modified';
-number_of_points = 300;
+file_name_out = 'default_case';
+number_of_points = 100;
 d_initial = 0.7/6.5;
 d_final =  2.2/6.5;
 s_in_initial = 0.5;
@@ -26,7 +26,7 @@ for i = 1:n1
         flag_PN = 0;
         flag_CN = 0;
         flag_washout = 0;
-        key_string = [];
+        key_string = '';
         for k=1:length(possible_equilibria(1,:))
             if all(possible_equilibria(:,k) >=0) && isreal(possible_equilibria(:,k))
                 J = dynamic_jacobian(possible_equilibria(:,k),A,nA,nB,kA,kB,muA,muB,kSA,kSB,D_vector(j));

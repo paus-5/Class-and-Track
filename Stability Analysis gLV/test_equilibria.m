@@ -1,14 +1,14 @@
 clear
 close all
 % generateParameters;
-file_name_in = 'parameters_modified';
+file_name_in = 'default_case';
 load(sprintf('MAT_files\\%s',file_name_in));
 z0 = random('Uniform',0,1,n+3,1);
 OTU = 1:n;
 options = odeset('NonNegative',1:(nA+nB+3));
-dilution = 0.2906 ;
+dilution = 0.2359 ;
 D = @(t) dilution;
-s_in = 1.829;
+s_in = 1.833;
 sIn = @(t) s_in;
 tF = 20000;
 fun =  dynamic(A,nA,nB,kA,kB,muA,muB,kSA,kSB,D,sIn);
@@ -18,6 +18,12 @@ eval_end_point =  fun(tF,Y(end,:)');
 eval_end_point_string = sprintf('%1.4f ', eval_end_point);
 fprintf('Trajectory at T= %d \n Point =%s \n Evaluated in dynamic = %s\n',...
     tF, end_point_string,eval_end_point_string);
+J = dynamic_jacobian(Y(end,:)',A,nA,nB,kA,kB,muA,muB,kSA,kSB,dilution);
+eigenvalues = eig(J);
+if all(real(eigenvalues) <0)
+    fprintf('Stable Equilibrium: %1.4f', Y(end,:)');
+    disp(eigenvalues)
+end
 [possible_x, possible_s1, possible_s2, possible_s3]  = equilibria(A,...
     nA,nB,kA,kB,muA,muB,kSA,kSB,dilution,s_in);
 possible_equilibria = [possible_x; possible_s1; possible_s2; possible_s3];
