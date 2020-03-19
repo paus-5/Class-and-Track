@@ -202,7 +202,7 @@ The situation is described as simplified reactions \eqref{Reaction1} and \eqref{
 
 The terms $y_i$ are known as yields, they represent the number of grams of biomass produced per gram of substrate consumed for OTU $i$. In this work the unit grams of dry biomass per gram of substrate is used for yields. Furthermore, for each $ i \in [n]$, OTU $i$ is characterized by its process rate (also known as growth function) $\mu_i(s,x)$. Notice that for being as generic as possible, the growth rate may be a function of the whole state in order to model the influence of all OTU on the growth rates of others.
 \begin{align}
-\label{Reaction1} \tag{R G1} 	s_1 \stackrel{\mu_i(s,x)}{\longrightarrow} s_2 + y_ix_1 \quad \forall i \in G_1 \\
+\label{Reaction1} \tag{R G1} 	s_1 \stackrel{\mu_i(s,x)}{\longrightarrow} s_2 + y_ix_i \quad \forall i \in G_1 \\
 \label{Reaction2} \tag{R G2} s_2\stackrel{\mu_i(s,x)}{\longrightarrow} s_3 + y_ix_i \quad \forall i \in G_2
 \end{align}
 
@@ -472,9 +472,9 @@ All the former discussion leads to a potential number of   $ (2^{n_1}-1)\cdot (4
 
 \subsection{Stability: Operating and Ecological Diagrams}
 
-In this subsection the stability of the equilibrium points is addressed. Operating and ecological diagrams are created from this stability analysis. Both are an illustrative way of representing the long term behaviour of a reactor depending on operating parameters, namely $D$ and $s_{in}$. 
+In this subsection the stability of the equilibrium points is addressed. Operating and ecological diagrams are created from this stability analysis. Both are an illustrative way of representing the long term behaviour of a reactor depending on operating parameters, namely $D$ and $s_{in}$: In a $D-S_{in}$ plane different zones representing the stability properties of system \eqref{system} are identified. 
 
-For checking local asymptotic stability of the equilibria points, the Jacobian of the system is provided and evaluated at each of these points. The resulting matrix's eigenvalues must have negative real part. A general formula for this Jacobian is presented in the supplementary material \eqref{Jacobian_system}. Algorithm \ref{StabilityAnalysis} summarizes such a procedure. Algorithm \ref{StabilityAnalysis} implicitly assumes that every submatrix $A'$ is invertible.
+For checking local asymptotic stability of the equilibrium points, the Jacobian of the system is provided and evaluated at each of these points. The resulting matrix's eigenvalues must have negative real part. A general formula for this Jacobian is presented in the supplementary material \eqref{Jacobian_system}. Algorithm \ref{StabilityAnalysis} summarizes such a procedure. Algorithm \ref{StabilityAnalysis} implicitly assumes that every submatrix $A'$ is invertible.
 
 \begin{algorithm}[H]
 	\KwData{$A \in M_{n\times n}(\R)$, $D, s_{in}, \bar{\mu}_i,K_i, k_i,  \in \R \, i\in [n], $, $n_1, n_2 \in \N$}
@@ -490,92 +490,142 @@ For checking local asymptotic stability of the equilibria points, the Jacobian o
 \end{algorithm}
 
 
-Operating and ecological diagrams are created by running algorithm \ref{StabilityAnalysis} for different pairs $(s_{in},D)$ \cite{lobry2017chemostat}. In the case of operating diagrams all the pairs $(s_{in},D)$ are regrouped such that the points of the set $\mathcal{P}$ represent when partial nitrification (PN), complete nitrification (CN), washout (WO), or a combination of them may arise \cite{KHIN2004519}. PN refers to the state when nitrite $s_2$, accumulates because the OTU of $G_2$ are washed out and thus no conversion from $s_2$  to $s_3$ takes place. On the contrary CN is when nitrate ($s_3$) accumulates because of the presence of OTU of $G_2$. 
+Operating and ecological diagrams are created by running algorithm \ref{StabilityAnalysis} for different pairs $(s_{in},D)$. In the case of operating diagrams\cite{lobry2017chemostat} (OD) all the pairs $(s_{in},D)$ are regrouped such that the points of the set $\mathcal{P}$ represent when partial nitrification (PN), complete nitrification (CN), washout (WO), or a combination of them may arise \cite{KHIN2004519}. PN refers to the state when nitrite $s_2$, accumulates because the OTU of $G_2$ are washed out and thus no conversion from $s_2$  to $s_3$ takes place. On the contrary CN is when nitrate ($s_3$) accumulates because of the presence of OTU of $G_2$. 
 
-In the case of ecological diagrams the pairs are regrouped such that the points in the set $\mathcal{P}$ have the same non-active coordinates. Ecological diagrams provide more information than operating diagrams, in the sense that one can infer the operating diagram from an ecological diagram. However for exposure of the subject both of them are shown.
+In the case of ecological diagrams (ED) the pairs are regrouped such that the points in the set $\mathcal{P}$ have the same non-active coordinates. Ecological diagrams provide more information than operating diagrams, in the sense that one can infer the operating diagram from an ecological diagram. However for exposure of the subject OD are used in the first case study, while ED are used in the second case study.
 
-Two examples are used for illustrating the diversity of situations that may arise from this type of system. Kinetic parameters of cases 1 and 2 can be seen in table \ref{kinetic_parameters}. Interaction matrices of each case are shown in figure \ref{Interactions}. Case 1 was taken from Dumont \textit{et al.}\cite{Dumont2016} where they proposed a distribution of parameters obtained with a Bayesian estimation method. Their fit describes well the dynamics of the OTU two most abundant OTU in each functional group, but is not the case for measured substrates. 
+A first example using operating diagrams is presented to illustrate how adding interactions in a model consisting of 1 OTU in $G_1$ and 1 OTU in $G_2$ may lead to very different outcomes.
+
+\textbf{Case study 1: 1 AOB and 1 NOB}
+
+Consider the case where $n_1 = 1$ and $n_2 = 1$. Two set of parameters for For gaining some insight the comparison of the operating diagrams where no interactions take place ($A = 0$) and with a non-zero, as shown in \ref{case1_no_interactions} and \ref{case1_interactions}. When $A=0$ the analysis above presented is no longer valid (A is not invertible), nevertheless the stability analysis is much simpler and is given in the supplementary material section. Parameters can be seen in table \ref{kinetic_parameters_case_study_1}, while the interaction matrices.
+
+The operating diagram can be seen in figure \ref{OD_no_interactions}, note how partial nitrification (washout of $G_2$). When compared to \ref{OD_no_interactions} one notes that at low $s_{in}$ the curve dividing the PN zone from the CN zone are alike. But since more $s_{in}$ means more $x_1$, at high $s_{in}$ the affine part $(1+ a_{21}x_1 +a_{22}x_2)$ of the growth function of $x_2$ plays a bigger role than substrate limitation ($\frac{s_2}{s_2+K_2}$).
 
 
 \begin{table}[ht]
 	\centering
 	\begin{tabular}{|l|l|l|l|}
 		\hline
-		Case 1 & $\mu_i\,[1/day]$ & $K_i\,[mg/L]$ & $\frac{1}{y_i} \, [gr/gr]$ \\ \hline
+		Kinetic Parameters & $\mu_i\,[1/day]$ & $K_i\,[g/L]$ & $\frac{1}{y_i} \, [gr/gr]$ \\ \hline
+		$x_1 \in G_1$ & 0.77  & 0.7 & 3.98  \\ \hline
+		$x_2\in G_2$ & 1.07 & 0.3 &  16.12 \\ \hline
+	\end{tabular}	
+	\caption{A set of kinetic parameters of model \eqref{system}.}
+	\label{kinetic_parameters_case_study_1}
+\end{table}
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\includegraphics[width = \textwidth]{Stability/Interactions_case_study_1_no_interactions}
+		\caption{Interaction matrix of model \eqref{system} with no interactions.}
+		\label{case1_no_interactions}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.45\textwidth}
+		\includegraphics[width = \textwidth]{Stability/Interactions_case_study_1}
+		\caption{Interaction matrix of model \eqref{system}.}
+		\label{case1_interactions}
+	\end{subfigure}
+	\caption{Interaction matrices. Note how the presence of $x_1$ affects very negatively $x_2$ in \eqref{case1_interactions}. The sign of terms in the diagonal entries of the matrix represents interspecies interactions.}
+\end{figure} 
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\includegraphics[width = \textwidth]{Stability/OD_case_study_1_no_interactions}
+		\caption{Operating diagram of model \eqref{system} with no interactions (interaction matrix represented by \eqref{case1_no_interactions}).}
+		\label{OD_no_interactions}
+	\end{subfigure}
+~
+	\begin{subfigure}[b]{0.45\textwidth}
+	\includegraphics[width = \textwidth]{Stability/OD_case_study_1}
+	\caption{Operating diagram of model \eqref{system} with interactions represented by \eqref{case1_interactions}.}
+	\label{OD_interactions}
+	\end{subfigure}
+	\caption{Note how \ref{OD_interactions} has a much larger zone where partial nitrification takes place. This is due to the negative interaction $x_1$ plays against $x_2$.}
+\end{figure} 
+\clearpage
+
+\textbf{Case study 2: 2 AOB and 2 NOB}
+
+
+Kinetic parameters of case study 2 can be seen in table \ref{kinetic_parameters}. Interaction matrices of each case are shown in figure \ref{Interactions}. Case 1 was taken from Dumont \textit{et al.}\cite{Dumont2016} where they proposed a distribution of parameters obtained with a Bayesian estimation method. Their fit describes well the dynamics of the two most abundant OTU in each functional group, but it still fails to capture the measured substrates dynamics. 
+
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{|l|l|l|l|}
+		\hline
+		Case study 2 kinetic parameters & $\mu_i\,[1/day]$ & $K_i\,[mg/L]$ & $\frac{1}{y_i} \, [gr/gr]$ \\ \hline
 		$x_1 \in G_1$ & 0.828  & 0.147 & 3.85  \\ \hline
 		$x_2\in G_1$ &0.828   & 0.147 &  3.85\\ \hline
 		$x_3\in G_2$ & 0.18 & 0.026 &  100 \\ \hline
 		$x_4\in G_2$ & 0.18 & 0.026 &  100 \\ \hline
 	\end{tabular}
-~
-\begin{tabular}{|l|l|l|l|}
-	\hline
-	Case 2  & $\mu_i\,[1/day]$ & $K_i\,[mg/L]$ & $\frac{1}{y_i} \, [gr/gr]$ \\ \hline
-	$x_1 \in G_1$ &0.828  &0.147  & 5 \\ \hline
-	$x_2\in G_1$ & 0.621 & 0.0147 & 3 \\ \hline
-	$x_3\in G_2$ & 0.18 & 0.026 & 110 \\ \hline
-	$x_4\in G_2$ & 0.135& 0.0026& 90 \\ \hline
-\end{tabular}
-
-	\caption{Kinetic parameters of model \eqref{system}. Case 1 is taken from Dumont \textit{et al} \cite{Dumont2016}. Case 2 is a modification of the original parameters for model exploration.}
+	\caption{Kinetic parameters of model \eqref{system}. Case 1 is taken from Dumont \textit{et al} \cite{Dumont2016}. Case 2 is a modification of their original interaction matrix for model exploration.}
 	\label{kinetic_parameters}
 \end{table}
 
 \begin{figure}[h]
 \begin{subfigure}[b]{0.45\textwidth}
-	\includegraphics[width=\textwidth]{Interactions_Parameters_Dumont}
-	\caption{Case 1 interaction matrix.}
+	\includegraphics[width=\textwidth]{Stability/Interactions_parameters_Dumont}
+	\caption{Originally calibrated interaction matrix.}
 	\label{Interaction_1}
 \end{subfigure}
 ~
 \begin{subfigure}[b]{0.45\textwidth}
-	\includegraphics[width=\textwidth]{Interactions_Parameters_modifed}
-	\caption{Case 2 interaction matrix.}
+	\includegraphics[width=\textwidth]{Stability/Interactions_parameters_modified}
+	\caption{Modified interaction matrix.}
 	\label{Interaction_2}
 \end{subfigure}
-	\caption{Interaction matrices for each case for a consortia of 4 bacterial species where $x_1$ and $x_2$ are AOB and $x_3$ and $x_4$ are NOB. Note how OTU 1 affect very positively OTU 3 and 4 in figure \ref{Interaction_2} with respect to case \ref{Interaction_1}, this seems the key factor in the difference seen in the operating diagrams.}
+	\caption{Interaction matrices for each case for a consortia of 4 bacterial species where $x_1$ and $x_2$ are AOB and $x_3$ and $x_4$ are NOB. Only the entries $a_{11}$, $a_{12}$, and $a_{21}$ were modified, accounting for reciprocal positive interactions between $x_1$ and $x_2$.}
 	\label{Interactions}
 \end{figure} 
 
-The ecological diagrams for each case are presented in figure \ref{ecological_diagrams}. One can see that coexistence in the same functional group is never attained for case 1, whereas for case 2 a more complex situation takes places; even a zone where more than one stable equilibria is found, implying that the outcome in that zone depends on initial conditions of the system. Ecological diagrams show that the model is able to overcome the competitive exclusion principle \cite{lobry2017chemostat} (CEP) paradigm. The CEP roughly states that if two species are growing on the same limiting resource, and their growth laws are non-decreasing in the resource, then only one of them will survive in the long run. However reports on wastewater treatment plants have shown coexistence between species in nitrifying reactors \cite{Wagner2002}, thus implying that a more complex growth law (as shown in here) or model structure involving other biological processes is required to include microbial diversity. 
+The ecological diagrams for each case are presented in figure \ref{ecological_diagrams}. One can see that coexistence in the same functional group is never attained for case 1, whereas for case 2 a more complex situation takes places; even a zone where more than one stable equilibria is found, implying that the outcome in that zone depends on initial conditions of the system. Note that CN can be achieved at a more elevated dilution rate in case 2 than in case 1, which can be explained by noting that the interactions of $x_1$ on $x_3$ and $x_4$ are positive and stronger in case 2, thus helping them survive through bigger dilution rates.
 
-Operating diagrams can be seen in \ref{operating_diagrams} note CN can be achieved at a more elevated dilution rate in case 2 than in case 1, which can be explained by noting that the interactions of $x_1$ on $x_3$ and $x_4$ are positive and stronger in case 2, thus helping them survive through bigger dilution rates. The appearance of a zone in case 2 where both CN and PN might take place (depending on the initial conditions of the system) is due to the presence of multiple stable equilibrium at that operating conditions. 
+ Ecological diagrams also show that the model is able to overcome the competitive exclusion principle \cite{lobry2017chemostat} (CEP) paradigm. The CEP roughly states that if two species are growing on the same limiting resource, and their growth laws are non-decreasing in the resource, then only one of them will survive in the long run. However reports on wastewater treatment plants have shown coexistence between species in nitrifying reactors \cite{Wagner2002}, thus implying that a more complex growth law (as shown in here) or model structure involving other biological processes is required to include microbial diversity. 
 
+%
+%Operating diagrams can be seen in \ref{operating_diagrams} note CN can be achieved at a more elevated dilution rate in case 2 than in case 1, which can be explained by noting that the interactions of $x_1$ on $x_3$ and $x_4$ are positive and stronger in case 2, thus helping them survive through bigger dilution rates. The appearance of a zone in case 2 where both CN and PN might take place (depending on the initial conditions of the system) is due to the presence of multiple stable equilibrium at that operating conditions. 
+%
 
 
 
 \begin{figure}[ht]
 	\centering
 	\begin{subfigure}[b]{0.45\textwidth}
-		\includegraphics[width=\textwidth]{ED_parameters_Dumont}
-		\caption{Case 1 ecological diagram.}
+		\includegraphics[width=\textwidth]{Stability/ED_parameters_Dumont}
+		\caption{Original parameters ecological diagram.}
 	\end{subfigure}
 ~
 	\begin{subfigure}[b]{0.45\textwidth}
-	\includegraphics[width=\textwidth]{ED_parameters_modified}
-	\caption{Case 2 ecological diagram.}
+	\includegraphics[width=\textwidth]{Stability/ED_parameters_modified}
+	\caption{Modified interaction matrix ecological diagram.}
 	\end{subfigure}
 	\caption{Ecological diagrams for both cases. The different zones represent the combination of surviving species in the steady state. PN takes place when neither $x_3$ nor $x_4$ are present. MSE means multiple stable equilibria. CN takes place if $x_3$ or $x_4$ are present. A complex situation emerges in ecological terms for case 2, depending on the operating parameters the community can go from a single species surviving in the chemostat to full coexistence. }
 	\label{ecological_diagrams}
 \end{figure}
 
-
-\begin{figure}[ht]
-	\centering	
-	\begin{subfigure}[b]{0.45\textwidth}
-		\includegraphics[width=\textwidth]{OD_parameters_Dumont}
-		\caption{Case 1 operating diagram.}
-	\end{subfigure}
-~
-	\begin{subfigure}[b]{0.45\textwidth}
-		\includegraphics[width=\textwidth]{OD_parameters_modified}
-		\caption{Case 2 operating diagram.}
-	\end{subfigure}
-	\caption{Operating Diagrams for both cases. Case 1 Operating diagram coincides with the ecological diagram. Note how in case 2 CN might occur at bigger dilution rates than case 1. There is also a thin line where both CN and PN may arise depending on initial conditions.}
-	\label{operating_diagrams}
-\end{figure}
-
-
+%
+%\begin{figure}[ht]
+%	\centering	
+%	\begin{subfigure}[b]{0.45\textwidth}
+%		\includegraphics[width=\textwidth]{Stability/OD_parameters_Dumont}
+%		\caption{Case 1 operating diagram.}
+%	\end{subfigure}
+%~
+%	\begin{subfigure}[b]{0.45\textwidth}
+%		\includegraphics[width=\textwidth]{Stability/OD_parameters_modified}
+%		\caption{Case 2 operating diagram.}
+%	\end{subfigure}
+%	\caption{Operating Diagrams for both cases. Case 1 Operating diagram coincides with the ecological diagram. Note how in case 2 CN might occur at bigger dilution rates than case 1. There is also a thin line where both CN and PN may arise depending on initial conditions.}
+%	\label{operating_diagrams}
+%\end{figure}
+%
+%
 
 
 \subsection{Remarks}
@@ -600,11 +650,11 @@ I_n(v)
 \end{array}
 \end{align}
 
-	Let $f_i(s)$ be a bounded, positive, and continuous function of $s$ (e.g. Monod, Haldane). The growth equation of OTU $i$ becomes:
-	\begin{align}
+Let $f_i(s)$ be a bounded, positive, and continuous function of $s$ (e.g. Monod, Haldane). The growth equation of OTU $i$ becomes:
+\begin{align}
 	\mu_i(s,x) = f_i(s)I_i(x)
-	\end{align}
-	Note $f(s) := (f_1(s),\dots,f_n(s))^\top$.
+\end{align}
+Note $f(s) := (f_1(s),\dots,f_n(s))^\top$.
 	\label{growthForm}
 
 Since the growth of a single strain in batch experiments is driven by the substrate concentration, when no interactions are present one should recover expression $f_i(s)$. Therefore if there are no interactions then $I_i(x) = 1$. From this hypothesis, note that $ \lim \limits_{x \rightarrow 0} I_i(x) = 1$ since if there is minimal presence of OTU, interactions can not exist. Furthermore for this first study it is assumed that $I_i(\cdot)$ is a continuously differentiable function on $x$. For making explicit all of the former:
@@ -670,16 +720,17 @@ The feedback control $v(t)$, will be of the form $v(t) = -R^{-1}\tilde{B}^\top(t
 
 \subsection{Proof of concept}
 
-The approach was tested against synthetic data. The test consisted in simulating system \eqref{system} with growth functions \eqref{gLV growth1} and \eqref{gLV growth2}, therefore the interaction function $I(x) = 1 + Ax$), $f_i(s) = \dfrac{s_1}{K_i +s_1}$ for $i \in G_1$, and $f_i(s) = \dfrac{s_2}{K_i +s_2}$ for $i \in G_2$, for $n_1 = 10$ and $n_2 = 5$, with a randomly generated matrix $A$ in figure \ref{Interaction Matrix Simulation}. Parameters of the simulation can be seen in table . A simulation of the synthetic data is presented in figure \ref{fig:nonoise200121aobplot} and figure \ref{fig:nonoise200121nobplot} depending on operating parameters $D$ and $s_{in}$. 
+The approach was tested against synthetic data. The test consisted in simulating system \eqref{system} with growth functions \eqref{gLV growth1} and \eqref{gLV growth2}. Therefore in the former framework the interaction function is $I(x) = 1 + Ax$, $f_i(s) = \dfrac{s_1}{K_i +s_1}$ for $i \in G_1$, and $f_i(s) = \dfrac{s_2}{K_i +s_2}$ for $i \in G_2$, for $n_1 = 10$ and $n_2 = 5$, with a randomly generated matrix $A$ in figure \ref{Interaction Matrix Simulation}. Parameters of the simulation can be seen in table.  The simulated synthetic OTU trajectories can be seen in figures \ref{fig:nonoise200121aobplot} and \ref{fig:nonoise200121nobplot}, and the metabolites can be seen in figure \ref{fig:nonoise200121metabolites}. 
 
+The operating and ecological diagrams are shown in figure.
 
 \begin{table}[ht]
 	\centering
 	\begin{tabular}{|l|l|l|l|}
 		\hline
 		Modified Parameters  & $\mu_i\,[1/day]$ & $K_i\,[mg/L]$ & $k_i =\frac{1}{y_i} \, [gr/gr]$ \\ \hline
-		$x_i \in G_1$ &0.77  &0.07  & 3.94 \\ \hline
-		$x_i\in G_2$ & 0.621 & 0.0147 & 16.12 \\ \hline
+		$x_i \in G_1$ &0.77  &0.7  & 3.94 \\ \hline
+		$x_i\in G_2$ & 0.621 & 1.3 & 16.12 \\ \hline
 	\end{tabular}
 	\caption{Kinetic parameters of model \eqref{system} modified from \cite{Dumont2016}.}
 	\label{Parameters_synthetic_data}
@@ -688,13 +739,13 @@ The approach was tested against synthetic data. The test consisted in simulating
 \begin{figure}[h]
 	\centering
 	\begin{subfigure}{0.45 \linewidth}
-	\includegraphics[width=\linewidth]{Images/proof_of_concept/no_noise_200121_AOB_plot}
+	\includegraphics[width=\linewidth]{proof_of_concept/no_noise_200121_AOB_plot}
 	\caption{}
 	\label{fig:nonoise200121aobplot}
 	\end{subfigure}
 	\begin{subfigure}{0.45 \linewidth}
 	\centering
-	\includegraphics[width=\linewidth]{Images/proof_of_concept/no_noise_200121_NOB_plot}
+	\includegraphics[width=\linewidth]{proof_of_concept/no_noise_200121_NOB_plot}
 	\caption{}
 	\label{fig:nonoise200121nobplot}
 	\end{subfigure}
@@ -703,7 +754,7 @@ The approach was tested against synthetic data. The test consisted in simulating
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\linewidth]{Images/proof_of_concept/no_noise_200121_metabolites}
+	\includegraphics[width=0.5\linewidth]{proof_of_concept/no_noise_200121_metabolites}
 	\caption{}
 	\label{fig:nonoise200121metabolites}
 \end{figure}
@@ -711,7 +762,7 @@ The approach was tested against synthetic data. The test consisted in simulating
 \begin{figure}[h]
 	\centering	
 	\begin{subfigure}{0.45 \linewidth}
-		\includegraphics[width=\linewidth]{Synthetic_data_no_noise//Interactions_synthetic_data_no_noise}
+		\includegraphics[width=\linewidth]{Synthetic_data_no_noise/Interactions_synthetic_data_no_noise}
 		\caption{Interaction matrix associated with model \eqref{system} for a simulated consortia of 15 bacterial species where $x_1$-$x_{10}$ are AOB and $x_{11}$-$x_{15}$ are NOB.}
 		\label{Interaction Matrix Simulation}
 	\end{subfigure}
@@ -720,7 +771,7 @@ The approach was tested against synthetic data. The test consisted in simulating
 
 In all figures, asterisks represent the synthetic data, while the continuous lines represent the method's output.
 
-For applying the optimal tracking approach, the choice of matrices $Q$ and $R$ are always of discussion in a quadratic regulator. $Q$ represents the covariance matrix of measurements, while $R$ is subject to interpretations depending on the context: in the case here it does not have a definite meaning, however its behaviour is studied when $\rho(R) \rightarrow 0$, with $\rho(R)$ being the spectral radius of matrix $R$. In the simulations here presented $Q = I_n$ and $R = \lambda I_n$. $\lambda$ is varied from $10^{-1}$ to $10^{-7}$ in the supplementary material section. The case $\lambda = 10^{-4}$ is shown in here for discussion. 
+For applying the optimal tracking approach, the choice of matrices $Q$ and $R$ are always of discussion in a quadratic regulator. $Q$ represents the covariance matrix of measurements, while $R$ is subject to interpretations depending on the context: in the case here presented it does not have \textit{a priori} definite meaning. For gaining some insight, its behaviour is studied when $\rho(R) \rightarrow 0$, with $\rho(R)$ being the spectral radius of matrix $R$. In the simulations here presented $Q = I_n$ and $R = \lambda I_n$. In the supplementary material section. $\lambda$ is varied from $10^{-1}$ to $10^{-7}$. The case $\lambda = 10^{-4}$ is shown in here for discussion. 
 
 Figures \ref{Total Biomass no noise}, \ref{AOB no noise}, and \ref{NOB no noise} show the total biomass concentration, and the trajectories for the OTU belonging to $G_1$ and $G_2$, respectively. It can be seen that the method approaches well the trajectories. The metabolites concentration represented in figure \ref{Metabolites no noise} are in accordance with the simulated: The method is able to reconstruct the metabolites trajectories from the community measurements. 
 
