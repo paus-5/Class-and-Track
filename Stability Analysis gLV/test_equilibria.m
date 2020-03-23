@@ -21,24 +21,23 @@ fprintf('Trajectory at T= %d \n Point =%s \n Evaluated in dynamic = %s\n',...
 J = dynamic_jacobian(Y(end,:)',A,nA,nB,kA,kB,muA,muB,kSA,kSB,dilution);
 eigenvalues = eig(J);
 if all(real(eigenvalues) <0)
-    fprintf('Stable Equilibrium: %1.4f', Y(end,:)');
+    fprintf('Stable Equilibrium: %s\n',sprintf( '%1.4f', Y(end,:)'));
     disp(eigenvalues)
 end
 [possible_x, possible_s1, possible_s2, possible_s3]  = equilibria(A,...
     nA,nB,kA,kB,muA,muB,kSA,kSB,dilution,s_in);
 possible_equilibria = [possible_x; possible_s1; possible_s2; possible_s3];
-num_equilibria = 0;
-
+tolerance = 1e-10;
 for i=1:length(possible_equilibria(1,:))
-    if all(possible_equilibria(:,i) >=0) && isreal(possible_equilibria(:,i))
-        num_equilibria = num_equilibria +1;
-%         fprintf('\n Positive Equilibrium %d =', num_equilibria);
-%         disp(possible_equilibria(:,i)')
+    c_positivity = all(possible_equilibria(:,i) >=0);
+    c_real_number = isreal(possible_equilibria(:,i));
+    c_evaluation_in_dynamic =all(fun(1,possible_equilibria(:,i))< tolerance);
+    if c_positivity && c_real_number && c_evaluation_in_dynamic
         J = dynamic_jacobian(possible_equilibria(:,i),A,nA,nB,kA,kB,muA,muB,kSA,kSB,dilution);
         eigenvalues = eig(J);
         if all(real(eigenvalues) <0)
             disp(possible_equilibria(:,i)')
-            fprintf('Equilibrium %d: Stable Equilibrium! \n Eigenvalues of the Jacobian in the Equilibrium : \n', num_equilibria);
+            fprintf('Equilibrium %d: Stable Equilibrium! \n Eigenvalues of the Jacobian in the Equilibrium : \n', i);
             disp(eigenvalues)
         end
     end
