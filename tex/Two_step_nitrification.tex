@@ -1,0 +1,125 @@
+\documentclass[]{report}
+
+
+% Title Page
+\title{Two step nitrification model study}
+\author{Pablo Ugalde Salas}
+\usepackage{amssymb}%% The amsthm package provides extended theorem environments
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{algorithm2e}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage[version=4]{mhchem}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\I}{\mathcal{I}}
+\newcommand{\diag}{\textbf{diag}}
+\newtheorem{defn}{Definition}
+\newtheorem{hypo}{H}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theo}{Theorem}
+
+\begin{document}
+\maketitle
+
+
+\begin{align}
+\label{Reaction1} \tag{R G1} 	s_1 \stackrel{\mu_1(s,x)}{\longrightarrow} s_2 + y_1x_1  \\
+\label{Reaction2} \tag{R G2} s_2\stackrel{\mu_2(s,x)}{\longrightarrow} s_3 + y_2x_2 
+\end{align}
+
+\begin{align} 
+\dot{x_1} =& \left(\mu_1(s,x) -D \right)x_1  \label{x_1} \\
+\dot{x_2} =& \left(\mu_2(s,x) -D \right)x_2  \label{x_2}\\
+\dot{s_1} =& \displaystyle (s_{in}-s_1)D- k_1\mu_1(s,x) x_1  \\
+\dot{s_2} = & \displaystyle -s_2D+ k_1\mu_1(s,x)x_1 -k_2\mu_2(s,x) x_2  \\
+\dot{s_3} =&  \displaystyle -s_3D+ k_2\mu_2(s,x) x_2 
+\end{align}	
+
+\textbf{Case 1:}
+\begin{align}
+\mu_1(s,x) =  \bar{\mu}_1 \dfrac{s_1}{K_1 + s_1} \\
+\mu_2(s,x) =  \bar{\mu}_2 \dfrac{s_2}{K_1 + s_2} 
+\end{align}
+
+\textbf{Equilibrium points}
+It is assumed that the points here presented are non-negative.  Three cases can take place:
+
+\textbf{Coexistence:}
+From \eqref{x_1} one gets:
+\begin{align}
+s_1^{eq} &= \frac{K_1D}{\bar{\mu}_1 - D} \\
+x_1^{eq} &= \frac{s_{in} - s_1^{eq}}{k_1} \\
+s_2^{eq} &= \frac{K_2D}{\bar{\mu}_2 - D} \\
+x_2^{eq} &=\frac{s_{in} - s_1^{eq}-s_2^{eq}}{k_2}\\
+s_3^{eq} &= s_{in} - s_1^{eq}-s_2^{eq} 
+\end{align}
+
+\textbf{Washout of $x_2$}
+\begin{align}
+s_1^{eq} &= \frac{K_1D}{\bar{\mu}_1 - D} \\
+x_1^{eq} &= \frac{s_{in} - \frac{K_1D}{\bar{\mu}_1 - D}}{k_1} \\
+s_2^{eq} &= s_{in} - s_1^{eq} \\
+x_2^{eq} &=0 \\
+s_3^{eq} &= 0 
+\end{align}
+
+\textbf{Washout}
+\begin{align}
+s_1^{eq} &= s_{in} \\
+x_1^{eq} &= 0 \\
+s_2^{eq} &= 0 \\
+x_2^{eq} &=0 \\
+s_3^{eq} &= 0 
+\end{align}
+
+\textbf{Jacobian of the system:}
+\begin{align}
+J_{11} & = \bar{\mu}_1 \dfrac{s_1}{K_1 + s_1} -D \\
+J_{12} & = 0 \\
+J_{13} & = \bar{\mu}_1 \dfrac{K_1}{(K_1 + s_1)^2}x_1 \\
+J_{14} & = 0 \\
+J_{15} & = 0 \\
+J_{21} & = 0 \\
+J_{22} & = \bar{\mu}_1 \dfrac{s_2}{K_2 + s_2} -D \\
+J_{23} & = 0 \\
+J_{24} & = \bar{\mu}_2 \dfrac{K_1}{(K_1 + s_2)^2}x_2  \\
+J_{25} & = 0 \\
+J_{31} & = -k_1\bar{\mu}_1 \dfrac{s_1}{K_1 + s_1} \\
+J_{32} & = 0 \\
+J_{33} & = -D -k_1\bar{\mu}_1 \dfrac{K_1}{(K_1 + s_1)^2}x_1 \\
+J_{34} & = 0 \\
+J_{35} & = 0 \\
+J_{41} & = k_1\bar{\mu}_1 \dfrac{s_1}{K_1 + s_1} \\
+J_{42} & = -k_2\bar{\mu}_2 \dfrac{s_2}{K_2 + s_2} \\
+J_{43} & = k_1  \bar{\mu}_1 \dfrac{K_1}{(K_1 + s_1)^2}x_1 \\
+J_{44} & = -D-k_2 \bar{\mu}_2 \dfrac{K_2}{(K_2 + s_2)^2}x_2 \\
+J_{45} & = 0 \\
+J_{51} & = 0 \\
+J_{52} & = 0 \\
+J_{53} & = 0 \\
+J_{54} & = 0 \\
+J_{55} & = -D \\
+\end{align}
+
+
+Evaluating the equilibrium point in the jacobian gives:
+
+\textbf{Case 1}
+\begin{align}
+J = \begin{bmatrix}
+0 & 0 &\dfrac{D(\bar{\mu}_1 - D)(s_{in}-\frac{K_1D}{\bar{\mu_1}-D})}{\bar{\mu}_1k_1} &0 &0 \\
+0 & 0 & 0&  \dfrac{D(\bar{\mu}_2 - D)(s_{in}-\frac{K_1D}{\bar{\mu_1}-D} -\frac{K_2D}{\bar{\mu_2}-D})}{\bar{\mu}_2k_2} & 0 \\
+-k_1D & 0& -D-\dfrac{D(\bar{\mu}_1 - D)(s_{in}-\frac{K_1D}{\bar{\mu_1}-D})}{\bar{\mu}_1} &0 &0 \\
+k_1D & -k_2D & \dfrac{D(\bar{\mu}_1 - D)(s_{in}-\frac{K_1D}{\bar{\mu_1}-D})}{\bar{\mu}_1} & -D -\dfrac{D(\bar{\mu}_2 - D)(s_{in}-\frac{K_1D}{\bar{\mu_1}-D} -\frac{K_2D}{\bar{\mu_2}-D})}{\bar{\mu}_2} &0 \\
+0 & 0 & 0 & 0 & -D 
+\end{bmatrix}
+\end{align}
+
+\textbf{Case 2}
+
+
+\end{document}          
