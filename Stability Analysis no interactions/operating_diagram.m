@@ -3,7 +3,7 @@ clear
 file_name_in = 'default_case';
 load(sprintf('MAT_files\\%s',file_name_in));
 file_name_out = 'default_case';
-number_of_points = 100;
+number_of_points = 300;
 d_initial = 0.7/6.5;
 d_final =  2.2/6.5;
 s_in_initial = 0.5;

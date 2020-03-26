@@ -1,6 +1,6 @@
 clear
 close all
-file_in = 'default_case';
+file_in = 'parameters_modified_2';
 load(sprintf('MAT_files/%s',file_in));
 labels = cell(n);
 for i=1:n
@@ -13,8 +13,9 @@ text_strings = strtrim(cellstr(text_strings));  % Remove any space padding
 [x, y] = meshgrid(1:n);  % Create x and y coordinates for the strings
 hStrings = text(x(:), y(:), text_strings(:), ...  % Plot the strings
                 'HorizontalAlignment', 'center','fontsize',12);
-mid_value = mean(get(gca, 'CLim'));  % Get the middle value of the color range
-text_colors = repmat(A(:) > mid_value, 1, 3);  % Choose white or black for the
+color_range = get(gca, 'CLim');
+mid_value = mean(color_range)-0.8;  % Get the middle value of the color range
+text_colors = repmat(A(:) <mid_value, 1, 3);  % Choose white or black for the
                                                %   text color of the strings so
                                                %   they can be easily seen over
                                                %   the background color

@@ -10,6 +10,7 @@ k = [kA;kB];
 vec_aux1 = (D-[muA; muB])./[muA; muB];
 vec_aux2 = D*[kSA ; kSB]./[muA; muB];
 for i = 1:2^nA-1
+    %CN
     for j = 1:2^nB-1
         considered_species = find([de2bi(i,nA) de2bi(j,nB)]);
         A_act = A(considered_species, considered_species);
@@ -42,6 +43,7 @@ for i = 1:2^nA-1
         end
         counter = counter +4;
     end
+    %PN
     considered_species = find([de2bi(i,nA) de2bi(0,nB)]);
     A_act = A(considered_species, considered_species);
     B = diag(k(considered_species))/A_act;

@@ -1,15 +1,14 @@
 clear
 close all
-% generateParameters;
 file_name_in = 'default_case';
 load(sprintf('MAT_files\\%s',file_name_in));
 % z0 = random('Uniform',0,1,5,1);
-z0 = [0.1 0.000001 0 0 0];
+z0 = [0.1 0.1 0 0 0];
 OTU = 1:2;
 options = odeset('NonNegative',1:5);
-dilution = 0.26 ;
+dilution = 0.3;
 D = @(t) dilution;
-s_in = 0.89;
+s_in = 1.25;
 sIn = @(t) s_in;
 tF = 20000;
 fun =  dynamic(kA,kB,muA,muB,kSA,kSB,D,sIn);
@@ -28,7 +27,6 @@ end
 [possible_x1, possible_x2, possible_s1, possible_s2, possible_s3]  = equilibria(kA,kB,muA,muB,kSA,kSB,dilution,s_in);
 possible_equilibria = [possible_x1'; possible_x2'; possible_s1'; possible_s2'; possible_s3'];
 num_equilibria = 0;
-
 for i=1:length(possible_equilibria(1,:))
     if all(possible_equilibria(:,i) >=0) && isreal(possible_equilibria(:,i))
         num_equilibria = num_equilibria +1;

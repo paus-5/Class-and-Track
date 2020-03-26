@@ -1,10 +1,16 @@
 clear
 close all
-file_name_in = 'default_case';
+file_name_in = 'parameters_modified';
 load(sprintf('MAT_files\\Operating_Diagram_%s',file_name_in))
-figure;
-number_of_zones = length(map_zones_ED);
+%Only for parameters_modifed
+number_of_zones = length(map_zones_ED)-1;
+zones_ED(zones_ED == 4) = 2;
+%end fix ED
+%Normal Zone
+% number_of_zones = length(map_zones_ED);
 cmap1 = hsv(number_of_zones);
+% End_zone
+figure;
 [X,Y] = meshgrid(s_in_vector,D_vector);
 surfc(X,Y,zones_ED','EdgeColor','none','LineStyle','none','FaceLighting','phong');%view(2)
 colormap(cmap1)
@@ -18,29 +24,31 @@ for i = map_zones_ED.keys
         if max(index_aux) == 0;
             label = 'Washout';
         elseif max(index_aux) <= nA;
-            label = sprintf('PN: %s',str_aux);
+            label = sprintf('%s',str_aux);
         else
-            label = sprintf('CN: %s',str_aux);
+            label = sprintf('%s',str_aux);
         end
-    else 
-        mat_aux = reshape(vec_aux,n,length_vec/n);
-        flag_PN_and_CN = sum(any(mat_aux(nA+1:end,:)))<length_vec/n;
-        flag_CN = all(any(mat_aux(nA+1:end,:)));
-        flag_washout_PN = ~all(any(mat_aux));
-        if flag_CN
-            str_aux = 'CN';
-        elseif flag_PN_and_CN
-            str_aux = 'CN & PN';
-        elseif flag_washout_PN
-            str_aux = 'Washout & PN';
+    else
+        number_of_eq = length_vec/n;
+        mat_aux = reshape(vec_aux,n,number_of_eq);
+        str_aux = '';
+        for j = 1:number_of_eq
+            index_aux = find(mat_aux(:,j));
+            str_aux = sprintf('%s%0.f) %s\\newline',str_aux,j,sprintf('x_{%.0f}',index_aux));
         end
-        label = sprintf('%s: MSE',str_aux);
+        str_aux = str_aux(1:end);
+%         text(
+%         flag_PN = sum(any(mat_aux(nA+1:end,:))) == 0;
+%         flag_PN_CN = sum(any(mat_aux(nA+1:end,:))) == 1;
+%         flag_CN = all(any(mat_aux(nA+1:end,:)));
+%         flag_washout_PN = ~all(any(mat_aux));
+        label = sprintf('%s ',str_aux);
     end
     tickLabels(map_zones_ED(char(i))) = cellstr(label);
 end
 colorbar('Ticks',1:number_of_zones,...
     'TickLabels',tickLabels,...
-    'FontSize',9)
+    'FontSize',18)
 view(2)
 xlabel('S_{in} [g/l]');
 ylabel('Dilution Rate [day^{-1}]')
