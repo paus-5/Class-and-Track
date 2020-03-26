@@ -1,7 +1,7 @@
 %plotting
 clear
 close all
-name_file_in = 'MAT_Files\\191218_Reactor_A_iter_45';
+name_file_in = 'MAT_Files\\250309_POC_try4_iter_3';
 load(name_file_in);
 legend_tags_biomass{1} = 'Data: Sum of species biomass';
 legend_tags_biomass{2} = 'Tracking: Sum of species biomass';
@@ -13,7 +13,7 @@ s_vec = x_new(:,(n+1):end);
 growth_AOB = @(s) growth_monod(s,muA,kSA)';
 growth_NOB = @(s) growth_monod(s,muB,kSB)';
 growth_cell_AOB = arrayfun(growth_AOB,s_vec(:,1),'UniformOutput',false);
-growth_cell_NOB = arrayfun(growth_NOB,s_vec(:,1),'UniformOutput',false);
+growth_cell_NOB = arrayfun(growth_NOB,s_vec(:,2),'UniformOutput',false);
 growth_mat_AOB = cell2mat(growth_cell_AOB);
 growth_mat_NOB = cell2mat(growth_cell_NOB);
 growth_mat = [growth_mat_AOB growth_mat_NOB];
@@ -22,7 +22,7 @@ tic
 control_eval = arrayfun(control,t_new,'UniformOutput',false);
 toc
 control_eval_reshape = reshape(cell2mat(control_eval),n,length(t_new));
-growth_times_control = growth_mat'.*(control_eval_reshape+1);
+growth_times_control = growth_mat'.*(control_eval_reshape+1).*x_new(:,1:n)';
 %%Total Biomass
 figure
 hold on
@@ -88,7 +88,7 @@ for k = 1:number_of_AOB_plots
     figure
     growth_plot_AOB = plot(t_new,growth_times_control(OTU_plot_index,:),'LineWidth',1.5);
     xlabel('\fontsize{12}Time [days]'),...
-        ylabel('\fontsize{12}  f_i(s_1(t))u(t) [day^{-1}]'),...
+        ylabel('\fontsize{12}  f_i(s_1(t))u(t)x_i(t) [day^{-1}]'),...
         title(sprintf('Growth for AOB iter: %.0f',iter))
     set(gca,'fontsize',15),
     set(control_plot_AOB,{'Color'}, colors_AOB),
@@ -149,7 +149,7 @@ for k = 1:number_of_NOB_plots
     figure
     growth_plot_NOB = plot(t_new,growth_times_control(OTU_plot_index,:),'LineWidth',1.5);
     xlabel('\fontsize{12}Time [days]'),...
-        ylabel('\fontsize{12}  f_i(s_2(t))u(t) [day^{-1}]'),...
+        ylabel('\fontsize{12}  f_i(s_2(t))u(t)x_i(t) [day^{-1}]'),...
         title(sprintf('Growth for NOB iter: %.0f',iter))
     set(gca,'fontsize',15),
     set(control_plot_NOB,{'Color'}, colors_NOB),
