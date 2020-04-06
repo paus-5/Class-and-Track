@@ -496,9 +496,9 @@ In the case of ecological diagrams (ED) the pairs are regrouped such that the po
 
 A first example using operating diagrams is presented to illustrate how adding interactions in a model consisting of 1 OTU in $G_1$ and 1 OTU in $G_2$ may lead to very different outcomes.
 
-\textbf{Case study 1: 1 AOB and 1 NOB}
+\subsubsection{Case study 1: 1 AOB and 1 NOB}
 
-Consider the case where $n_1 = 1$ and $n_2 = 1$. For gaining some insight the comparison of the operating diagrams where no interactions take place ($A = 0$) and with a non-zero, as shown in \ref{case1_no_interactions} and \ref{case1_interactions}. When $A=0$ the analysis above presented is no longer valid (A is not invertible), nevertheless the stability analysis is much simpler and is given in the supplementary material section. Parameters can be seen in table \ref{kinetic_parameters_case_study_1}, while the interaction matrices can be seen .
+Consider the case where $n_1 = 1$ and $n_2 = 1$. The operating diagrams where no interactions take place ($A = 0$) and a non-zero interaction matrix is presented. When $A=0$ algorithm \ref{StabilityAnalysis} is no longer valid (A is not invertible), nevertheless the stability analysis is much simpler and is given in the supplementary material section. Parameters can be seen in table \ref{kinetic_parameters_case_study_1}, while the interaction matrices are shown in \ref{case1_no_interactions} and \ref{case1_interactions}.
 
 The operating diagram can be seen in figure \ref{OD_no_interactions}, note how partial nitrification (washout of $G_2$). When compared to \ref{OD_no_interactions} one notes that at low $s_{in}$ the curve dividing the PN zone from the CN zone are alike. But since more $s_{in}$ means more $x_1$, at high $s_{in}$ the affine part $(1+ a_{21}x_1 +a_{22}x_2)$ of the growth function of $x_2$ plays a bigger role than substrate limitation ($\frac{s_2}{s_2+K_2}$).
 
@@ -550,7 +550,7 @@ The operating diagram can be seen in figure \ref{OD_no_interactions}, note how p
 
 \textbf{Case study 2: 2 AOB and 2 NOB}
 
- The case study 2 is based on Dumont \textit{et al.}\cite{Dumont2016} model parameters. They proposed a distribution of parameters obtained from a Bayesian estimation method. Their fit describes well the dynamics of the two most abundant OTU in each functional group, but it still fails to capture the measured substrates dynamics. Kinetic parameters of case study 2 can be seen in table \ref{kinetic_parameters}. The original interaction matrix estimated by them is seen in \ref{Interaction_1}. A second matrix is presented, which is obtained from modification on the sign of coefficient $a_{11}$ as seen in \ref{Interaction_2}, and finally a third one is obtained by changing the value of $a_{12}$ from the original matrix. 
+ The case study 2 is based on Dumont \textit{et al.}\cite{Dumont2016} model parameters. They proposed a distribution of parameters obtained from a Bayesian estimation method. Their fit describes well the dynamics of the two most abundant OTU in each functional group, but it still fails to capture the measured substrates dynamics. Kinetic parameters of case study 2 can be seen in table \ref{kinetic_parameters}. The estimated interaction matrix is shown in figure \ref{Interaction_1}. A second matrix is presented, which is obtained by the sign change of coefficient $a_{11}$ (figure \ref{Interaction_2}), and finally a third one is obtained by using a positive value for $a_{12}$ (figure \ref{Interaction_3}). 
 
 \begin{table}[ht]
 	\centering
@@ -562,83 +562,64 @@ The operating diagram can be seen in figure \ref{OD_no_interactions}, note how p
 		$x_3\in G_2$ & 0.18 & 0.026 &  100 \\ \hline
 		$x_4\in G_2$ & 0.18 & 0.026 &  100 \\ \hline
 	\end{tabular}
-	\caption{Kinetic parameters of model \eqref{system}. Case 1 is taken from Dumont \textit{et al} \cite{Dumont2016}. Case 2 is a modification of their original interaction matrix for model exploration.}
+	\caption{Kinetic parameters of model \eqref{system} from Dumont \textit{et al.} \cite{Dumont2016}}
 	\label{kinetic_parameters}
 \end{table}
 
 \begin{figure}[h]
-\begin{subfigure}[b]{0.3\textwidth}
+\begin{subfigure}[b]{0.32\textwidth}
 	\includegraphics[width=\textwidth]{Stability/Interactions_parameters_Dumont}
 	\caption{Originally calibrated interaction matrix.}
 	\label{Interaction_1}
 \end{subfigure}
 ~
-\begin{subfigure}[b]{0.3\textwidth}
+\begin{subfigure}[b]{0.32\textwidth}
 	\includegraphics[width=\textwidth]{Stability/Interactions_parameters_modified}
-	\caption{Modified interaction matrix with positive intra species interaction for $x_1$.}
+	\caption{Modified interaction matrix with positive intraspecies interaction $a_{11}>0$.}
 	\label{Interaction_2}
 \end{subfigure}
 ~
-\begin{subfigure}[b]{0.3\textwidth}
+\begin{subfigure}[b]{0.32\textwidth}
 	\includegraphics[width=\textwidth]{Stability/Interactions_parameters_modified_2}
-	\caption{Modified interaction matrix with positive intra species interaction for $x_1$.}
+	\caption{Modified interaction matrix with positive interspecies interaction  $a_{12}>0$.}
 	\label{Interaction_3}
 \end{subfigure}
-	\caption{Interaction matrices for each case for a consortia of 4 bacterial species where $x_1$ and $x_2$ are AOB and $x_3$ and $x_4$ are NOB. Only the sign of the entry $a_{12}$ was modified with respect to the original matrix. Representing the a positive interspecies interaction of $x_2$ on $x_1$.}
+	\caption{Interaction matrices for each case for a consortia of 4 bacterial species where $x_1$ and $x_2$ are AOB and $x_3$ and $x_4$ are NOB. Parameters $a_{11}$ and $a_{12}$ were modified in figures \eqref{Interaction_2} and \eqref{Interaction_3}, respectively.}
 	\label{Interactions}
 \end{figure} 
 
-%
-%Operating diagrams can be seen in \ref{operating_diagrams} note CN can be achieved at a more elevated dilution rate in case 2 than in case 1, which can be explained by noting that the interactions of $x_1$ on $x_3$ and $x_4$ are positive and stronger in case 2, thus helping them survive through bigger dilution rates. The appearance of a zone in case 2 where both CN and PN might take place (depending on the initial conditions of the system) is due to the presence of multiple stable equilibrium at that operating conditions. 
-%
 
 \begin{figure}[ht]
 	\centering
-	\begin{subfigure}[b]{0.3\textwidth}
-		\includegraphics[width=\textwidth]{Stability/ED_parameters_Dumont}
-		\caption{Original parameters ecological diagram.}
+	\begin{subfigure}[b]{0.32\textwidth}
+	\includegraphics[width=\textwidth]{Stability/ED_parameters_Dumont}
+	\caption{Original parameters ecological diagram.}
+	\label{ED 1}
 	\end{subfigure}
 ~
-	\begin{subfigure}[b]{0.3\textwidth}
+	\begin{subfigure}[b]{0.32\textwidth}
 	\includegraphics[width=\textwidth]{Stability/ED_parameters_modified}
 	\caption{Modified interaction matrix ecological diagram.}
+	\label{ED 2}
 	\end{subfigure}
 ~
-\begin{subfigure}[b]{0.3\textwidth}
+\begin{subfigure}[b]{0.32\textwidth}
 	\includegraphics[width=\textwidth]{Stability/ED_parameters_modified_2}
 	\caption{Modified interaction matrix ecological diagram.}
+	\label{ED 3}
 \end{subfigure}
 
-	\caption{Ecological diagrams for both cases. The different zones represent the combination of surviving species in the steady state. PN takes place when neither $x_3$ nor $x_4$ are present. MSE means multiple stable equilibria. CN takes place if $x_3$ or $x_4$ are present. A complex situation emerges in ecological terms for case 2, depending on the operating parameters the community can go from a single species surviving in the chemostat to full coexistence. }
+	\caption{Ecological diagrams for both cases. The different zones represent the combination of surviving species in the steady state. PN takes place when neither $x_3$ nor $x_4$ are present. Note that in figure \ref{ED 2} two stable equilibria exist for each zone. CN takes place if $x_3$ or $x_4$ are present. }
 	\label{ecological_diagrams}
 \end{figure}
 
+The ecological diagrams are presented in figure \ref{ecological_diagrams}. Comparing figure \ref{ED 1} with \ref{ED 2} one can see a very different situation. Note how every zone in figure \ref{ED 2} has two stable equilibria, meaning that the outcome of the system is strongly determined by its initial conditions, particularly interesting is the green zone where either $x_1,x_3$ coexist or $x_2$ alone remains, because in operational terms this means that either PN or CN may take place.
 
-The ecological diagrams for each case are presented in figure \ref{ecological_diagrams}. One can see that coexistence in the same functional group is never attained for case 1, whereas for case 2 $x_1$ and $x_2$, both AOB, coexist in either partial or complete nitrification. Ecological diagrams also show that the model is able to overcome the competitive exclusion principle \cite{lobry2017chemostat} (CEP) paradigm. The CEP roughly states that if two species are growing on the same limiting resource, and their growth laws are non-decreasing in the resource, then only one of them will survive in the long run. However reports on wastewater treatment plants have shown coexistence between species in nitrifying reactors \cite{Wagner2002}, thus implying that a more complex growth law (as shown in here) or model structure involving other biological processes is required to include microbial diversity. 
-
-\clearpage
-%
-%\begin{figure}[ht]
-%	\centering	
-%	\begin{subfigure}[b]{0.45\textwidth}
-%		\includegraphics[width=\textwidth]{Stability/OD_parameters_Dumont}
-%		\caption{Case 1 operating diagram.}
-%	\end{subfigure}
-%~
-%	\begin{subfigure}[b]{0.45\textwidth}
-%		\includegraphics[width=\textwidth]{Stability/OD_parameters_modified}
-%		\caption{Case 2 operating diagram.}
-%	\end{subfigure}
-%	\caption{Operating Diagrams for both cases. Case 1 Operating diagram coincides with the ecological diagram. Note how in case 2 CN might occur at bigger dilution rates than case 1. There is also a thin line where both CN and PN may arise depending on initial conditions.}
-%	\label{operating_diagrams}
-%\end{figure}
-%
-%
-
+One can see that coexistence in the same functional group is never attained in figure \ref{ED 1}, whereas in figure \ref{ED 2} $x_1$ and $x_2$, both AOB, coexist in either partial or complete nitrification. That means that the model is able to overcome the competitive exclusion principle \cite{lobry2017chemostat} (CEP) paradigm. The CEP roughly states that if two species are growing on the same limiting resource, and their growth laws only depend non decreasingly on the resource, then only one of them will survive in the long run. This is interesting in light of reports on wastewater treatment plants where coexistence between species in nitrifying reactors has been shown \cite{Wagner2002}, thus implying that a more complex growth law (as shown in here) or model structure involving other biological processes is required to include microbial diversity in mathematical models. 
 
 \subsection{Remarks}
 
-The model here presented serves to illustrate that by considering a more complex growth rate that tries to model ecological interactions one might explain differences in reactors operating under similar conditions. It also shows a new mechanism by which the CEP no longer holds and where multiple stable equilibria may appear. Since the gLV model discussed (and calibrated in \cite{Dumont2016}) fails to completely capture the dynamics observed in the chemostat experiments, the next section proposes a new model to study.
+The model here presented serves to illustrate that by considering a more complex growth rate that tries to model ecological interactions one might explain differences in reactors operating under similar conditions. It also shows a new mechanism by which the CEP no longer holds and where multiple stable equilibria may appear. Since the gLV model discussed (and calibrated in \cite{Dumont2016}) fails to completely capture the dynamics observed in the chemostat experiments, the next section proposes a new model to study interactions.
 
 
 \section{Generalized approach for modelling interactions}
@@ -728,102 +709,116 @@ The feedback control $v(t)$, will be of the form $v(t) = -R^{-1}\tilde{B}^\top(t
 
 \subsection{Proof of concept}
 
-The approach was tested against synthetic data generated by simulating model \eqref{system} using the parameters of the study case 1 with interaction matrix given by \eqref{case1_interactions}. In the operating diagram of the same case (figure \eqref{OD_interactions}) the red zone implies complete nitrification, while the green zone means partial nitrification. For integrating the former phenomena in the simulation, the system was simulated for 300 days, and perturbed at day 150 from the CN zone ($(s_{in},D) = (1.25,0.22)$) to a PN zone ($(s_{in},D) = (1.95,0.22)$) .
+The approach was tested against synthetic data generated by simulating model \eqref{system} using the parameters of the case study 1 with interaction matrix given by \eqref{case1_interactions}. In the operating diagram of the same case (figure \eqref{OD_interactions}) the red zone implies complete nitrification, while the green zone means partial nitrification. For integrating the former phenomena in the simulation, the system was simulated for 300 days, and perturbed at day 150 from the CN zone ($(s_{in},D) = (1.25,0.22)$) to a PN zone ($(s_{in},D) = (1.95,0.22)$). Simulations can be seen in figure \ref{synthetic_data}. Note how from day 150 the NOB population represented in figure \eqref{PC_synthetic_NOB} decreases, which in turn implies a decrease in $s_3$, as seen in figure \eqref{PC_synthetic_metabolites}.
 
 
 \begin{figure}[h]
 	\centering
-	\begin{subfigure}{0.45 \linewidth}
+	\begin{subfigure}{0.32 \linewidth}
 	\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_AOB_plot}
-	\caption{}
-	\label{fig:nonoise200121aobplot}
+	\caption{AOB.}
+	\label{PC_synthetic_AOB}
 	\end{subfigure}
-	\begin{subfigure}{0.45 \linewidth}
+	\begin{subfigure}{0.32 \linewidth}
 	\centering
 	\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_NOB_plot}
-	\caption{}
-	\label{fig:nonoise200121nobplot}
+	\caption{NOB.}
+	\label{PC_synthetic_NOB}
 	\end{subfigure}
-\caption{}
-\end{figure}
-
-\begin{figure}[h]
+	\begin{subfigure}{0.32 \linewidth}
 	\centering
-	\includegraphics[width=0.5\linewidth]{proof_of_concept/250309_POC_metabolites}
-	\caption{}
-	\label{fig:nonoise200121metabolites}
+	\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_metabolites}
+	\caption{Metabolites.}
+	\label{PC_synthetic_metabolites}
+	\end{subfigure}
+	\caption{Synthetic data generated by model \eqref{system}, with parameters from case study 1. Note the effects of the increased input $s_{in}$ generated in day 150.}
+	\label{synthetic_data}
 \end{figure}
 
 
 
-In all figures, asterisks represent the synthetic data, while the continuous lines represent the method's output.
-
-For applying the optimal tracking approach, the choice of matrices $Q$ and $R$ are always of discussion in a quadratic regulator. $Q$ represents the covariance matrix of measurements, while $R$ is subject to interpretations depending on the context: in the case here presented it does not have \textit{a priori} definite meaning. For gaining some insight, its behaviour is studied when $\rho(R) \rightarrow 0$, with $\rho(R)$ being the spectral radius of matrix $R$. In the simulations here presented $Q = I_n$ and $R = \lambda I_n$. In the supplementary material section. $\lambda$ is varied from $10^{-1}$ to $10^{-7}$. The case $\lambda = 10^{-4}$ is shown in here for discussion. 
-
-Figures \ref{Total Biomass no noise}, \ref{AOB no noise}, and \ref{NOB no noise} show the total biomass concentration, and the trajectories for the OTU belonging to $G_1$ and $G_2$, respectively. It can be seen that the method approaches well the trajectories. The metabolites concentration represented in figure \ref{Metabolites no noise} are in accordance with the simulated: The method is able to reconstruct the metabolites trajectories from the community measurements. 
 
 
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.5\textwidth]{proof_of_concept/250309_POC_try3_Biomass_iter_2}
-	\caption{Dotted line: simulated total biomass for model \eqref{system} \iffalse quels paramètres ?\fi. Continuous line: total biomass as predicted  by the tracking procedure.}
-	\label{Total Biomass no noise}
-\end{figure}
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.5\textwidth]{proof_of_concept/250309_POC_try3_AOB_iter_2_plot_1}
-	\caption{Dotted line: simulated AOB biomass. Continuous line: the tracking procedure results.}
-	\label{AOB no noise}
-\end{figure}
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.5\textwidth]{proof_of_concept/250309_POC_try3_NOB_iter_2_plot_1}
-	\caption{NOB biomass. Dotted line: simulated data. Continuous line: the tracking procedure results.}
-	\label{NOB no noise}
-\end{figure}
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.5\textwidth]{proof_of_concept/250309_POC_try3_metabolites_iter_2}
-	\caption{Metabolites. Dotted line: simulated data. Continuous line: the tracking procedure results.}
-	\label{Metabolites no noise}
-\end{figure}
-\clearpage
+%For applying the optimal tracking approach, the choice of matrices $Q$ and $R$ are always of discussion in a quadratic regulator. $Q$ represents the covariance matrix of measurements, while $R$ is subject to interpretations depending on the context: in the case here presented it does not have \textit{a priori} definite meaning. For gaining some insight, its behaviour is studied when $\rho(R) \rightarrow 0$, with $\rho(R)$ being the spectral radius of matrix $R$. In the simulations here presented $Q = I_n$ and $R = \lambda I_n$. In the supplementary material section. $\lambda$ is varied from $10^{-1}$ to $10^{-7}$. The case $\lambda = 10^{-4}$ is shown in here for discussion. 
 
-The resulting controls that correct the growth rate can be seen in figures \eqref{Control AOB no noise} and \eqref{Control NOB no noise}. Note that from the structure of a quadratic regulator, since there is no cost in the final state, the end value is always 1. It should be noted as well that since the synthesized control is not saturated (i.e. it does not reach the imposed bounds) it is optimal.
+ The results of the procedure to identify interactions can be seen in figure in figure \ref{POC_tracking}. Figures \ref{PC_total_biomass}, \ref{PC_AOB}, and \ref{PC_NOB} show the total biomass concentration, and the trajectories for the OTU belonging to $G_1$ and $G_2$, respectively. It can be seen that the method approaches well the trajectories. The metabolites concentration represented in figure \ref{PC_metabolites} are in accordance with the simulated: The method is able to reconstruct the metabolites trajectories from the community measurements. 
 
 
 \begin{figure}[h]
 	\centering
 	\begin{subfigure}{0.45 \linewidth}
-		\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_try3_Control_AOB_iter_2_plot_1}
+	\includegraphics[width= \textwidth]{proof_of_concept/250309_POC_try3_iter_2_Biomass}
+	\caption{Total biomass.}
+	\label{PC_total_biomass}
+	\end{subfigure}
+~
+	\begin{subfigure}{0.45 \linewidth}
+		\includegraphics[width=\textwidth]{proof_of_concept/250309_POC_try3_iter_2_metabolites}
+		\caption{Metabolites. }
+		\label{PC_metabolites}
+	\end{subfigure}
+
+	\begin{subfigure}{0.45 \linewidth}
+		\includegraphics[width=\textwidth]{proof_of_concept/250309_POC_try3_iter_2_AOB_plot_1}
+		\caption{AOB biomass.}
+		\label{PC_AOB}
+	\end{subfigure}
+	~
+	\begin{subfigure}{0.45 \linewidth}
+		\includegraphics[width=\textwidth]{proof_of_concept/250309_POC_try3_iter_2_NOB_plot_1}
+		\caption{NOB biomass. }
+		\label{PC_NOB}
+	\end{subfigure}
+\caption{Asterisks represent the synthetic data, while the continuous lines represent the method's output. The method is able to reconstruct the metabolites pattern, from the biomasses concentrations.}
+\label{POC_tracking}
+\end{figure}
+
+
+
+Figure \ref{POC_control} shows the controls and the corrected growth rate for each functional group. The control for each funcional group can be seen in figures \ref{Control AOB no noise} and \eqref{Control NOB no noise}. Note that from the structure of a quadratic regulator, since there is no cost in the final state, the end value is always 1. Figures \ref{AOB_growth_POC} and \ref{NOB_growth_POC} show the resulting growth rates for $AOB$ and $NOB$, respectively, without the control $u_i(t)$. Figures \ref{AOB_growth_control_POC} and \ref{NOB_growth_control_POC} are the complete expression that determines growth rate, that is  $f_i(s(t))u_i(t)x_i(t)$. Note how little the shape changes with respect to figures \ref{AOB_growth_POC} and \ref{NOB_growth_POC}, which might mislead the reader to conclude that the control had reduced effects in the dynamics. The way out of this conundrum is to note that the control's effects are already included in $x_i(t)$ and $s_i(t)$, and thus in expression $f_i(s(t))x_i(t)$. 
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{0.45 \linewidth}
+		\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_try3_iter_2_Control_AOB_plot_1}
 	\caption{Control for the AOB population.}
 	\label{Control AOB no noise}
 	\end{subfigure}
 	\begin{subfigure}{0.45 \linewidth}
 		\centering
-		\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_try3_Control_NOB_iter_2_plot_1}
+		\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_try3_iter_2_Control_NOB_plot_1}
 	\caption{Control for the NOB population.}
 	\label{Control NOB no noise}
 	\end{subfigure}
-	\caption{}
-\end{figure}
-\begin{figure}[h]
-	\centering
+
 	\begin{subfigure}{0.45 \linewidth}
-		\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_try3_growth_AOB_iter_2_plot_1}
+		\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_try3_iter_2_growth_AOB_plot_1}
 		\caption{Growth rate of the model for AOB community.}
 		\label{AOB_growth_POC}
 	\end{subfigure}
 	\begin{subfigure}{0.45 \linewidth}
 		\centering
-		\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_try3_growth_NOB_iter_2_plot_1}
-	\caption{Growth rate of the model for the NOV community.}
+		\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_try3_iter_2_growth_NOB_plot_1}
+	\caption{Growth rate of the model for the NOB community.}
 	\label{NOB_growth_POC}
 	\end{subfigure}
-	\caption{}
+
+	\begin{subfigure}{0.45 \linewidth}
+		\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_try3_iter_2_growth_control_AOB_plot_1}
+		\caption{Growth rate of the model for AOB community.}
+		\label{AOB_growth_control_POC}
+	\end{subfigure}
+	\begin{subfigure}{0.45 \linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_try3_iter_2_growth_control_NOB_plot_1}
+		\caption{Growth rate of the model for the NOB community.}
+		\label{NOB_growth_control_POC}
+	\end{subfigure}
+	\caption{Control and growth rates resulting from the tracking approach.}
+	\label{POC_control}
 \end{figure}
 
-In figure \ref{Comparison_lambda} the different controls obtained by varying $\lambda$ for two species are compared to the interaction function simulated that is $1+A(x(t))$, where $x(t)$ is the synthetic data. One can see that due to this property of the end value becoming 1, the two do not coincide, however, when $\lambda$ is decreased one can see that the control roughly approaches the respective interaction function at the cost of very sharp changes.
+%In figure \ref{Comparison_lambda} the different controls obtained by varying $\lambda$ for two species are compared to the interaction function simulated that is $1+A(x(t))$, where $x(t)$ is the synthetic data. One can see that due to this property of the end value becoming 1, the two do not coincide, however, when $\lambda$ is decreased one can see that the control roughly approaches the respective interaction function at the cost of very sharp changes.
 
 %\begin{figure}[h]
 %	\centering
@@ -837,7 +832,23 @@ In figure \ref{Comparison_lambda} the different controls obtained by varying $\l
  
 The method was stopped after 10 iterations where each iteration took approximately 800 seconds of computing time in a computer equipped with 8gb of RAM memory and Intel core i3-7100U CPU 2,40 GHz.\iffalse Cette phrase devrait figurer dans la partie précédente ?\fi
 
-The tracking problem was applied to data coming from a nitrification process; the experimental conditions are described in \cite{dumont2008observers}. For exploring the hypothesis of interactions as drivers of bioreactors performance environmental conditions should be kept as constant as possible. Therefore only data from day $183$ onwards was used because a change in the operating temperature happened at that point, which is known to have an effect on the kinetics. For choosing which species belong in which functional group, the procedure described in \cite{Ugalde-Salas2019} was used: from day $183$ to day $315$: 30 OTU were identified in the $G_1$ group (AOB) and 5 in the $G_2$ functional group (NOB). The system state dimension becomes 38.
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{|l|l|l|l|}
+		\hline
+		Kinetic Parameters & $\mu_i\,[1/day]$ & $K_i\,[g/L]$ & $\frac{1}{y_i} \, [gr/gr]$ \\ \hline
+		$x_1 \in G_1$ & 0.77  & 0.7 & 3.98  \\ \hline
+		$x_2\in G_2$ & 1.07 & 0.3 &  16.12 \\ \hline
+	\end{tabular}	
+	\caption{A set of kinetic parameters of model \eqref{system}.}
+	\label{kinetic_parameters_application}
+\end{table}
+
+
+The tracking problem was applied to data coming from a nitrification process; the experimental conditions are described in \cite{dumont2008observers}. For exploring the hypothesis of interactions as drivers of bioreactors performance environmental conditions should be kept as constant as possible. Therefore only data from day $183$ onwards was used because a change in the operating temperature happened at that point, which is known to have an effect on the kinetics. For choosing which species belong in which functional group, the procedure described in \cite{Ugalde-Salas2019} was used: from day $183$ to day $315$: 30 OTU were identified in the $G_1$ group (AOB) and 5 in the $G_2$ functional group (NOB). 
+
+A first example of the procedure is performed on the regrouping of the selected OTU in their functional groups, thus a 5 dimensional dynamical system arises. The same procedure is applied when no regrouping occurs and the system state dimension becomes 38. 
 
 The knowledge of functions $f_i(s)$ was based on a study of nitrification's kinetic parameters\cite{Wiesmann1994}\iffalse est-ce que tu donnes les paramètres quelquepart ?\fi. Particularly given the system's ammonium and nitrate concentration a Monod function (eq \eqref{monod}) was used for $G_1$ and $G_2$. 
 \begin{align}
@@ -936,6 +947,77 @@ In figures \ref{AOB_control} and \ref{NOB_control} it can be seen the obtained c
 	\label{NOB_control}
 \end{figure}
 
+
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{0.45 \linewidth}
+		\includegraphics[width= \textwidth]{Application/201703_day_183_315_gurobi_A_regroup_OTU_Biomass_iter_12}
+		\caption{Dotted line: total biomass for model \eqref{system} \iffalse quels paramètres ?\fi. Continuous line: total biomass as predicted  by the tracking procedure.}
+		\label{Total Biomass application}
+	\end{subfigure}
+	~
+	\begin{subfigure}{0.45 \linewidth}
+		\includegraphics[width=\textwidth]{Application/201703_day_183_315_gurobi_A_regroup_OTU_metabolites_iter_12}
+		\caption{Metabolites. Dotted line:  data. Continuous line: the tracking procedure results.}
+		\label{Metabolites application}
+	\end{subfigure}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{0.45 \linewidth}
+		\includegraphics[width=\textwidth]{Application/201703_day_183_315_gurobi_A_regroup_OTU_AOB_iter_12_plot_1}
+		\caption{Dotted line: simulated AOB biomass. Continuous line: the tracking procedure results.}
+		\label{AOB application}
+	\end{subfigure}
+	~
+	\begin{subfigure}{0.45 \linewidth}
+		\includegraphics[width=\textwidth]{Application/201703_day_183_315_gurobi_A_regroup_OTU_NOB_iter_12_plot_1}
+		\caption{NOB biomass. Dotted line: simulated data. Continuous line: the tracking procedure results.}
+		\label{NOB application}
+	\end{subfigure}
+\end{figure}
+
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{0.45 \linewidth}
+		\includegraphics[width=\linewidth]{Application/201703_day_183_315_gurobi_A_regroup_OTU_Control_AOB_iter_12_plot_1}
+		\caption{Control for the AOB population.}
+		\label{Control application}
+	\end{subfigure}
+	\begin{subfigure}{0.45 \linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{Application/201703_day_183_315_gurobi_A_regroup_OTU_Control_NOB_iter_12_plot_1}
+		\caption{Control for the NOB population.}
+		\label{Control application}
+	\end{subfigure}
+	\caption{}
+	\begin{subfigure}{0.45 \linewidth}
+		\includegraphics[width=\linewidth]{Application/201703_day_183_315_gurobi_A_regroup_OTU_growth_AOB_iter_12_plot_1}
+		\caption{Growth rate of the model for AOB community.}
+		\label{AOB_growth_application}
+	\end{subfigure}
+	\begin{subfigure}{0.45 \linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{Application/201703_day_183_315_gurobi_A_regroup_OTU_growth_NOB_iter_12_plot_1}
+		\caption{Growth rate of the model for the NOV community.}
+		\label{NOB_growth_application}
+	\end{subfigure}
+	\caption{}
+	\begin{subfigure}{0.45 \linewidth}
+		\includegraphics[width=\linewidth]{Application/201703_day_183_315_gurobi_A_regroup_OTU_growth_control_AOB_iter_12_plot_1}
+		\caption{Growth rate of the model for AOB community.}
+		\label{AOB_growth_control_application}
+	\end{subfigure}
+	\begin{subfigure}{0.45 \linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{Application/201703_day_183_315_gurobi_A_regroup_OTU_growth_control_NOB_iter_12_plot_1}
+		\caption{Growth rate of the model for the NOV community.}
+		\label{NOB_growth_control_application}
+	\end{subfigure}
+	\caption{}
+\end{figure}
 
 \clearpage
 \section{Conclusions and Perspectives}
