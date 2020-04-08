@@ -37,7 +37,7 @@ p1 = plot(t_used,A*x_trajectories);
 set(p1,{'Color'},colors)
 p2 = plot(t_used,new_A*x_trajectories,'--');
 set(p2,{'Color'},colors)
-p3 = plot(t_used,control_matrix_med_filter,'*');
+p3 = plot(t_used,control_matrix,'*');
 set(p3,{'Color'},colors)
 
 
