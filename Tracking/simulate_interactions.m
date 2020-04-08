@@ -1,6 +1,6 @@
 clear 
 close all
-file_in = '191211_no_noise_iter_10_interactions';
+file_in = '250309_POC_try3_iter_2_interactions';
 load(sprintf('MAT_files/%s',file_in));%Simulation and plotting
 numbering_AOB = strsplit(num2str(1:nA)) ;
 legend_tags_AOB = strsplit(strcat(sprintf('OTU %s (model),', numbering_AOB{:}),...
@@ -15,9 +15,9 @@ numbering_diff = strsplit(num2str(1:n));
 legend_tags_diff = strsplit(sprintf('Difference %s,', numbering_diff{:}),',');
 legend_tags_diff(end) = [];
 %Quality of the Fit
-fit = new_A*x_new(index_control,1:n)';
-% control_matrix = reshape(cell2mat(control_eval),n,length(index_control))+1;
-diff = abs(control_matrix_med_filter - fit);
+fit = new_A*x_new(index_used,1:n)';
+% control_matrix = reshape(cell2mat(control_eval),n,length(index_used))+1;
+diff = abs(control_eval_reshape - fit);
 figure
 diff_plot = plot(t_used,diff,'LineWidth',1.5);
 xlabel('\fontsize{12}Time [days]'),...
@@ -30,15 +30,13 @@ legend(legend_tags_diff,'fontsize',7,'Location','bestoutside');
 fig.PaperUnits = 'inches';
 fig.PaperPosition = [0 0 9 3];
 fig.PaperPositionMode = 'auto';
-print(sprintf('Images\\%s',sprintf('%s_difference_fit_%.0f_LV',...
-    file_in,iter)),'-dpng','-r0')
+print(sprintf('Images\\%s',sprintf('%s_difference_fit_LV',...
+    file_in)),'-dpng','-r0')
 %Simulation
-muARef = 0.77;
-muBRef = 1.07;
-kSARef = 0.7e-1;
-kSBRef = 1.4982e-1;
-growth1 = @(X) (1+new_A(1:nA,:)*X(1:n))*growth_monod(X(n+1),muARef,kSARef);
-growth2 = @(X) (1+new_A(nA+1:n,:)*X(1:n))*growth_monod(X(n+2),muBRef,kSBRef);
+muA = mu_fit(1:nA);
+muB = mu_fit(nA+1:n);
+growth1 = @(X) (1+new_A(1:nA,:)*X(1:n)).*growth_monod(X(n+1), mu_fit(1:nA),kS_fit(1:nA));
+growth2 = @(X) (1+new_A(nA+1:n,:)*X(1:n)).*growth_monod(X(n+2),mu_fit(nA+1:n),kS_fit(nA+1:n));
 dynamic_inter = @(t,X) [diag(growth1(X) - d_interp(t))*X(1:nA);
    diag(growth2(X) - d_interp(t))*X(nA+1:n);
    (s_in_interp(t) - X(n+1))*d_interp(t) - kA'*diag(growth1(X))*X(1:nA);
@@ -65,8 +63,8 @@ legend(legend_tags_AOB,'fontsize',7,'Location','bestoutside');
 fig.PaperUnits = 'inches';
 fig.PaperPosition = [0 0 9 3];
 fig.PaperPositionMode = 'auto';
-print(sprintf('Images\\%s',sprintf('%s_AOB_Iter_%.0f_LV',...
-    file_in,iter)),'-dpng','-r0')
+print(sprintf('Images\\%s',sprintf('%s_AOB_Iter_LV',...
+    file_in)),'-dpng','-r0')
 %NOB
 figure
 hold on
@@ -83,8 +81,8 @@ legend(legend_tags_NOB,'fontsize',7,'Location','bestoutside');
 fig.PaperUnits = 'inches';
 fig.PaperPosition = [0 0 9 3];
 fig.PaperPositionMode = 'auto';
-print(sprintf('Images\\%s',sprintf('%s_NOB_Iter_%.0f_LV',...
-    file_in,iter)),'-dpng','-r0')
+print(sprintf('Images\\%s',sprintf('%s_NOB_Iter_LV',...
+    file_in)),'-dpng','-r0')
 %Metabolites
 figure
 hold on
@@ -100,10 +98,10 @@ xlabel('\fontsize{12}Time [days]'),...
 set(gca,'fontsize',15),
 set(metabolitePlot,{'Color'},colors2);
 set(dataMetabolitePlot,{'Color'},colors2);
-legend('s_1 predicted','s_2 predicted','s_3 predicted','s_1 data','s_2 data','s_3 data')
+legend('s_1 fit','s_2 fit','s_3 fit','s_1 data','s_2 data','s_3 data')
 fig.PaperUnits = 'inches';
 fig.PaperPosition = [0 0 9 3];
 fig.PaperPositionMode = 'auto';
-print(sprintf('Images\\%s',sprintf('%s_metabolites_Iter_%.0f_LV',...
-    file_in,iter)),'-dpng','-r0')
+print(sprintf('Images\\%s',sprintf('%s_metabolites_LV',...
+    file_in)),'-dpng','-r0')
 
