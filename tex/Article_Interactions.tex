@@ -1,54 +1,14 @@
-\documentclass[3p,times]{elsarticle}
+\documentclass[3p,times]{article}
 
-%% The `ecrc' package must be called to make the CRC functionality available
-\usepackage{ecrc}
-%% The ecrc package defines commands needed for running heads and logos.
-%% For running heads, you can set the journal name, the volume, the starting page and the authors
+\usepackage[margin=0.7in]{geometry}
 
-%% set the volume if you know. Otherwise `00'
-\volume{00}
-
-%% set the starting page if not 1
-\firstpage{1}
-
-%% Give the name of the journal
-\journalname{}
-
-%% Give the author list to appear in the running head
-%% Example \runauth{C.V. Radhakrishnan et al.}
-\runauth{}
-
-%% The choice of journal logo is determined by the \jid and \jnltitlelogo commands.
-%% A user-supplied logo with the name <\jid>logo.pdf will be inserted if present.
-%% e.g. if \jid{yspmi} the system will look for a file yspmilogo.pdf
-%% Otherwise the content of \jnltitlelogo will be set between horizontal lines as a default logo
-
-%% Give the abbreviation of the Journal.
-\jid{procs}
-
-%% Give a short journal name for the dummy logo (if needed)
-\jnltitlelogo{}
-
-%% Hereafter the template follows `elsarticle'.
-%% For more details see the existing template files elsarticle-template-harv.tex and elsarticle-template-num.tex.
-
-%% Elsevier CRC generally uses a numbered reference style
-%% For this, the conventions of elsarticle-template-num.tex should be followed (included below)
-%% If using BibTeX, use the style file elsarticle-num.bst
-
-%% End of ecrc-specific commands
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%% The amssymb package provides various useful mathematical symbols
 \usepackage{amssymb}
-%% The amsthm package provides extended theorem environments
 \usepackage{amsthm}
 \usepackage{amsmath}
 \usepackage{algorithm2e}
 \usepackage{graphicx}
 \usepackage{subcaption}
 \usepackage{hyperref}
-
 \usepackage{xcolor}
 \usepackage[version=4]{mhchem}
 \newcommand{\N}{\mathbb{N}}
@@ -59,93 +19,25 @@
 \newtheorem{hypo}{H}
 \newtheorem{lemma}{Lemma}
 \newtheorem{theo}{Theorem}
-%% The lineno packages adds line numbers. Start line numbering with
-%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
-%% for the whole article with \linenumbers after \end{frontmatter}.
-%% \usepackage{lineno}
-
-%% natbib.sty is loaded by default. However, natbib options can be
-%% provided with \biboptions{...} command. Following options are
-%% valid:
-
-%%   round  -  round parentheses are used (default)
-%%   square -  square brackets are used   [option]
-%%   curly  -  curly braces are used      {option}
-%%   angle  -  angle brackets are used    <option>
-%%   semicolon  -  multiple citations separated by semi-colon
-%%   colon  - same as semicolon, an earlier confusion
-%%   comma  -  separated by comma
-%%   numbers-  selects numerical citations
-%%   super  -  numerical citations as superscripts
-%%   sort   -  sorts multiple citations according to order in ref. list
-%%   sort&compress   -  like sort, but also compresses numerical citations
-%%   compress - compresses without sorting
-%%
-%% \biboptions{comma,round}
-
-% \biboptions{}
-
-% if you have landscape tables
 \usepackage[figuresright]{rotating}
 
 \graphicspath{{Images/}}
-% put your own definitions here:
-%   \newcommand{\cZ}{\cal{Z}}
-%   \newtheorem{def}{Definition}[section]
-%   ...
-
-% add words to TeX's hyphenation exception list
-%\hyphenation{author another created financial paper re-commend-ed Post-Script}
-
-% declarations for front matter
 
 \begin{document}
 
-\begin{frontmatter}
-
-%% Title, authors and addresses
-
-%% use the tnoteref command within \title for footnotes;
-%% use the tnotetext command for the associated footnote;
-%% use the fnref command within \author or \address for footnotes;
-%% use the fntext command for the associated footnote;
-%% use the corref command within \author for corresponding author footnotes;
-%% use the cortext command for the associated footnote;
-%% use the ead command for the email address,
-%% and the form \ead[url] for the home page:
-%%
-%% \title{Title\tnoteref{label1}}
-%% \tnotetext[label1]{}
-%% \author{Name\corref{cor1}\fnref{label2}}
-%% \ead{email address}
-%% \ead[url]{home page}
-%% \fntext[label2]{}
-%% \cortext[cor1]{}
-%% \address{Address\fnref{label3}}
-%% \fntext[label3]{}
-
-\dochead{}
-%% Use \dochead if there is an article header, e.g. \dochead{Short communication}
-
-\title{Microbial interactions as drivers of a nitrifying ecosystem in a chemostat}
-%% \title{Correcting/Improving chemostat models from microbial interactions}
-%% Including microbial ecology in a chemostat model: tracking microbial interactions
-%% 
-%% Extending a chemostat model 
-%% use optional labels to link authors explicitly to addresses:
-%% \author[label1,label2]{<author name>}
-%% \address[label1]{<address>}
-%% \address[label2]{<address>}
+\title{Microbial interactions as drivers of a nitrification process in a chemostat}
 
 \author{Pablo Ugalde-Salas, Jérôme Harmand, Elie Desmond Le-Quéméner, Héctor Ramirez}
+\date{}
+\maketitle
 
-\address{}
+
 
 \begin{abstract}
-	This article deals with the inclusion of microbial ecology measurements in bioprocess modelling. The first part presents the mathematical analysis of a model that may be framed within the class of Lotka-Volterra models fitted to experimental data in a chemostat setting. The limitations and the insights of such an approach are discussed. The main novelty of this work lies in the second part, where the use of an optimal tracking technique (developed within the framework of control theory) for the integration of genetic sequencing in chemostat models is presented. The method revisits the data used in the aforementioned chemostat setting. 
+	This article deals with the inclusion of microbial ecology measurements in bioprocess modelling. The first part presents the mathematical analysis of a model that may be framed within the class of Lotka-Volterra models fitted to experimental data in a chemostat setting. The limitations and the insights of such an approach are discussed. In the second part,  the use of an optimal tracking technique (developed within the framework of control theory) for the integration of genetic sequencing in chemostat models is presented. The optimal tracking revisits the data used in the aforementioned chemostat setting. 
 \end{abstract}
 
-\end{frontmatter}
+
 
 \section{Introduction}
 
@@ -160,7 +52,7 @@ In the past years considerable efforts have been made to measure the bacterial c
 
 The contribution of this article is a new method to integrate the microbial community measurements in chemostat models, based on any sequencing or fingerprinting technique that can quantify the species abundances over time. This is a first step towards developing predictive models of a reactor's outcome based on the microbial community structure.
 
-As a departing point the work of Dumont et al.\cite{Dumont2016} is reinspected in section 2. They model a chemostat experiment where nitrification takes place by considering a generalized Lotka-Volterra (gLV) model \cite{Hernandez-Bermejo1997} coupled with a substrate limited growth expression. Section 3 inspects through a mathematical analysis their model. Some interesting outputs of this analysis are that the number of possible equilibrium points grows exponentially with the number of species,  coexistence can be achieved within the same functional group, and bi-stability may arise.  
+As a departing point the work of Dumont et al.\cite{Dumont2016} is reinspected in section 2. They model a chemostat experiment where nitrification takes place by considering a generalized Lotka-Volterra (gLV) model \cite{Hernandez-Bermejo1997} coupled with a substrate limited growth expression: They fitted their model to the molecular fingerprints of the most abundant OTU. Section 3 inspects through a mathematical analysis their model. Some interesting outputs of this analysis are that the number of possible equilibrium points grows exponentially with the number of species,  coexistence can be achieved within the same functional group, and bi-stability may arise.  
 
 In section 4 the concept of interaction function is developed such that it generalizes the gLV model. For the identification of the interaction function a method of optimal control theory was adapted: The growth rate of each species is modulated by a constrained regular control of the system, thus the growth rate of each OTU is corrected in order to fit the experimental data. The regular control is composed of a feedback part on the species state variable, and a feed forward part, or tracking, on the measurement of abundances of each species; the method involves solving state-dependent Ricatti equations\cite{Cimen2008}. 
 
@@ -178,7 +70,7 @@ Notations used throughout the article:
 	\item $s_1$ : concentration of substrate 1 in $[g/l]$.
 	\item $s_2$ : concentration of substrate 2 in $[g/l]$. 
 	\item $s_3$ : concentration of substrate 3 in $[g/l]$.
-	\item $s$:  vector $(s_1,s_2,s_3)$. Refered to as metabolites, or chemical species.
+	\item $s$:  vector $(s_1,s_2,s_3)$. Refered to as metabolites.
 	\item $\I_i(t,x)$ : Interaction function of OTU $i \in \{1,\dots,n\}$.
 	\item $\mu_i(s,x)$ : growth function of OTU $i \in \{1,\dots,n\}$.
 	\item $\mu = (\mu_1(s,x), \dots, \mu_n(s,x))$ vector containing the growth function of every OTU.
@@ -231,7 +123,7 @@ In the work of Dumont \textit{et al.} \cite{Dumont2016} the growth rate seen in 
 \end{align}
 
 The term $\left(1+\sum \limits_{j\in [n]} a_{ij} x_{j} \right)$ accounts for pairwise interactions affecting the growth rate of each OTU, while the term $\bar{\mu}_i\dfrac{s_j}{K_i + s_j}$ represents the substrate limitation \cite{monod1942recherches}. Let $A$ denote the matrix
-with entries $a_{ij}$ from now on referred as the interaction matrix. The following section of this article deals with the mathematical analysis of model \eqref{system} with growth rates given by \eqref{gLV growth1} and \eqref{gLV growth2}.
+with entries $a_{ij}$ hereafter referred to as the interaction matrix. The following section of this article deals with the mathematical analysis of model \eqref{system} with growth rates given by \eqref{gLV growth1} and \eqref{gLV growth2}.
 
 \section{Mathematical Analysis}
 
@@ -277,7 +169,7 @@ In this section analytical expressions for equilibrium points are derived. Howev
 	An equilibrium point (or steady state) is a point $(x^{eq},s^{eq}) \in \R^{n+3}_+$ so that the right hand side of equations \eqref{Eq1},\eqref{Eq2}, \eqref{Eq3}, and \eqref{Eq4} equals zero. 
 \end{defn} 
 
-Observe that equilibrium points are by definition non-negative so the state variables can have physical meaning. Details of the calculations are given in the appendix. An important assumption throughout the work is that matrix $A$ and some submatrices have an inverse, this is stated properly in hypothesis \ref{inverse hypothesis}.
+Observe that equilibrium points are by definition non-negative so the state variables can have physical meaning. Details of the calculations are given in the appendix. An important assumption throughout the work is that matrix $A$ and some of its submatrices have an inverse, this is stated properly in hypothesis \ref{inverse hypothesis}.
 
 \begin{hypo}
 	Let $A$ be the interaction matrix of size $n \in \N$ and $S$ be a proper subset of $[n]$ with $|S| = m$. Then the matrix $B \in \R^{(n-m) \times (n-m)}$ defined by taking out the $S$ rows and columns of matrix $A$ is invertible.
@@ -424,7 +316,7 @@ From equation \eqref{Eq1} equilibrium points satisfy:
 \Leftrightarrow f_i(s)(1 + A_{i\bullet}x) - D = 0 \quad \forall i \in [n]\setminus \mathcal{J} \label{Extinction}
 \end{align} 
 
-But since $\forall j \in \mathcal{J}, \; x^{eq}_j = 0 $ then the coefficients $a_{ij}$ play no role in the equation \eqref{Extinction} one can rewrite equation \eqref{Extinction} as $\diag(f^{act}(s))(1_{(n-m)\times 1} + A^{act}x^{act}) - D_{(n-m) \times 1}=0 $. Clearly matrix $A^{act}$, satisfies hypothesis \ref{inverse hypothesis}. This gives the following lemma.
+But since $\forall j \in \mathcal{J}, \; x^{eq}_j = 0 $ then the coefficients $a_{ij}$ play no role in the equation \eqref{Extinction} one can rewrite equation \eqref{Extinction} as $\diag(f^{act}(s))(1_{(n-m)\times 1} + A^{act}x^{act}) - D_{(n-m) \times 1}=0 $. From hypothesis \ref{inverse hypothesis} matrix $A^{act}$ has an inverse. This gives the following lemma.
 
 \begin{lemma} 
 	The active point of the solution of \eqref{Extinction} solves the system of equations \eqref{EqSome}. 
@@ -629,7 +521,7 @@ The operating diagram can be seen in figure \ref{OD_no_interactions}, note how p
 	\label{ecological_diagrams}
 \end{figure}
 
-The ecological diagrams are presented in figure \ref{ecological_diagrams}. Comparing figure \ref{ED 1} with \ref{ED 2} one can see a very different situation. Note how every zone in figure \ref{ED 2} has two stable equilibria, meaning that the outcome of the system is strongly determined by its initial conditions, particularly interesting is the green zone where either $x_1,x_3$ coexist or $x_2$ alone remains, because in operational terms this means that either PN or CN may take place.
+The ecological diagrams are presented in figure \ref{ecological_diagrams}. Comparing figure \ref{ED 1} with \ref{ED 2} one can see a very different situation. Note how every zone in figure \ref{ED 2} has two stable equilibria, meaning that the outcome of the system is determined by its initial conditions, particularly interesting is the green zone where either $x_1,x_3$ coexist or $x_2$ alone remains, because in operational terms this means that either PN or CN may take place.
 
 One can see that coexistence in the same functional group is never attained in figure \ref{ED 1}, whereas in figure \ref{ED 2} $x_1$ and $x_2$, both AOB, coexist in either partial or complete nitrification. That means that the model is able to overcome the competitive exclusion principle \cite{lobry2017chemostat} (CEP) paradigm. The CEP roughly states that if two species are growing on the same limiting resource, and their growth laws only depend non decreasingly on the resource, then only one of them will survive in the long run. This is interesting in light of reports on wastewater treatment plants where coexistence between species in nitrifying reactors has been shown \cite{Wagner2002}, thus implying that a more complex growth law (as shown in here) or model structure involving other biological processes is required to include microbial diversity in mathematical models. 
 
@@ -682,7 +574,7 @@ Note $J_I(x)$ the Jacobian matrix of function $\mathcal{I}$, then a first order 
 
 Suppose that the functions $f_i(s)$, and the yields $y_i$ are well-known. By using experimental measurements of $x$, represented by $z(t)$, the objective is to reconstruct function $I(x)$. For doing so, the terms $I_i(x)$ are replaced by controls $u_i(t)$, thus $I_i(x(t)) = u_i(t)$. A control law is obtained by solving a nonlinear optimal tracking problem.	
 
-Consider the observable system \eqref{Controlsystem} ($y(t) = x(t)$ being the observer) where $g(\cdot)$ is a known function.
+Consider the observable system \eqref{Controlsystem}, with $y(t) = x(t)$ being the output, because we are observing measurements coming from genetic sequencing.
 
 \begin{align} 
 \label{Controlsystem}
@@ -692,14 +584,14 @@ Consider the observable system \eqref{Controlsystem} ($y(t) = x(t)$ being the ob
 \dot{s_1} =& \displaystyle (s_{in}-s_1)D-\sum\limits_{i \in G_1}\frac{1}{y_i}f_i(s)u_i(t) x_i  \\
 \dot{s_2} = & \displaystyle -s_2D+\sum\limits_{i \in G_1}\frac{1}{y_i}f_i(s)u_i(t)	-\sum\limits_{i \in G_2}\frac{1}{y_i}f_i(s)u_i(t) x_i  \\
 \dot{s_3} =&  \displaystyle -s_3D+\sum\limits_{i \in G_2}\frac{1}{y_i}f_i(s)u_i(t) x_i \\
-y(t) & = x
+y  =& x
 \end{array}
 \end{align}	
 
-For this model $g(x,s) = x$, since we are observing measurements coming from genetic sequencing. Consider the weighted norms defined by positive definite matrices $Q$ and $R$, represented by $\Vert \cdot \Vert_Q$ and $\Vert \cdot \Vert_R$, respectively, and a positive real $\bar{u}$. The optimal tracking problem is defined as: 
+ Consider the weighted norms defined by positive definite matrices $Q$ and $R$, represented by $\Vert \cdot \Vert_Q$ and $\Vert \cdot \Vert_R$, respectively, and a positive real $\bar{u}$. The optimal tracking problem is defined as: 
 
 \begin{align}
-\label{Optimal Control} \begin{array}{cc} \min &  \int \limits_{0}^{T} \Vert g(x,s) - z \Vert_Q + \Vert(u -\vec{1}) \Vert_R dt\\
+\label{Optimal Control} \begin{array}{cc} \min &  \int \limits_{0}^{T} \Vert y - z \Vert_Q + \Vert(u -\vec{1}) \Vert_R dt\\
 s.t.& 
 (x,s_1,s_2,s_3)\mbox{ solution of \eqref{Controlsystem}} \\
 &u_i(t) \in [0,\bar{u}]
@@ -848,8 +740,22 @@ Figure \ref{POC_control} shows the controls and the corrected growth rate for ea
  
 %The method was stopped after 10 iterations where each iteration took approximately 800 seconds of computing time in a computer equipped with 8gb of RAM memory and Intel core i3-7100U CPU 2,40 GHz.\iffalse Cette phrase devrait figurer dans la partie précédente ?\fi
 
-The tracking problem was applied to data coming from a nitrification process; the experimental conditions are described in \cite{dumont2008observers}. For exploring the hypothesis of interactions as drivers of bioreactors performance environmental conditions should be kept as constant as possible. Therefore only data from day $183$ onwards was used because a change in the operating temperature happened at that point, which is known to have an effect on kinetics. For choosing which species belong in which functional group, the procedure described in \cite{Ugalde-Salas2019} was used: from day $183$ to day $315$: 31 OTU were identified in the $G_1$ group (AOB) and 5 in the $G_2$ functional group (NOB). 
+The tracking problem was applied to data coming from a nitrification process with experimental conditions described in \cite{dumont2008observers}. For exploring the hypothesis of interactions as drivers of bioreactors performance environmental conditions should be kept as constant as possible. Therefore only data from day $183$ onwards was used because a change in the operating temperature happened at that point, which is known to have an effect on kinetics. For choosing which species belong in which functional group, the procedure described in \cite{Ugalde-Salas2019} was used: from day $183$ to day $315$: 31 OTU were identified in the $G_1$ group (AOB) and 5 in the $G_2$ functional group (NOB). 
 
+
+
+
+A first example of the procedure is performed when the classified OTU are regrouped in their assigned functional groups by adding their concentrations. A 5 dimensional dynamical system is obtained. The same procedure is applied where no regrouping occurs and the system state grows to 39. 
+
+The knowledge of functions $f_i(s)$ was based on a study of nitrification's kinetic parameters\cite{Wiesmann1994}. Particularly given the system's ammonium and nitrate concentration a Monod function (eq \eqref{monod}) was used for $G_1$ and $G_2$ with parameters given in table \ref{kinetic_parameters_application}. The yields were fitted to match the nitrogen mass balances. In this case the $Q$ and $R$ matrices were $\begin{bmatrix}
+\lambda_1 I_{n_1} &0  \\ 0& \lambda_2 I_{n_2}
+\end{bmatrix}$ and $I_n$, respectively, with $\lambda_1 = 10^{-4}$ and $\lambda_2 = 10^{-5}$ in order to better track the NOB trajectories.
+
+
+\begin{align}
+\label{monod} f_i(s) &= \bar{\mu}_2 \dfrac{s_1}{K_1 +s_1} \, \forall i \in G_1 \\
+\notag  f_i(s) &= \bar{\mu}_2 \dfrac{s_2}{K_2 +s_2 } \, \forall i \in G_2
+\end{align}
 
 \begin{table}[ht]
 	\centering
@@ -862,20 +768,6 @@ The tracking problem was applied to data coming from a nitrification process; th
 	\caption{A set of kinetic parameters of model \eqref{system}.}
 	\label{kinetic_parameters_application}
 \end{table}
-
-
-
-A first example of the procedure is performed when the classified OTU are regrouped in their assigned functional groups by adding their concentrations. A 5 dimensional dynamical system is obtained. The same procedure is applied where no regrouping occurs and the system state grows to 39. 
-
-The knowledge of functions $f_i(s)$ was based on a study of nitrification's kinetic parameters\cite{Wiesmann1994}. Particularly given the system's ammonium and nitrate concentration a Monod function (eq \eqref{monod}) was used for $G_1$ and $G_2$ with parameters given in table \ref{kinetic_parameters_application}. The yields were fitted to match the nitrogen mass balances. In this case the $Q$ and $R$ matrices were $\begin{bmatrix}
-\lambda_1 I_{n_1} &0  \\ 0& \lambda_2 I_{n_2}
-\end{bmatrix}$ and $I_n$, respectively, with $\lambda_1 = 10^{-4}$ and $\lambda_2 = 10^{-5}$ in order to better track the NOB trajectories.
-
-\begin{align}
-\label{monod} f_i(s) &= \bar{\mu}_2 \dfrac{s_1}{K_1 +s_1} \, \forall i \in G_1 \\
-\notag  f_i(s) &= \bar{\mu}_2 \dfrac{s_2}{K_2 +s_2 } \, \forall i \in G_2
-\end{align}
-
 For the reader to gain understanding of the situation, a simulation of the system using the experiments operating parameters ($D$ and $s_{in}$) is presented without control (i.e. $u(t)= 1$) in  figure \ref{u=1 simulation.}. $s_3$ accumulates all along the trajectory, but when compared to data it is clear that $s_3$ stops accumulating after a while. 
 
 \begin{figure}[h]
@@ -925,7 +817,7 @@ For the reader to gain understanding of the situation, a simulation of the syste
 \end{figure}
 
 
-When applying the presented method one obtains the simulation that can be seen in figure \ref{regroup_results}. The method captures the tendencies of the measured substrates as seen in figure \ref{Metabolites application}. The tracking of each functional group $G_1$ (AOB), and $G_2$ (NOB) can be seen in figures \ref{AOB application} and \ref{NOB application}, respectively. 
+When applying the tracking method one obtains the simulation that can be seen in figure \ref{regroup_results}. The method captures the tendencies of the measured substrates as seen in figure \ref{Metabolites application}. The tracking of each functional group $G_1$ (AOB), and $G_2$ (NOB) can be seen in figures \ref{AOB application} and \ref{NOB application}, respectively. 
 
 The growth rates of each functional group are shown in figure \ref{growth_application}. Note in the case of AOB (figure \ref{AOB_growth_control_application}) the resulting growth rate shows a noisy curve formed by pulses. The behaviour of the NOB community (figure \ref{NOB_growth_control_application}) is qualitatively very similar with somewhat stronger pulses and less noise. The former is to be expected since more OTU were regrouped to compose the AOB biomass, therefore more noise sources were added. 
 
@@ -1018,22 +910,20 @@ The interpretation of the correction term as interactions is not the only possib
 \clearpage
 \section{Conclusions and Perspectives}
 
-Last decades advances in genetic sequencing and microbial ecology has opened a gap for modellers in biochemical reactors to integrate this valuable information. Considering the success of mass balance models to predict and pilot bioreactors, one should build upon these existing models. This article proposed a naïve approach to start filling the gap of microbial ecology and biochemical process modelling: The approach can be simply described as correcting the growth rate of each individual species from genetic sequencing measurements, and observing what would that imply according to the (pseudo)stoichiometric equations involved. If one already posses a model for describing a particular bioprocess the use of the techniques here presented can be applied in a straightforward manner if one has already identified the microbial species involved with a particular functionality of the system.
+Last decades advances in genetic sequencing and microbial ecology have opened a gap for modellers in biochemical processes to integrate this valuable information. Considering the success of mass balance models to predict and pilot bioreactors, one should build upon these existing models. This article proposed a naïve approach to start filling the gap of microbial ecology and biochemical process modelling: The approach can be simply described as correcting the growth rate of each individual species from genetic sequencing measurements, and observing what would that imply according to the (pseudo)stoichiometric equations involved. If one already posses a model for describing a particular bioprocess the use of the techniques here presented can be applied in a straightforward manner if one has already identified the microbial species involved with a particular functionality of the system.
 
 The tracking model was proposed  in a chemostat setting as a way to correct a substrate limited expression. However the technique could be used in contexts where less information on the growth function of microbes is known. If one supposes nothing on the growth expression but the fact that is bounded (life cannot grow infinitely fast) the model becomes a linear model and one recovers a classic quadratic regulator for linear systems. Nevertheless, even in the former case, the synthesis of the optimal bounded control remains an open theoretical challenge.
 
 The interaction function introduced tries to address the issue of prediction from genetic sequencing. The analysis of the gLV model proposed by Dumont \textit{et al.} \cite{Dumont2016} shows that such a model structure can give way to bi-stability, coexistence within a functional group, and unintuitive operational insights such as raising the input ammonium $s_{in}$ to achieve partial nitrification. From the application section one can see that by correcting the growth rate one is able to recuperate the substrates dynamics, suggesting that interactions are driving the system. This opens the question for a broader class of interaction functions that could represent well complex microbial ecosystems, particularly biorreactors. 
 
-One of the next steps in this line of research would be to synthesize a control that is able to reconstruct the interaction functions, and not just the dynamics of the species. One might bypass the end point issue of the current control scheme by, for example, by a very thorough use of the pontryagin maximum principle for the synthesis of the control. In a more general view the reconstruction of the growth function in chemostat systems is already subject to problems of identifiability: integrating genetic sequencing could provide a path for more certainty in model calibration.
-
-
+One of the next steps in this line of research would be to synthesize a control that is able to reconstruct the interaction functions, and not just the dynamics of the species. One might bypass the end point issue of the current control scheme by, for example, by a very thorough use of the pontryagin maximum principle for the synthesis of the control. In a more general view the reconstruction of the growth function in chemostat systems is already subject to problems of identifiability \cite{Dochain2003}: integrating genetic sequencing could provide a path for more certainty in model calibration.
 
 
 \section{Codes}
 
 All the codes can be recovered from the following repository \url{https://github.com/paus-5/Class-and-Track}.
 \section{Acknowledgements}
- The authors would like to thank Alain Rapaport for the fruitful exchanges. This work was financed by project Thermomic ANR-16-CE04-0003.
+ The authors would like to thank Alain Rapaport for the exchanges and comments. This work was financed by project Thermomic ANR-16-CE04-0003.
 
 \section{Supplementary Material}
 
@@ -1350,24 +1240,26 @@ Identifying coefficients
 
 
 \subsection{Jacobian of the system}
-The jacobian is a square matrix of dimension $n\times 3$. The entries corresponding to the derivative of the first $n$ functions in the first $n$ variables can be calculated by the use of the chain rule. Define (for a fixed $s$):
+The jacobian is a square matrix of dimension $n\times 3$. The entries corresponding to the derivative of the first $n$ functions in the first $n$ variables can be calculated by the use of the chain rule. Define:
 \begin{align*} 
 & \begin{array}{rc}
 h_1:\mathcal{M}_{n \times n}(\R) \times \R^n \rightarrow & \R^n \\
 (M,y) \rightarrow & My
 \end{array}  \\
 &\begin{array}{rl}
-h_2: \R^n \rightarrow & \R^n \\
-x \rightarrow & \diag(f(s))\left(1_{n\times 1}+ Ax\right)-D_{n\times 1}
+h_2: \R^n \times \R^3  \rightarrow & \R^n \\
+(x,s) \rightarrow & \diag(f(s))\left(1_{n\times 1}+ Ax\right)-D_{n\times 1}
 \end{array} 	
 \end{align*}
 
-The first $n$ equations of system \eqref{system} may be written then as $\dot{x} =  h(x) = h_1(\diag(x), h_2(x))$, by the chain rule: 
-\begin{align} J_h(x) &= D_M h_1(\diag(x),h_2(x))\circ D_x \diag (x) + D_yh_1(\diag(x),h_2(x))\circ D_xh_2(x)  \\ &=
-\diag(h_2(x))+\diag(x)\diag(f(s))A  \label{n2_entries}
+The first $n$ equations of system \eqref{system} may be written then as $\dot{x} =  h(x,s) = h_1(\diag(x), h_2(s,x))$, by the chain rule: 
+\begin{align} D_xh(x,s) &= D_M h_1(\diag(x),h_2(x,s))\circ D_x \diag (x) + D_yh_1(\diag(x),h_2(x,s))\circ D_xh_2(x,s)  \\ &=
+\diag(h_2(x,s))+\diag(x)\diag(f(s))A  \label{n2_entries}
 \end{align}
 
 Expression \eqref{n2_entries} corresponds to the first $n\times n$ entries of the Jacobian of system \eqref{system}.
+
+Define:
 
 \begin{align*}
 f_A' := \left( \dfrac{\partial f_1}{\partial s_1}, \dots, \dfrac{\partial f_{n_1}}{\partial s_1} \right)^\top = \left(\dfrac{\bar{\mu}_1K_1}{(K_1 + s_1)^2},\dots, \dfrac{\bar{\mu}_{n_1}K_{n_1}}{(K_{n_1} + s_1)^2} \right)^\top \in \R^{n_1} \\
@@ -1647,7 +1539,6 @@ They were solved using standard backward numerical integration.
 %
 %\clearpage
 
-\section{References}
 \bibliographystyle{elsarticle-num}
 \bibliography{mybibfile}
 \end{document}
