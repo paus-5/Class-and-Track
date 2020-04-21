@@ -2,8 +2,8 @@
 %main: process and filter data to model.
 close all
 clear
-load('MAT_files\Classification_day_183_315_gurobi')
-name_file = '200116_day_183_315_gurobi';
+load('MAT_files\\Classification_day_183_315_gurobi')
+name_file = '200407';
 nA = round(sum(class_AOB));
 nB = round(sum(class_NOB)); 
 n = nA+nB;
@@ -21,11 +21,11 @@ biomass_filtered(biomass_filtered == 0) = min_biomass;
 z = @(t) interp1(t_OTU,biomass_filtered,t)';
 kA = yields_AOB(index_AOB);
 kB = yields_NOB(index_NOB);
-muARef = 0.77;
-muBRef = 1.07;
-kSARef = 0.7e-1;
-kSBRef = 1.4982e-1;
-kIRef = 1.217;
+muARef = 1.97; %Weissmann et al. Table 4. T = 30C
+muBRef = 1.87;  %Weissmann et al. Table 4. T = 30C
+kSARef = 7e-1;
+kSBRef = 5.4e-1;
+kIRef = 1;
 muA = muARef*ones(nA,1);
 muB = muBRef*ones(nB,1);
 kSA = kSARef*ones(nA,1);
@@ -33,8 +33,8 @@ kSB = kSBRef*ones(nB,1);
 kI = kIRef*ones(nB,1);
 % %%Parameters
 % lambda = 0.001;
-% lambda = [0.001*ones(nA,1); 0.001*ones(nB,1)];
-lambda = ones(n,1)*10^-7;
+lambda = [ones(nA,1)*1e-4; ones(nB,1)*1e-5];
+% lambda = ones(n,1)*10^-4;
 Q2= [kA; kB];
 % Q = Q2/norm(Q2,'inf');
 Q = [ones(nA,1); ones(nB,1)];
