@@ -1,8 +1,12 @@
 clear
 close all
-name_file_in = 'no_noise_200121';
+name_file_in = '250309_POC';
 load(sprintf('MAT_files\\synthetic_data_%s',name_file_in))
-name_file_out = 'no_noise_200121';
+name_file_out = '250309_POC';
+[num_row, num_col] = size(Y);
+Y_cell = mat2cell(Y',num_col,ones(num_row,1));
+growth_AOB =  cellfun(growth1,Y_cell)'.*Y(:,1:nA);
+growth_NOB =  cellfun(growth2,Y_cell)'.*Y(:,nA+1:n);
 %AOB
 numbering_AOB = strsplit(num2str(1:nA));
 legend_tags_AOB = strsplit(strcat(sprintf('OTU %s,', numbering_AOB{:})),',');
@@ -51,4 +55,33 @@ fig.PaperUnits = 'inches';
 fig.PaperPosition = [0 0 9 3];
 fig.PaperPositionMode = 'auto';
 print(sprintf('Images\\%s',sprintf('%s_metabolites',name_file_out)),'-dpng','-r0')
+%%Growth Rate AOB
+figure
+growth_rate_AOB_plot = plot(t_obs,growth_AOB,'*','LineWidth',0.7);
+xlabel('\fontsize{15}Time [days]'),...
+    ylabel('\fontsize{15}  Rate [gBiomass/day]'),...
+    title('Synthetic data growth rate AOB');
+set(gca,'fontsize',15),
+set(growth_rate_AOB_plot,{'Color'},colors_AOB);
+legend('s_1','s_2','s_3','Location','bestoutside')
+fig.PaperUnits = 'inches';
+fig.PaperPosition = [0 0 9 3];
+fig.PaperPositionMode = 'auto';
+print(sprintf('Images\\%s',sprintf('%s_growth_rate',name_file_out)),'-dpng','-r0')
+%%Growth Rate NOB
+figure
+growth_rate_NOB_plot = plot(t_obs,growth_NOB,'*','LineWidth',0.7);
+xlabel('\fontsize{15}Time [days]'),...
+    ylabel('\fontsize{15}  Rate [gBiomass/day]'),...
+    title('Synthetic data growth rate NOB');
+set(gca,'fontsize',15),
+set(growth_rate_NOB_plot,{'Color'},colors_NOB);
+legend('s_1','s_2','s_3','Location','bestoutside')
+fig.PaperUnits = 'inches';
+fig.PaperPosition = [0 0 9 3];
+fig.PaperPositionMode = 'auto';
+print(sprintf('Images\\%s',sprintf('%s_growth_rate',name_file_out)),'-dpng','-r0')
+
+
+
 
