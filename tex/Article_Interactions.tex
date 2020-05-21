@@ -14,7 +14,7 @@
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\I}{\mathcal{I}}
-\newcommand{\diag}{\textbf{diag}}
+\DeclareMathOperator{\diag}{diag}
 \newtheorem{defn}{Definition}
 \newtheorem{hypo}{H}
 \newtheorem{lemma}{Lemma}
@@ -27,7 +27,7 @@
 
 \title{Microbial interactions as drivers of a nitrification process in a chemostat}
 
-\author{Pablo Ugalde-Salas, Héctor Ramirez C., Jérôme Harmand, Elie Desmond-Le Quéméner}
+\author{Pablo Ugalde-Salas, Héctor Ramírez C., Jérôme Harmand, Elie Desmond-Le Quéméner}
 \date{}
 \maketitle
 
@@ -42,62 +42,70 @@
 \section{Introduction}
 
 
-Microbial communities and their interactions play a central role in the understanding of microbial ecosystems \cite{West2007}, and a current challenge is integrating genetic sequencing data in a deterministic modelling framework \cite{Widder2016,WADE201664}. Using the terminology from the thorough review in current methodologies on the deterministic modelling approaches of microbial community dynamics, this articles deals with population-based approaches where species are taken as the interacting units.
+Microbial communities and their interactions play a central role in the understanding of microbial ecosystems \cite{West2007}, and a current challenge is integrating genetic sequencing data in a deterministic modelling framework \cite{Widder2016,WADE201664}. Using the terminology from the thorough review in current methodologies on the deterministic modelling approaches of microbial community dynamics presented by Song \textit{et al.}\cite{Song2014}, this articles deals with population-based approaches where species are taken as the interacting units.
 
-The classical ecological concept of species and niche in the microbial world is an elusive one: in the macro world one can clearly identify one species of another for reproductive reasons and their ability to give birth to offspring. In the case of bacteria and archea, reproduction goes simply by binary fission and exchange of some functional genes (the ability to synthesize or metabolize substances) can be acquired in evolutionary scale through lateral gene transfer \cite{Boucher2003}. Therefore as an ecological problem is hard to precise the 'niche' of 'microbial species'. These obstacles can be circumvented by considering the microbiologist concept of operative taxonomic unit (OTU) based on the clustering of organisms sharing similar sequences of 16S rDNA marker gene. In the past years considerable efforts have been made to measure the bacterial community composition. Tests such as fluorescence in situ hybridization, polymerase chain reaction (PCR) dependent techniques, and PCR independent techniques for the analysis of DNA have become a standard tool for studying  microbial diversity\cite{FERRERA2016790}. 
+The classical ecological concept of species and niche in the microbial world is an elusive one: in the macro world one can clearly identify one species of another for reproductive reasons and their ability to give birth to offspring. In the case of bacteria and archea, reproduction goes simply by binary fission and exchange of some functional genes (the ability to synthesize or metabolize substances) can be acquired in evolutionary scale through lateral gene transfer \cite{Boucher2003}. Therefore as an ecological problem is hard to precise the 'niche' of 'microbial species'. These obstacles can be circumvented by considering the microbiologist concept of operative taxonomic unit (OTU) based on the clustering of organisms sharing similar sequences of 16S rDNA marker gene. In the past years considerable efforts have been made to measure the bacterial community composition. Tests such as fluorescence in situ hybridization, polymerase chain reaction (PCR) dependent techniques, and PCR independent techniques for the analysis of DNA have become a standard tool for studying  microbial diversity\cite{FERRERA2016790}. The contribution of this article is a new method to integrate the microbial community measurements in chemostat models, based on any sequencing or fingerprinting technique that can quantify the species abundances over time. In other words, while most models used in bioengineering are functional- in the sense they consider only one species per biological reaction considered- this work is a first attempt to merge classical population-based models used in ecology and those used by engineers in biotechnology.
 
-The contribution of this article is a new method to integrate the microbial community measurements in chemostat models, based on any sequencing or fingerprinting technique that can quantify the species abundances over time. In other words, while most models used in bioengineering are functional- in the sense they consider only one species per biological reaction considered- this work is a first attempt to merge classical population-based models used in ecology and those used by engineers in biotechnology.
-
-As a departing point, the work of Dumont et al.\cite{Dumont2016} is presented in section 2. They modelled a chemostat experiment where nitrification takes place by considering a generalized Lotka-Volterra (gLV) model \cite{Hernandez-Bermejo1997} coupled with a substrate limited growth expression and fitted their model using absolute abundances of the major OTU identified by molecular fingerprints. Section 3 inspects the model through a mathematical analysis. Some interesting outputs of this analysis are that the number of possible equilibrium points grows exponentially with the number of species, coexistence can be achieved within the same functional group, and bi-stability may arise.  
-
-In section 4 the concept of interaction function is developed such that it generalizes the gLV model. For approximating the interaction function a method of optimal control theory was adapted: The growth rate of each species is modulated by a constrained regular control of the system, thus the growth rate of each OTU is corrected in order to fit the experimental data. The regular control is composed of a feedback part on the species state variable, and a feed forward part, or tracking, on the measurement of abundances of each species; the method involves solving state-dependent Ricatti equations\cite{Cimen2008}. 
-
-In section 5 the methodology from section 4 is applied to the data from the experiments performed by Dumont \textit{et al}\cite{Dumont2009} and not just to the most abundant species as it was the case of the model analysed in section 3 \cite{Dumont2016}. This approach explicitly assumes that dynamics of complex ecosystems are driven by interactions, that are the results of feedback loops of each species on the growth rate of others that they modulate depending on their own abundances. The method shows that by following the community dynamics one can propose a growth rate that reconstructs the substrates dynamics. The article ends with a discussion on the scope of applicability of the method and perspectives. 
+As a departing point, the work of Dumont et al.\cite{Dumont2016} is presented in section 2. They modelled a chemostat experiment where nitrification takes place by considering a generalized Lotka-Volterra (gLV) model\cite{Hernandez-Bermejo1997} coupled with a substrate limited growth expression and fitted their model using absolute abundances of the major OTU identified by molecular fingerprints. Section 3 inspects the model through a mathematical analysis. Some interesting outputs of this analysis are that the number of possible equilibrium points grows exponentially with the number of species, coexistence can be achieved within the same functional group, and bi-stability may arise. In section 4 the concept of interaction function is developed such that it generalizes the gLV model. For approximating the interaction function a method of optimal control theory was adapted: The growth rate of each species is modulated by a constrained regular control of the system, thus the growth rate of each OTU is corrected in order to fit the experimental data. The regular control is composed of a feedback part on the species state variable, and a feed forward part, or tracking, on the measurement of abundances of each species; the method involves solving state-dependent Ricatti equations\cite{Cimen2008}. In section 5 the methodology from section 4 is applied to the data from the experiments performed by Dumont \textit{et al}\cite{Dumont2009} and not just to the most abundant species as it was the case of the model analysed in section 3 \cite{Dumont2016}. This approach explicitly assumes that dynamics of complex ecosystems are driven by interactions, that are the results of feedback loops of each species on the growth rate of others. The method shows that by following the community dynamics one can propose a growth rate that reconstructs the substrates dynamics. The article ends with a discussion on the scope of applicability and perspectives of the method . 
 
 \section{Model Definition}
 
 Notations used throughout the article:
 \begin{enumerate}
 	\item $n$: the number of OTU considered.
-	\item $n_i, \, i \in \{1,2\}$: the number of OTU in functional group $G_i$.
+	\item $n_i, \, i \in \{1,2\}$: the number of OTU in functional group $G_i$. In the example $G_1$ corresponds to Ammonium oxidizing bacteria (AOB) and $G_2$ corresponds to Ammonium oxidizing bacteria (NOB).
 	\item Let $m$ be an interger then $[m]:=\{1,\dots,n \}$. 
 	\item $x_i$ :  is the concentration of OTU $i$ measured in $[g/l]$. $i \in [n]$. 
 	\item $x$: vector $(x_1,\dots,x_n)^\top$.
-	\item $s_1$ : concentration of substrate 1 in $[g/l]$.
-	\item $s_2$ : concentration of substrate 2 in $[g/l]$. 
-	\item $s_3$ : concentration of substrate 3 in $[g/l]$.
+	\item $s_1$ : concentration of substrate 1 in $[g/l]$. In the example $s_1$ represents ammonium.
+	\item $s_2$ : concentration of substrate 2 in $[g/l]$. In the example $s_2$ represents nitrite. 
+	\item $s_3$ : concentration of substrate 3 in $[g/l]$. In the example $s_3$ represents nitrate.
+	\item $s_{in}$: entry concentration of substrate $1$ in $[g/l]$. May depend on time $s_{in} = s_{in}(t)$.
 	\item $s$:  vector $(s_1,s_2,s_3)$. Refered to as metabolites.
 	\item $\I_i(t,x)$ : Interaction function of OTU $i \in \{1,\dots,n\}$.
 	\item $\mu_i(s,x)$ : growth function of OTU $i \in \{1,\dots,n\}$.
 	\item $\mu = (\mu_1(s,x), \dots, \mu_n(s,x))$ vector containing the growth function of every OTU.
-	\item $D$: dilution rate of the continuous reactor in $[1/day]$. 
-	\item $y_i$: yield of moles of biomass formed per mole of substrate consumed of OTU $i$.
+	\item $D$: dilution rate of the continuous reactor in $[1/day]$. May depend on time $D=D(t)$.
+	\item $y_i$: yield of grams of dry biomass formed per gram of substrate consumed of OTU $i$.
 	\item $y$: vector $y_1,\dots,y_n$.
-	\item $k_i$: yield of  moles of substrate consumed per mole of biomass formed of OTU $i$ . The inverse of the biomass yield $k_i = \dfrac{1}{y_i}$.
+	\item $k_i$: yield of grams of substrate consumed per gram of biomass formed of OTU $i$ . The inverse of the biomass yield $k_i = \dfrac{1}{y_i}$.
 	\item $k$: vector $k_1,\dots,k_n$.
 	\item For integers $m_1$ and $m_2$ and $a \in \R$, $a_{m_1 \times m_2}$ represents a matrix of $m_1$ rows and $m_2$ columns with $a$ in every entry. 
 	\item Let $m$ be an integer then $I_m$ is the identity matrix of size $m$.
 	\item Let $S$ be a finite set with $m \in \N$ elements. Then $\vert S \vert := m$. 
+	\item Given a vector $v=(v_1,\dots, v_n)\in \R^n$, the function $\diag(v)$ stands for:
+	\begin{align}
+	\begin{array}{rc}
+	\diag:\R^n \rightarrow & \mathbb{M}_{n\times n}(\R)\\
+	& \\
+	v \rightarrow & \begin{pmatrix}
+	v_1 & 0 & \dots & 0 \\
+	0 & v_2 & \ddots & \vdots\\ 
+	\vdots & \ddots & \ddots& 0 \\
+	0 & \dots &0 & v_n 
+	\end{pmatrix}
+	\end{array} \label{diag_operator}
+	\end{align}
 \end{enumerate}
 
 \subsection{Stoichiometric Equations}
-A cascade (bio)reaction process is considered. Suppose $n$ different OTU are present in the chemostat. The cascade reaction refers to the situation where a group of microorganisms ($G_1 \subset [n] $) consumes a substrate $s_1$ and produces $s_2$ and biomass, while another group of microorganisms ($G_2\subset [n]$) consumes $s_2$ and produces $s_3$ and biomass. $G_1$ and $G_2$ are called functional groups. The number of organisms in each functional will be denoted $n_1$ and $n_2$ respectively, that is $\vert G_1 \vert = n_1$ and $\vert G_2 \vert = n_2$ . This work treats the case when $G_1$ and $G_2$ are disjoint sets:
+A cascade (bio)reaction process is considered. Suppose $n$ different OTU are present in the chemostat. A two step cascade reaction refers to the situation where a group of microorganisms ($G_1 \subset [n] $) consumes a substrate $s_1$ and produces $s_2$ and biomass, while another group of microorganisms ($G_2\subset [n]$) consumes $s_2$ and produces $s_3$ and biomass. $G_1$ and $G_2$ are called functional groups. The number of organisms in each functional will be denoted $n_1$ and $n_2$ respectively, that is $\vert G_1 \vert = n_1$ and $\vert G_2 \vert = n_2$. This work treats the case when $G_1$ and $G_2$ are disjoint sets:
 
 \begin{hypo}  Sets $G_1$ and $G_2$ satisfy: $G_1 \cap G_2 = \emptyset$ and $G_1 \cup G_2 = [n]$. 
 \end{hypo}
 
 The situation is described as simplified reactions \eqref{Reaction1} and \eqref{Reaction2}. The reactions are simplified in the sense that they do not attempt to represent a balanced chemical reaction, rather it represents the direction of the bioprocess and the proportions of different consumed and formed compounds of interest. 
 
-The terms $y_i$ are known as yields, they represent the number of grams of biomass produced per gram of substrate consumed for OTU $i$. In this work the unit grams of dry biomass per gram of substrate is used for yields. Furthermore, for each $ i \in [n]$, OTU $i$ is characterized by its process rate (also known as growth function) $\mu_i(s,x)$. Notice that for being as generic as possible, the growth rate may be a function of the whole state in order to model the influence of all OTU on the growth rates of others.
+The terms $y_i$ are known as yields, they represent the quantity (in grams of dry biomass produced per gram of substrate) consumed for OTU $i$. In this work the unit grams of dry biomass per gram of substrate is used for yields. Furthermore, for each $ i \in [n]$, OTU $i$ is characterized by its process rate (also known as growth function) $\mu_i(s,x)$. Notice that for being as generic as possible, the growth rate may be a function of the whole state in order to model the influence of all OTU on the growth rates of others.
 \begin{align}
-\label{Reaction1} \tag{R G1} 	s_1 \stackrel{\mu_i(s,x)}{\longrightarrow} s_2 + y_ix_i \quad \forall i \in G_1 \\
+\label{Reaction1} \tag{R G1} s_1 \stackrel{\mu_i(s,x)}{\longrightarrow} s_2 + y_ix_i \quad \forall i \in G_1 \\
 \label{Reaction2} \tag{R G2} s_2\stackrel{\mu_i(s,x)}{\longrightarrow} s_3 + y_ix_i \quad \forall i \in G_2
 \end{align}
 
 An example of this process is the nitrification process where group $G_1$ is known as Ammonium oxidizing Bacteria (AOB), and group $G_2$ is known as Nitrite oxidizing Bacteria (NOB) \cite{SHARMA1977897}.
 \subsection{Mass Balance Equations}
 
-Consider the scenario of an continuous and homogeneous reactor: the input flow is the same as the output flow, with a dilution rate $D$. The input flow contains a concentration $s_{in}$ of substrate $s_1$. Note that $s_{in}$ and $D$ are time dependent. Each OTU grows at a rate $\mu_i(s,x)$. System \eqref{system} represents this situation. A specific case of $\mu_i(s,x)$ is given in the next subsection. 
+Consider the scenario of a continuous and homogeneous reactor: the input flow is the same as the output flow, with a dilution rate $D$. The input flow contains a concentration $s_{in}$ of substrate $s_1$. Note that $s_{in}$ and $D$ are time dependent. Each OTU grows at a rate $\mu_i(s,x)$. System \eqref{system} represents this situation. A specific case of $\mu_i(s,x)$ is given in the next subsection. 
 
 \begin{align} 
 \label{system}
@@ -111,15 +119,15 @@ Consider the scenario of an continuous and homogeneous reactor: the input flow i
 \end{align}	
 
 \subsection{Kinetic Equations}
-In the work of Dumont \textit{et al.} \cite{Dumont2016} the growth rate seen in equations \eqref{gLV growth1} and \eqref{gLV growth2} was calibrated against experimental data for the two most abundant OTU of each functional group.
+In the work of Dumont \textit{et al.} \cite{Dumont2016} the growth rates seen in equations \eqref{gLV growth1} and \eqref{gLV growth2} were calibrated against experimental data for the two most abundant OTU of each functional group.
 
 \begin{align}
 \label{gLV growth1}\mu_i(s,x) &= \bar{\mu}_i \dfrac{s_1}{K_i + s_1}\left(1+\sum \limits_{j\in [n]} a_{ij} x_{j} \right) \quad \forall i \in G_1 \\
 \label{gLV growth2}\mu_i(s,x) &= \bar{\mu}_i \dfrac{s_2}{K_i + s_2}\left(1+\sum \limits_{j\in [n]} a_{ij} x_{j} \right) \quad \forall i \in G_2 
 \end{align}
 
-The term $\left(1+\sum \limits_{j\in [n]} a_{ij} x_{j} \right)$ accounts for pairwise interactions affecting the growth rate of each OTU, while the term $\bar{\mu}_i\dfrac{s_j}{K_i + s_j}$ represents the substrate limitation \cite{monod1942recherches}. Let $A$ denote the matrix
-with entries $a_{ij}$ hereafter referred to as the interaction matrix. The following section of this article deals with the mathematical analysis of model \eqref{system} with growth rates given by \eqref{gLV growth1} and \eqref{gLV growth2}.
+The term $\left(1+\sum \limits_{j\in [n]} a_{ij} x_{j} \right)$ accounts for pairwise interactions affecting the growth rate of each OTU, while the term $\bar{\mu}_i\dfrac{s_j}{K_i + s_j}$ is a Monod growth expression, where $\bar{\mu}_i$ represents the maximum growth rate, and $K_i$ the half saturation constant \cite{monod1942recherches}. Let $A$ denote the matrix
+with entries $a_{ij}$ hereafter referred to as the interaction matrix. Dumont\textit{ et al.} did not analyse their model but simply provided a number of simulation results using parameter values identified from experimental data. The following section of this article deals with the mathematical analysis of model \eqref{system} with growth rates given by \eqref{gLV growth1} and \eqref{gLV growth2}.
 
 \section{Mathematical Analysis}
 
@@ -129,14 +137,14 @@ The system of equations \eqref{system} is defined in the region
 \Omega := \{ (x_1,\dots,x_n,s_1,s_2,s_3)\in  \R^{n+3} | x_1,\dots,x_n,s_1,s_2,s_3  \geq 0  \}
 \end{align*}
 
-First sufficient conditions for the system to be well posed are established: meaning that solutions remain bounded and non-negative in time, this ultimately implies that the solution exists for every $t \geq 0$ \cite{Khalil1996}. 
+First, sufficient conditions on the interaction matrix for the system to be well posed are established: meaning that solutions remain bounded and non-negative in time, this ultimately implies that the solution exists for every $t \geq 0$ \cite{Khalil1996}. 
 
-Second the equilibria of the system are derived. Possible equilibrium points for this system grow exponentially with the number of OTU considered ($n$).  Stability is not analytically addressed, a numerical scheme calculating every equilibrium point and the system's Jacobian eigenvalues at the equilibrium point was implemented for studying the system. 
+Second, the equilibria of the system are derived. Possible equilibrium points for this system grow exponentially with the number of OTU considered ($n$).  Stability is not analytically addressed, a numerical scheme calculating every equilibrium point and the system's Jacobian eigenvalues at the equilibrium point was implemented for studying the system. 
 
 
 \subsection{Properties of the system}
 
-By bounding the norm of the interaction matrix on the initial conditions and parameters one establishes that solutions will remain positive and bounded. 
+A bound on the norm of the interaction matrix that depends on the initial conditions and parameters one establishes that solutions will remain positive and bounded. 
 
 \begin{lemma}
 	\label{l1}
@@ -159,43 +167,14 @@ The proof can be seen in the supplementary material.
 
 \subsection{Equilibrium Points}
 
-In this section analytical expressions for equilibrium points are derived. However no analytic expression concerning the stability of such points is presented. To answer the question of stability a numeric scheme is used by evaluating the Jacobian at the equilibrium point. At the end of the section an algorithm is provided for exploring all the possible equilibria.
+In this section analytical expressions for equilibrium points are derived. However, no analytic expression concerning the stability of such points is presented. To answer the question of stability a numeric scheme is used by evaluating the Jacobian at the equilibrium point. At the end of the section an algorithm is provided for exploring all the possible equilibria.
 
-\begin{defn} 
-	An equilibrium point (or steady state) is a point $(x^{eq},s^{eq}) \in \R^{n+3}_+$ so that the right hand side of equations \eqref{Eq1},\eqref{Eq2}, \eqref{Eq3}, and \eqref{Eq4} equals zero. 
-\end{defn} 
-
-Observe that equilibrium points are by definition non-negative so the state variables can have physical meaning. Details of the calculations are given in the appendix. An important assumption throughout the work is that matrix $A$ and some of its submatrices have an inverse, this is stated properly in hypothesis \ref{inverse hypothesis}.
-
-\begin{hypo}
-	Let $A$ be the interaction matrix of size $n \in \N$ and $S$ be a proper subset of $[n]$ with $|S| = m$. Then the matrix $B \in \R^{(n-m) \times (n-m)}$ defined by taking out the $S$ rows and columns of matrix $A$ is invertible.
-	\label{inverse hypothesis}
-\end{hypo} 
-
-This model \eqref{system} is restated in a more compact form using matrix notation.
-
-\begin{defn} Given a vector $v=(v_1,\dots, v_n)\in \R^n$, the function $\diag(v)$ stands for:
-	\begin{align}
-	\begin{array}{rc}
-	\diag:\R^n \rightarrow & \mathbb{M}_{n\times n}(\R)\\
-	& \\
-	v \rightarrow & \begin{pmatrix}
-	v_1 & 0 & \dots & 0 \\
-	0 & v_2 & \ddots & \vdots\\ 
-	\vdots & \ddots & \ddots& 0 \\
-	0 & \dots &0 & v_n 
-	\end{pmatrix}
-	\end{array} \label{diag_operator}
-	\end{align}
-\end{defn}
-
-Function \eqref{diag_operator} places a vector $v$ in the diagonal of a matrix. Recalling $A$ the matrix with coefficients $a_{ij}$. The following notation is introduced.
+Model \eqref{system} is restated in a more compact form using matrix notation.
 
 \begin{align} A = \begin{bmatrix}
 A_1\\A_2
 \end{bmatrix}\end{align}
- Where $A_1$ is a matrix of dimension $n_1 \times n$ corresponding to the interaction coefficients of OTU $i \in G_1$. $A_2$ is a matrix of dimension $n_2 \times n$ rows corresponding to the interaction coefficients of OTU $i \in G_2$.
-And  $f(s) \in \R^n$, such that 
+where $A_1$ is a matrix of dimension $n_1 \times n$ corresponding to the interaction coefficients of OTU $i \in G_1$. $A_2$ is a matrix of dimension $n_2 \times n$ rows corresponding to the interaction coefficients of OTU $i \in G_2$, and  $f(s) \in \R^n$ is such that 
 \begin{align}
 f_i(s) = \begin{cases}
 \bar{\mu}_i \dfrac{s_1}{K_i + s_1} \quad \forall i \in G_1 \\
@@ -203,7 +182,7 @@ f_i(s) = \begin{cases}
 \end{cases}
 \end{align}
 
-with the above system \eqref{system}, is rewritten in equations \eqref{Eq1}, \eqref{Eq2}, \eqref{Eq3}, and \eqref{Eq4}. 
+Thus, system \eqref{system} is rewritten as follows. 
 
 \begin{align}
 \label{Eq1}	\dot{x} = & \diag(x)(\diag(f(s))(1_{n\times 1} + Ax) - D_{n\times 1}) \\
@@ -219,10 +198,14 @@ with the above system \eqref{system}, is rewritten in equations \eqref{Eq1}, \eq
 \end{bmatrix}^\top \diag(k) \diag(f(s))x 
 \end{align} 
 
-Finally the set of non-active coordinates is defined.
+\begin{defn} 
+	An equilibrium point (or steady state) is a point $(x^{eq},s^{eq}) \in \Omega$ so that the right hand side of equations \eqref{Eq1},\eqref{Eq2}, \eqref{Eq3}, and \eqref{Eq4} equals zero. 
+\end{defn} 
+
+Observe that equilibrium points are by definition non-negative so the state variables can have physical meaning. For studying the cases where $x^{eq}$ contains zero valued entries, the set of non-active coordinates is defined as follows:
 
 \begin{defn}
-	Given an equilibria point $(x^{eq},s^{eq})$ of system \eqref{system}, then the set of non-active coordinates $\mathcal{J}\subset \{1,\dots,n\}$ is defined as:
+	Given an equilibrium point $(x^{eq},s^{eq})$ of system \eqref{system}, then the set of non-active coordinates $\mathcal{J}\subset \{1,\dots,n\}$ is defined as:
 	$\mathcal{J} = \{j_1, \dots, j_m\ : \, x^{eq}_{j_i} = 0 , \;i \in [m] \} $.
 	
 	The active point $x^{act}\in \R^{n-m}$ is defined by the positive entries of $x^{eq}$. The relationship between the two is given by:
@@ -234,44 +217,56 @@ Finally the set of non-active coordinates is defined.
 	0 & \text{for } i \in \{j_1, \dots, j_m\}
 	\end{cases} \end{align}	
 	
-	The active growths $f^{act}(s)$ and yields $k^{act}$ are defined analogously by the positive entries of $x^{eq}$. The active interactions $A^{act}$ is defined as matrix $A$ without the $\mathcal{J}$ rows and columns.
+	$n_1^{act}$ and $n_2^{act}$ denote the number of positive entries of $x^{eq}$ of functional groups $G_1$ and $G_2$, respectively. $n^{act} = n-m$ denotes the total number of positive entries of $x^{eq}$. The active growths $f^{act}(s)$ and yields $k^{act}$ are defined analogously by the positive entries of $x^{eq}$. The active interactions $A^{act}$ is defined as the matrix $A$ without the $\mathcal{J}$ rows and columns. 
 \end{defn}
-
-\subsubsection{Complete Coexistence}
-
-This section derives the equations for an equilibrium point with every OTU being positive: $x^{eq}_i>0$, which is stated in hypothesis \ref{hypothesis complete coexistence}.
+ 
+ Finally, for deriving the equilibrium points, it is desirable an invertible $A^{act}$ matrix. Therefore in what follows of the work it is assumed that matrix $A$ and some of its sub matrices have an inverse, this is stated properly in Hypothesis \ref{inverse hypothesis}. 
 
 \begin{hypo}
-	$\mathcal{J} =  \emptyset$
-	\label{hypothesis complete coexistence}
-\end{hypo}
+	Let $A$ be the interaction matrix of size $n \in \N$ and $S$ be a proper subset of $[n]$ with $|S| = m$. Then the matrix $B \in \R^{(n-m) \times (n-m)}$ defined by taking out the $S$ rows and columns of matrix $A$ is invertible.
+	\label{inverse hypothesis}
+\end{hypo} 
 
-From equation \eqref{Eq1} one gets that an equilibrium point satisfies: \begin{align*}
-\diag(x)(\diag(f(s)(1_{n\times 1} + Ax) - D_{n\times 1}) & = 0 \\
-\Rightarrow x_i = 0 \vee (\diag (f(s))(1_{n\times 1} + Ax) - D_{n\times 1})_i & = 0 \quad \forall i\in (1,\dots,n)
-\end{align*}
+\subsubsection{Both functional groups are present}
 
-Since $x_i>0$ one has 
+The case where in each functional group remains at least one OTU is represented by Hypothesis \ref{hypothesis CN}.
+\begin{hypo}The set $\mathcal{J}$ satisfies $ G_1 \not \subset \mathcal{J} , \, G_2 \not \subset \mathcal{J} $.
+	\label{hypothesis CN}
+\end{hypo} 
+
+From equation \eqref{Eq1} equilibrium points satisfy: 
+
 \begin{align}
-\diag(f(s))(1_{n\times 1} + Ax) - D_{n\times 1}=0 \\
-\label{xEquilibria}\Leftrightarrow x = A^{-1}(\diag (f(s))^{-1}D_{n\times 1} - 1_{n\times 1})
-\end{align}  
+\Rightarrow  (\diag (f(s))(1_{n\times 1}+ Ax) - D_{n\times 1})_i = 0 \quad \forall i \in [n]\setminus \mathcal{J} \\
+\Leftrightarrow f_i(s)(1 + A_{i\bullet}x) - D = 0 \quad \forall i \in [n]\setminus \mathcal{J} \label{Extinction}
+\end{align} 
 
-By replacing \eqref{xEquilibria} in equation \eqref{Eq2}:
+note that $\forall j \in \mathcal{J}, \; x^{eq}_j = 0 $ therefore the coefficients $a_{ij}$ play no role in equation \eqref{Extinction} and one can rewrite equation \eqref{Extinction} as $\diag(f^{act}(s))(1_{n^{act}\times 1} + A^{act}x^{act}) - D_{n^{act} \times 1}=0 $. From hypothesis \ref{inverse hypothesis} matrix $A^{act}$ has an inverse. This gives the following lemma.
+
+\begin{lemma} 
+	The active point of the solution of \eqref{Extinction} solves the system of equations \eqref{EqSome}. 
+	\begin{align}
+	\label{EqSome}x^{act} = (A^{act})^{-1}(\diag(f^{act}(s))^{-1}D_{n^{act}\times 1} - 1_{n^{act}\times 1})
+	\end{align} 
+\end{lemma} 
+
+By replacing \eqref{EqSome} in equation \eqref{Eq2}:
 
 
 \begin{align}
 \label{s1Equilibria} (s_{in}-s_1)-	\begin{bmatrix}
-1_{n_1\times 1} \\0_{n_2\times 1}
-\end{bmatrix}^\top \diag (k) A^{-1}(\diag(f(s))^{-1}D_{n\times 1}-1_{n\times 1}) = 0 
+1_{n_1^{act}\times 1} \\0_{n_2^{act}\times 1}
+\end{bmatrix}^\top \diag (k^{act}) (A^{act})^{-1}(\diag(f^{act}(s))^{-1}D_{n^{act}\times 1}-1_{n^{act}\times 1}) = 0 
 \end{align}
 
 
-A similar expression is obtained when replacing \eqref{xEquilibria} in equation \eqref{Eq3}
+A similar expression is obtained when replacing \eqref{EqSome} in equation \eqref{Eq3}
 
 \begin{align}
 \label{s2Equilibria}-s_2+
-1_{n\times 1}^{\top}\diag (k)  A^{-1}(\diag(f(s))^{-1}D_{n\times 1}-1_{n\times 1}) = 0
+	\begin{bmatrix}
+1_{n_1^{act}\times 1} \\-1_{n_2^{act}\times 1}
+\end{bmatrix}^\top\diag (k^{act})(A^{act})(\diag(f^{act}(s))^{-1}D_{n^{act}\times 1}-1_{n^{act}\times 1}) = 0
 \end{align}
 
 From equation \eqref{s1Equilibria} $s_2$ can be written as a function of $s_1$:
@@ -295,34 +290,8 @@ Finally, in equilibrium, $s_3$ can be defined in terms of $s_1$, $s_2$ and $s_{i
 s_{in} = s_1+s_2+s_3 \label{s1s2s3}
 \end{align}
 
-If the system of equations \eqref{xEquilibria}, \eqref{S2(S1)}, \eqref{Poly4}, and \eqref{s1s2s3} provides only solutions with some negative entries then complete coexistence is not possible.
+If the system of equations \eqref{EqSome}, \eqref{S2(S1)}, \eqref{Poly4}, and \eqref{s1s2s3} provides only solutions with some negative entries then the set $\mathcal{J}$ can not define an equilibrium point.
 
-\subsubsection{Washout of some OTU}
-
-Hypothesis \ref{hypothesis CN} represents the case where in each functional group remains at least one OTU.
-
-\begin{hypo}The set $\mathcal{J}$ satisfies $ G_1 \not \subset \mathcal{J} , \, G_2 \not \subset \mathcal{J} $.
-	\label{hypothesis CN}
-\end{hypo} 
-
-From equation \eqref{Eq1} equilibrium points satisfy: 
-
-\begin{align}
-\Rightarrow  (\diag (f(s))(1_{n\times 1}+ Ax) - D_{n\times 1})_i = 0 \quad \forall i \in [n]\setminus \mathcal{J} \\
-\Leftrightarrow f_i(s)(1 + A_{i\bullet}x) - D = 0 \quad \forall i \in [n]\setminus \mathcal{J} \label{Extinction}
-\end{align} 
-
-But since $\forall j \in \mathcal{J}, \; x^{eq}_j = 0 $ then the coefficients $a_{ij}$ play no role in the equation \eqref{Extinction} one can rewrite equation \eqref{Extinction} as $\diag(f^{act}(s))(1_{(n-m)\times 1} + A^{act}x^{act}) - D_{(n-m) \times 1}=0 $. From hypothesis \ref{inverse hypothesis} matrix $A^{act}$ has an inverse. This gives the following lemma.
-
-\begin{lemma} 
-	The active point of the solution of \eqref{Extinction} solves the system of equations \eqref{EqSome}. 
-	\begin{align}
-	\label{EqSome}x^{act} = (A^{act})^{-1}(\diag(f^{act}(s))^{-1}D_{(n-m)\times 1} - 1_{(n-m)\times 1})
-	\end{align} 
-\end{lemma} 
-
-
-The equilibrium of the system is solved as described by equations \eqref{S2(S1)}, \eqref{Poly4}, and \eqref{s1s2s3} as before, but coefficients are calculated differently (essentially the same, but only uses the coefficients corresponding to the active points).
 
 \subsubsection{Washout of $G_2$}
 
@@ -333,7 +302,15 @@ The washout of $G_2$ is equivalent to  hypothesis \ref{hypothesis washout G2}.
 	\label{hypothesis washout G2}
 \end{hypo} 
 
-In the case that $x_i = 0, \, \forall i \in G_2$ then from equation \eqref{Eq4}.
+Equations \eqref{EqSome} and \eqref{s1Equilibria} still hold, but in this case note that $f^{act}(s)$ does not contain any term involving $s_2$, and therefore one obtains a quadratic equation for $s_1$:
+
+\begin{align}
+\label{poly2_s1} a'_2 s_1^2 + a'_1s_1 + a'_0 = 0
+\end{align}
+
+Where $a'_i$ can be found in the appendix.
+
+Since $x_i = 0, \, \forall i \in G_2$ then from equation \eqref{Eq4}.
 \begin{align}
 \dot{s_3} = 0 = -s_3D \\
 \Rightarrow s_3 = 0
@@ -345,24 +322,13 @@ Then by \eqref{s1s2s3} one obtains:
 s_{in} = s_1 + s_2
 \end{align}
 
-Then by replacing  \eqref{EqSome} and \eqref{EquilibriaFormula} in \eqref{Eq2}.
-\begin{align}
-\label{S1NOBWashout}  (s_{in}-s_1)-1_{(n-m)\times 1}^\top
-\diag(k)(A^{act})^{-1}(\diag(f^{act}(s))^{-1}D_{(n-m)\times 1} - 1_{(n-m)\times 1}) = 0 
-\end{align}
 
-Notice \eqref{S1NOBWashout} does not contain terms with $s_2$. By reordering the terms \eqref{S1NOBWashout} one finds a two degree polynomial of $s_1$:
-
-\begin{align}
-a'_2 s_1^2 + a'_1s_1 + a'_0 = 0
-\end{align}
-
-Where $a'_i$ can be found in the appendix.
 
 \subsubsection{Washout}
 	
-The washout equilibria means $x_i = 0$ for every $i \in \{1,\dots, n_1\}$. This is equivalent to hypothesis \ref{hypothesis washout}.
-\begin{hypo}
+The washout equilibria means $x_i = 0$ for every $i \in \{1,\dots, n_1\}$. This is equivalent to hypothesis \ref{hypothesis washout}.Note that the structure of a cascade reaction implies that if $G_1$ gets washed out, then so is $G_2$.
+
+\begin{hypo} 
 	$\mathcal{J} = G_1 \cup G_2$
 	\label{hypothesis washout}
 \end{hypo} 
@@ -372,21 +338,21 @@ From equation \eqref{Eq2}, one gets
 then \eqref{s1s2s3} implies \begin{align*}s_2 &= s_3 = 0 \\ \Rightarrow \dot{x_i} &= -Dx_i \quad \forall i = n_1+1, \dots, n\end{align*}   
 which has an equilibria at $x_i = 0$. 
 
-All the former discussion leads to a potential number of   $ (2^{n_1}-1)\cdot (4\cdot(2^{n_2}-1)+2)+1 $  different equilibria. 
+All the former discussion leads to a potential number of   $ (2^{n_1}-1)\cdot (4\cdot(2^{n_2}-1)+2)+1 $  different equilibria. Indeed: 
 \begin{align} \overbrace{(2^{n_1}-1)}^{\substack{\text{nonempty subsets} \\ \text{of }G_1 }} (\underbrace{4}_{\substack{\text{possible} \\ \text{solutions of} \\ \text{equation \eqref{Poly4}}}} \cdot\overbrace{(2^{n_2}-1)}^{\substack{\text{nonempty subsets} \\ \text{of  }G_2}}+\underbrace{2}_{\substack{G_2 \\ \text{Washout}}})+\overbrace{1}^\text{Washout} 
 \end{align}
 
 \subsection{Stability: Operating and Ecological Diagrams}
 
-In this subsection the stability of the equilibrium points is addressed. Operating and ecological diagrams are created from this stability analysis. Both are an illustrative way of representing the long term behaviour of a reactor depending on operating parameters, namely $D$ and $s_{in}$: In a $D-S_{in}$ plane different zones representing the stability properties of system \eqref{system} are identified. 
+In this subsection the stability of the equilibrium points is addressed. Operating and ecological diagrams are created from this stability analysis. Both are an illustrative way of representing the long term behaviour of a reactor depending on operating parameters, namely $D$ and $s_{in}$: In a $D-s_{in}$ plane different zones representing the stability properties of system \eqref{system} are identified. 
 
-For checking local asymptotic stability of the equilibrium points, the Jacobian of the system is provided and evaluated at each of these points. The resulting matrix's eigenvalues must have negative real part. A general formula for this Jacobian is presented in the supplementary material \eqref{Jacobian_system}. Algorithm \ref{StabilityAnalysis} summarizes such a procedure.
+For checking local asymptotic stability of the equilibrium points, the Jacobian of the system is provided and evaluated at each of these points. The resulting matrix's eigenvalues must have negative real part. A general formula for this Jacobian is presented in the supplementary material \eqref{Jacobian_system}. Algorithm \ref{StabilityAnalysis} summarizes this procedure.
 
 \begin{algorithm}[H]
 	\KwData{$A \in M_{n\times n}(\R)$, $D, s_{in}, \bar{\mu}_i,K_i, k_i,  \in \R \, i\in [n], $, $n_1, n_2 \in \N$}
 	\KwResult{Set $\mathcal{P}$ containing all Positive Stable Equilibrium Points}
 	$\mathcal{P} = \emptyset$ \\
-	\For{$S \subset [n]$ }{	Calculate equilibrium $(x,s_1,s_2,s_3)$ when $\mathcal{J}:= S$ according to hypothesis \ref{hypothesis complete coexistence} \ref{hypothesis CN}, \ref{hypothesis washout G2}, or \ref{hypothesis washout}. \\
+	\For{$S \subset [n]$ }{	Calculate equilibrium $(x,s_1,s_2,s_3)$ when $\mathcal{J}:= S$ according to hypothesis \ref{hypothesis CN}, \ref{hypothesis washout G2}, or \ref{hypothesis washout}. \\
 		\If{$(x,s_1,s_2,s_3) \geq 0$}{eig = Eigenvalues of $J(x,s_1,s_2,s_3)$ \\
 			\If{$Real(eig) < 0$}{$\mathcal{P} = \mathcal{P} \cup (x,s_1,s_2,s_3)$}}}
 	\label{StabilityAnalysis}
@@ -396,13 +362,13 @@ For checking local asymptotic stability of the equilibrium points, the Jacobian 
 
 Operating and ecological diagrams are created by running algorithm \ref{StabilityAnalysis} for different pairs $(s_{in},D)$. In the case of operating diagrams\cite{lobry2017chemostat} (OD) all the pairs $(s_{in},D)$ are regrouped such that the points of the set $\mathcal{P}$ represent when partial nitrification (PN), complete nitrification (CN), washout (WO), or a combination of them may arise \cite{KHIN2004519}. PN refers to the state when nitrite $s_2$, accumulates because the OTU of $G_2$ are washed out and thus no conversion from $s_2$  to $s_3$ takes place. On the contrary CN is when nitrate ($s_3$) accumulates because of the presence of OTU of $G_2$. 
 
-In the case of ecological diagrams (ED) the pairs are regrouped such that the points in the set $\mathcal{P}$ have the same non-active coordinates. Ecological diagrams provide more information than operating diagrams, in the sense that one can infer the operating diagram from an ecological diagram. However for exposure of the subject OD are used in the first case study, while ED are used in the second case study.
+In the case of ecological diagrams (ED) the pairs are regrouped such that the points in the set $\mathcal{P}$ have the same non-active coordinates. Ecological diagrams provide more information than operating diagrams, in the sense that one can infer the operating diagram from an ecological diagram. In other words, instead of representing areas where either CN, PN or WO take place, ranges of pairs $(s_{in},D)$ where species coexist are represented.	
 
 A first example using operating diagrams is presented to illustrate how adding interactions in a model consisting of 1 OTU in $G_1$ and 1 OTU in $G_2$ may lead to very different outcomes.
 
 \subsubsection{Case study 1: 1 AOB and 1 NOB}
 
-Consider the case where $n_1 = 1$ and $n_2 = 1$. The operating diagrams where no interactions take place ($A = 0$) and a non-zero interaction matrix is presented. When $A=0$ algorithm \ref{StabilityAnalysis} is no longer valid (A is not invertible), nevertheless the stability analysis is much simpler and is given in the supplementary material section. Parameters can be seen in table \ref{kinetic_parameters_case_study_1}, while the interaction matrices are shown in \ref{case1_no_interactions} and \ref{case1_interactions}.
+Consider the case where $n_1 = 1$ and $n_2 = 1$. The operating diagrams where no interactions take place ($A = 0$) and a non-zero interaction matrix is presented. When $A=0$ algorithm \ref{StabilityAnalysis} is no longer valid (A is not invertible), nevertheless the stability analysis is much simpler and is given in the supplementary material section. The interaction matrices are shown in \ref{case1_no_interactions} and \ref{case1_interactions}, the rational behind the second choice was to force a . Parameters can be seen in table \ref{kinetic_parameters_case_study_1}, while 
 
 The operating diagram can be seen in figure \ref{OD_no_interactions}, note how partial nitrification (washout of $G_2$). When compared to \ref{OD_no_interactions} one notes that at low $s_{in}$ the curve dividing the PN zone from the CN zone are alike. But since more $s_{in}$ means more $x_1$, at high $s_{in}$ the affine part $(1+ a_{21}x_1 +a_{22}x_2)$ of the growth function of $x_2$ plays a bigger role than substrate limitation ($\frac{s_2}{s_2+K_2}$).
 
@@ -432,7 +398,8 @@ The operating diagram can be seen in figure \ref{OD_no_interactions}, note how p
 		\caption{Interaction matrix of model \eqref{system}.}
 		\label{case1_interactions}
 	\end{subfigure}
-	\caption{Interaction matrices. Note how the presence of $x_1$ affects very negatively $x_2$ in \eqref{case1_interactions}. The sign of terms in the diagonal entries of the matrix represents interspecies interactions.}
+	\caption{Interaction matrices. Note how the presence of $x_1$ affects very negatively $x_2$ in \eqref{case1_interactions}. The terms in the diagonal entries of the matrix represents intraspecies interactions, while the terms off thepo
+		 diagonal represent the interspecies interactions.}
 \end{figure} 
 
 \begin{figure}[h]
@@ -448,7 +415,7 @@ The operating diagram can be seen in figure \ref{OD_no_interactions}, note how p
 	\caption{Operating diagram of model \eqref{system} with interactions represented by \eqref{case1_interactions}.}
 	\label{OD_interactions}
 	\end{subfigure}
-	\caption{Note how \ref{OD_interactions} has a much larger zone where partial nitrification takes place. This is due to the negative interaction $x_1$ plays against $x_2$.}
+	\caption{Note how \ref{OD_interactions} has a much larger zone where partial nitrification takes place. This is due to the negative interaction of $x_1$ on $x_2$.}
 \end{figure} 
 \clearpage
 
