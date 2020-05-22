@@ -206,18 +206,21 @@ Observe that equilibrium points are by definition non-negative so the state vari
 
 \begin{defn}
 	Given an equilibrium point $(x^{eq},s^{eq})$ of system \eqref{system}, then the set of non-active coordinates $\mathcal{J}\subset \{1,\dots,n\}$ is defined as:
-	$\mathcal{J} = \{j_1, \dots, j_m\ : \, x^{eq}_{j_i} = 0 , \;i \in [m] \} $.
+	$\mathcal{J} = \{j_1, \dots, j_m\ : \, x^{eq}_{j_i} = 0 , \;i \in [m] \} $. $n_1^{act}$ and $n_2^{act}$ denote the number of positive entries of $x^{eq}$ of functional groups $G_1$ and $G_2$, respectively. $n^{act} = n-m$ denotes the total number of positive entries of $x^{eq}$. The active point $x^{act}\in \R^{n^{act}}$ is defined by the positive entries of $x^{eq}$. The active growths $f^{act}(s)$ and yields $k^{act}$ are defined analogously by the positive entries of $x^{eq}$. The active interactions $A^{act}$ is defined as the matrix $A$ without the $\mathcal{J}$ rows and columns. Let $M$ be the matrix defined by taking out the $\mathcal{J}$ columns of the identity matrix, then
+	 \begin{align}
+	 x^{eq} = Mx^{act} \\	
+	 f^{act}(s) = M^{\top}f(s) \\
+	 k^{act} = M^{\top}k \\
+	 A^{act} = M^{\top}AM
+	 \end{align}.   
 	
-	The active point $x^{act}\in \R^{n-m}$ is defined by the positive entries of $x^{eq}$. The relationship between the two is given by:
+%	\begin{align}\label{EquilibriaFormula} (x^{eq})_i = \begin{cases}
+%	x^{act}_i & \text{for } i < j_1\\
+%	x^{act}_{i-k} & \text{for } j_{k}< i <j_{k+1}  \text{ and } k \in \{1,\dots,m-1\}\\
+%	x^{act}_{i-m} & \text{for } j_{m}< i \\
+%	0 & \text{for } i \in \{j_1, \dots, j_m\}
+%	\end{cases} \end{align}	
 	
-	\begin{align}\label{EquilibriaFormula} (x^{eq})_i = \begin{cases}
-	x^{act}_i & \text{for } i < j_1\\
-	x^{act}_{i-k} & \text{for } j_{k}< i <j_{k+1}  \text{ and } k \in \{1,\dots,m-1\}\\
-	x^{act}_{i-m} & \text{for } j_{m}< i \\
-	0 & \text{for } i \in \{j_1, \dots, j_m\}
-	\end{cases} \end{align}	
-	
-	$n_1^{act}$ and $n_2^{act}$ denote the number of positive entries of $x^{eq}$ of functional groups $G_1$ and $G_2$, respectively. $n^{act} = n-m$ denotes the total number of positive entries of $x^{eq}$. The active growths $f^{act}(s)$ and yields $k^{act}$ are defined analogously by the positive entries of $x^{eq}$. The active interactions $A^{act}$ is defined as the matrix $A$ without the $\mathcal{J}$ rows and columns. 
 \end{defn}
  
  Finally, for deriving the equilibrium points, it is desirable an invertible $A^{act}$ matrix. Therefore in what follows of the work it is assumed that matrix $A$ and some of its sub matrices have an inverse, this is stated properly in Hypothesis \ref{inverse hypothesis}. 
@@ -237,6 +240,7 @@ The case where in each functional group remains at least one OTU is represented 
 From equation \eqref{Eq1} equilibrium points satisfy: 
 
 \begin{align}
+x_i = 0 \vee (\diag(f(s))(1_{n\times 1} + Ax) - D_{n\times 1})_i = 0 \quad \forall i \in [n] \\
 \Rightarrow  (\diag (f(s))(1_{n\times 1}+ Ax) - D_{n\times 1})_i = 0 \quad \forall i \in [n]\setminus \mathcal{J} \\
 \Leftrightarrow f_i(s)(1 + A_{i\bullet}x) - D = 0 \quad \forall i \in [n]\setminus \mathcal{J} \label{Extinction}
 \end{align} 
