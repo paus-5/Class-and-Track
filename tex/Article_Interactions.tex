@@ -66,12 +66,12 @@ Notations used throughout the article:
 	\item $\mu_i(s,x)$ : growth function of OTU $i \in \{1,\dots,n\}$.
 	\item $\mu = (\mu_1(s,x), \dots, \mu_n(s,x))$ vector containing the growth function of every OTU.
 	\item $D$: dilution rate of the continuous reactor in $[1/day]$. May depend on time $D=D(t)$.
-	\item $y_i$: yield of grams of dry biomass formed per gram of substrate consumed of OTU $i$.
-	\item $y$: vector $y_1,\dots,y_n$.
-	\item $k_i$: yield of grams of substrate consumed per gram of biomass formed of OTU $i$ . The inverse of the biomass yield $k_i = \dfrac{1}{y_i}$.
-	\item $k$: vector $k_1,\dots,k_n$.
+	\item $y_{i}$: yield of grams of OTU $i$ formed per gram of substrate consumed. 
+	\item $y_{s_i/x_j}$: yield of grams of substrate $s_i$ consumed/produced per gram of OTU $j$ formed. If negative it represents consumption, if positive it represents production.
+	\item $Y$: matrix containing all yields such that $Y_{ij} = y_{s_i/x_j}$.
 	\item For integers $m_1$ and $m_2$ and $a \in \R$, $a_{m_1 \times m_2}$ represents a matrix of $m_1$ rows and $m_2$ columns with $a$ in every entry. 
 	\item Let $m$ be an integer then $I_m$ is the identity matrix of size $m$.
+	\item Let $M$ be a matrix, then $M_{i\bullet}$ represents the $i$-th row of matrix $M$.
 	\item Let $S$ be a finite set with $m \in \N$ elements. Then $\vert S \vert := m$. 
 	\item Given a vector $v=(v_1,\dots, v_n)\in \R^n$, the function $\diag(v)$ stands for:
 	\begin{align}
@@ -94,15 +94,30 @@ A cascade (bio)reaction process is considered. Suppose $n$ different OTU are pre
 \begin{hypo}  Sets $G_1$ and $G_2$ satisfy: $G_1 \cap G_2 = \emptyset$ and $G_1 \cup G_2 = [n]$. 
 \end{hypo}
 
-The situation is described as simplified reactions \eqref{Reaction1} and \eqref{Reaction2}. The reactions are simplified in the sense that they do not attempt to represent a balanced chemical reaction, rather it represents the direction of the bioprocess and the proportions of different consumed and formed compounds of interest. 
-
-The terms $y_i$ are known as yields, they represent the quantity (in grams of dry biomass produced per gram of substrate) consumed for OTU $i$. In this work the unit grams of dry biomass per gram of substrate is used for yields. Furthermore, for each $ i \in [n]$, OTU $i$ is characterized by its process rate (also known as growth function) $\mu_i(s,x)$. Notice that for being as generic as possible, the growth rate may be a function of the whole state in order to model the influence of all OTU on the growth rates of others.
+The situation is described as simplified reactions \eqref{Reaction1} and \eqref{Reaction2}. The reactions are simplified in the sense that they do not attempt to represent a balanced chemical reaction, rather they represent the direction of the bioprocess and the proportions of different consumed and formed compounds of interest. The terms $y_i$ are known as yields, they represent the quantity of g of biomass produced per g of substrate consumed by  OTU $i$. For example in the case of reaction \eqref{Reaction1}, one gram of $s_1$ is consumed, one gram of $s_2$ and $y_{x_i/s_1}$ grams of dry biomass of OTU $i$ are produced. 
 \begin{align}
 \label{Reaction1} \tag{R G1} s_1 \stackrel{\mu_i(s,x)}{\longrightarrow} s_2 + y_ix_i \quad \forall i \in G_1 \\
 \label{Reaction2} \tag{R G2} s_2\stackrel{\mu_i(s,x)}{\longrightarrow} s_3 + y_ix_i \quad \forall i \in G_2
 \end{align}
+However for expressing the system of differential equations further below, the terms $y_{s_i/x_j}$ are used. They express the grams of substrate $s_i$ consumed (negative sign) or produced (positive sign) per gram of OTU $j$ formed. They are related to $y_i$ as seen in table \ref{yields table}. This defines the stoichiometry matrix $Y \in \R^{3 \times n}$, such that $Y_{ij} = y_{s_i/x_j}$.
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|l|l|l|}
+		\hline
+		\multicolumn{1}{|c|}{\begin{tabular}[c]{@{}c@{}}Yields per \\ Biomass formed\end{tabular}} & \multicolumn{1}{c|}{$j \in G_1$} & \multicolumn{1}{c|}{$j \in G_2$} \\ \hline   \rule{0pt}{3.5ex}
+		$y_{s_1/x_j}$ & $-\dfrac{1}{y_j}$ & $0$ \\  \hline   \rule{0pt}{3.5ex}
+		$y_{s_2/x_j}$ & $\dfrac{1}{y_j}$  & $-\dfrac{1}{y_j}$ \\ \hline   \rule{0pt}{3.5ex}
+		$y_{s_3/x_j}$ & $0$  & $\dfrac{1}{y_j}$  \\ \hline
+	\end{tabular}
+	\caption{Relationship of $y_{s_i/x_j}$ with $y_j$.}
+		\label{yields table}
+\end{table}
+ 
 
-An example of this process is the nitrification process where group $G_1$ is known as Ammonium oxidizing Bacteria (AOB), and group $G_2$ is known as Nitrite oxidizing Bacteria (NOB) \cite{SHARMA1977897}.
+Furthermore, for each $ i \in [n]$, OTU $i$ is characterized by its process rate (also known as growth function) $\mu_i(s,x)$. Notice that for being as generic as possible, the growth rate may be a function of the whole state in order to model the influence of all OTU on the growth rates of others.
+
+
+An example of this process is the nitrification process where group $G_1$ is known as Ammonium oxidizing Bacteria (AOB), and group $G_2$ is known as Nitrite oxidizing Bacteria (NOB) \cite{SHARMA1977897}. 
 \subsection{Mass Balance Equations}
 
 Consider the scenario of a continuous and homogeneous reactor: the input flow is the same as the output flow, with a dilution rate $D$. The input flow contains a concentration $s_{in}$ of substrate $s_1$. Note that $s_{in}$ and $D$ are time dependent. Each OTU grows at a rate $\mu_i(s,x)$. System \eqref{system} represents this situation. A specific case of $\mu_i(s,x)$ is given in the next subsection. 
@@ -110,11 +125,10 @@ Consider the scenario of a continuous and homogeneous reactor: the input flow is
 \begin{align} 
 \label{system}
 \begin{array}{cl}
-\dot{x_i} =& \left(\mu_i(s,x) -D \right)x_i \quad \forall i \in G_1\\
-\dot{x_i} =& \left(\mu_i(s,x) -D \right)x_i \quad \forall i \in G_2 \\
-\dot{s_1} =& \displaystyle (s_{in}-s_1)D-\sum\limits_{i\in G_1} \frac{1}{y_i}\mu_i(s,x) x_i  \\
-\dot{s_2} = & \displaystyle -s_2D+\sum\limits_{i\in G_1}\frac{1}{y_i}\mu_i(s,x)x_i 		-\sum\limits_{i\in G_2}\frac{1}{y_i}\mu_i(s,x) x_i  \\
-\dot{s_3} =&  \displaystyle -s_3D+\sum\limits_{i\in G_2}\frac{1}{y_i}\mu_i(s,x) x_i 
+\dot{x_i} =& \left(\mu_i(s,x) -D \right)x_i \quad \forall i \in [n] \\
+\dot{s_1} =& \displaystyle (s_{in}-s_1)D+\sum\limits_{i\in G_1} y_{s_1/x_i}\mu_i(s,x) x_i  \\
+\dot{s_2} = & \displaystyle -s_2D+\sum\limits_{i\in [n]}y_{s_2/x_i}\mu_i(s,x)x_i  \\
+\dot{s_3} =&  \displaystyle -s_3D+\sum\limits_{i\in G_2}y_{s_3/x_i}\mu_i(s,x) x_i 
 \end{array}
 \end{align}	
 
@@ -156,7 +170,7 @@ A bound on the norm of the interaction matrix that depends on the initial condit
 	\end{align}
 \end{lemma}
 
-The proof can be seen in the supplementary material. A bound on the norm of $A$ is found such that every matrix $A$, respecting the bound, guaranties that $\Omega$ is a positively invariant set.
+The proof can be seen in the supplementary material. A bound on the norm of $A$ is found such that every matrix $A$ respecting the bound, guaranties that $\Omega$ is a positively invariant set.
 
 \begin{theo}
 	\label{theoWellPosedness}
@@ -169,12 +183,12 @@ The proof can be seen in the supplementary material.
 
 In this section analytical expressions for equilibrium points are derived. However, no analytic expression concerning the stability of such points is presented. To answer the question of stability a numeric scheme is used by evaluating the Jacobian at the equilibrium point. At the end of the section an algorithm is provided for exploring all the possible equilibria.
 
-Model \eqref{system} is restated in a more compact form using matrix notation.
-
-\begin{align} A = \begin{bmatrix}
-A_1\\A_2
-\end{bmatrix}\end{align}
-where $A_1$ is a matrix of dimension $n_1 \times n$ corresponding to the interaction coefficients of OTU $i \in G_1$. $A_2$ is a matrix of dimension $n_2 \times n$ rows corresponding to the interaction coefficients of OTU $i \in G_2$, and  $f(s) \in \R^n$ is such that 
+Model \eqref{system} is restated in a more compact form using matrix notation. Let $f(s)$ be such that,
+%
+%\begin{align} A = \begin{bmatrix}
+%A_1\\A_2
+%\end{bmatrix}\end{align}
+%where $A_1$ is a matrix of dimension $n_1 \times n$ corresponding to the interaction coefficients of OTU $i \in G_1$. $A_2$ is a matrix of dimension $n_2 \times n$ rows corresponding to the interaction coefficients of OTU $i \in G_2$, and  $f(s) \in \R^n$ is such that 
 \begin{align}
 f_i(s) = \begin{cases}
 \bar{\mu}_i \dfrac{s_1}{K_i + s_1} \quad \forall i \in G_1 \\
@@ -182,20 +196,29 @@ f_i(s) = \begin{cases}
 \end{cases}
 \end{align}
 
+Then $\mu(x,s) = \diag(f(s))(1_{n\times 1} + Ax)$
+
 Thus, system \eqref{system} is rewritten as follows. 
 
+%\begin{align}
+%\label{Eq1}	\dot{x} = & \diag(x)(\diag(f(s))(1_{n\times 1} + Ax) - D_{n\times 1}) \\
+%\label{Eq2}	\dot{s_1} = & (s_{in}-s_1)D + \begin{bmatrix}
+%-(1_{n_1\times 1} +A_1x) \\0
+%\end{bmatrix}^\top \diag(k) \diag(f(s))x \\
+%\label{Eq3}	\dot{s_2} = & -s_2D+
+%\begin{bmatrix}
+%1_{n_1\times 1} +A_1x \\ -(1_{n_2\times 1} +A_2x)
+%\end{bmatrix}^\top \diag(k) \diag(f(s))x \\	
+%\label{Eq4}	\dot{s_3} = & -s_3D+\begin{bmatrix}
+%0	\\(1_{n_2\times 1} +A_2x) 
+%\end{bmatrix}^\top \diag(k) \diag(f(s))x 
+%\end{align} 
 \begin{align}
-\label{Eq1}	\dot{x} = & \diag(x)(\diag(f(s))(1_{n\times 1} + Ax) - D_{n\times 1}) \\
-\label{Eq2}	\dot{s_1} = & (s_{in}-s_1)D + \begin{bmatrix}
--(1_{n_1\times 1} +A_1x) \\0
-\end{bmatrix}^\top \diag(k) \diag(f(s))x \\
+\label{Eq1}	\dot{x} = & \diag(\mu(x,s) - D_{n\times 1})x \\
+\label{Eq2}	\dot{s_1} = & (s_{in}-s_1)D + Y_{1\bullet} \diag(\mu(x,s))x \\
 \label{Eq3}	\dot{s_2} = & -s_2D+
-\begin{bmatrix}
-1_{n_1\times 1} +A_1x \\ -(1_{n_2\times 1} +A_2x)
-\end{bmatrix}^\top \diag(k) \diag(f(s))x \\	
-\label{Eq4}	\dot{s_3} = & -s_3D+\begin{bmatrix}
-0	\\(1_{n_2\times 1} +A_2x) 
-\end{bmatrix}^\top \diag(k) \diag(f(s))x 
+Y_{2\bullet} \diag(\mu(x,s))x\\	
+\label{Eq4}	\dot{s_3} = & -s_3D+Y_{3\bullet} \diag(\mu(x,s))x 
 \end{align} 
 
 \begin{defn} 
@@ -206,21 +229,14 @@ Observe that equilibrium points are by definition non-negative so the state vari
 
 \begin{defn}
 	Given an equilibrium point $(x^{eq},s^{eq})$ of system \eqref{system}, then the set of non-active coordinates $\mathcal{J}\subset \{1,\dots,n\}$ is defined as:
-	$\mathcal{J} = \{j_1, \dots, j_m\ : \, x^{eq}_{j_i} = 0 , \;i \in [m] \} $. $n_1^{act}$ and $n_2^{act}$ denote the number of positive entries of $x^{eq}$ of functional groups $G_1$ and $G_2$, respectively. $n^{act} = n-m$ denotes the total number of positive entries of $x^{eq}$. The active point $x^{act}\in \R^{n^{act}}$ is defined by the positive entries of $x^{eq}$. The active growths $f^{act}(s)$ and yields $k^{act}$ are defined analogously by the positive entries of $x^{eq}$. The active interactions $A^{act}$ is defined as the matrix $A$ without the $\mathcal{J}$ rows and columns. Let $M$ be the matrix defined by taking out the $\mathcal{J}$ columns of the identity matrix, then
+	$\mathcal{J} = \{j_1, \dots, j_m\ : \, x^{eq}_{j_i} = 0 , \;i \in [m] \} $. $n_1^{act}$ and $n_2^{act}$ denote the number of positive entries of $x^{eq}$ of functional groups $G_1$ and $G_2$, respectively. $n^{act} = n-m$ denotes the total number of positive entries of $x^{eq}$. The active point $x^{act}\in \R^{n^{act}}$ is defined by the positive entries of $x^{eq}$. Analogously, the functions $f^{act}(s)$ and $\mu^{act}(x,s)$ are defined by the positive entries of $x^{eq}$. The active interactions $A^{act}$ is defined as the matrix $A$ without the $\mathcal{J}$ rows and columns. The active stoichiometry matrix $Y^{act}$ is the matrix $Y$ without the $\mathcal{J}$ columns. In summary, let $M$ be the matrix defined by taking out the $\mathcal{J}$ columns of the identity matrix of size $n$, then
 	 \begin{align}
 	 x^{eq} = Mx^{act} \\	
 	 f^{act}(s) = M^{\top}f(s) \\
-	 k^{act} = M^{\top}k \\
+	 \mu^{act}(x,s) = M^{\top}\mu(x,s)\\
+	 Y^{act} = YM \\
 	 A^{act} = M^{\top}AM
 	 \end{align}.   
-	
-%	\begin{align}\label{EquilibriaFormula} (x^{eq})_i = \begin{cases}
-%	x^{act}_i & \text{for } i < j_1\\
-%	x^{act}_{i-k} & \text{for } j_{k}< i <j_{k+1}  \text{ and } k \in \{1,\dots,m-1\}\\
-%	x^{act}_{i-m} & \text{for } j_{m}< i \\
-%	0 & \text{for } i \in \{j_1, \dots, j_m\}
-%	\end{cases} \end{align}	
-	
 \end{defn}
  
  Finally, for deriving the equilibrium points, it is desirable an invertible $A^{act}$ matrix. Therefore in what follows of the work it is assumed that matrix $A$ and some of its sub matrices have an inverse, this is stated properly in Hypothesis \ref{inverse hypothesis}. 
@@ -254,23 +270,22 @@ note that $\forall j \in \mathcal{J}, \; x^{eq}_j = 0 $ therefore the coefficien
 	\end{align} 
 \end{lemma} 
 
-By replacing \eqref{EqSome} in equation \eqref{Eq2}:
+By replacing $x^{eq} = Mx^{act}$ in equation \eqref{Eq2}:
 
 
 \begin{align}
-\label{s1Equilibria} (s_{in}-s_1)-	\begin{bmatrix}
-1_{n_1^{act}\times 1} \\0_{n_2^{act}\times 1}
-\end{bmatrix}^\top \diag (k^{act}) (A^{act})^{-1}(\diag(f^{act}(s))^{-1}D_{n^{act}\times 1}-1_{n^{act}\times 1}) = 0 
+ (s_{in}-s_1)D + Y_{1\bullet} \diag(\mu(x,s))Mx^{act}  = 0 \\
+(s_{in}-s_1)D + Y^{act}_{1\bullet} \diag(\mu^{act}(x,s))x^{act}  = 0 \\ 
+(s_{in}-s_1)D + Y^{act}_{1\bullet} \diag(D_{n^{act}\times 1})x^{act}  = 0  \\
+(s_{in}-s_1) + Y^{act}_{1\bullet} x^{act}  = 0  \\
+\label{s1Equilibria} (s_{in}-s_1) + Y^{act}_{1\bullet}(A^{act})^{-1}(\diag(f^{act}(s))^{-1}D_{n^{act}\times 1} - 1_{n^{act}\times 1}) = 0
 \end{align}
 
 
 A similar expression is obtained when replacing \eqref{EqSome} in equation \eqref{Eq3}
 
 \begin{align}
-\label{s2Equilibria}-s_2+
-	\begin{bmatrix}
-1_{n_1^{act}\times 1} \\-1_{n_2^{act}\times 1}
-\end{bmatrix}^\top\diag (k^{act})(A^{act})(\diag(f^{act}(s))^{-1}D_{n^{act}\times 1}-1_{n^{act}\times 1}) = 0
+\label{s2Equilibria}-s_2+ Y^{act}_{2\bullet}(A^{act})^{-1}(\diag(f^{act}(s))^{-1}D_{n^{act}\times 1} - 1_{n^{act}\times 1}) = 0
 \end{align}
 
 From equation \eqref{s1Equilibria} $s_2$ can be written as a function of $s_1$:
@@ -366,15 +381,15 @@ For checking local asymptotic stability of the equilibrium points, the Jacobian 
 
 Operating and ecological diagrams are created by running algorithm \ref{StabilityAnalysis} for different pairs $(s_{in},D)$. In the case of operating diagrams\cite{lobry2017chemostat} (OD) all the pairs $(s_{in},D)$ are regrouped such that the points of the set $\mathcal{P}$ represent when partial nitrification (PN), complete nitrification (CN), washout (WO), or a combination of them may arise \cite{KHIN2004519}. PN refers to the state when nitrite $s_2$, accumulates because the OTU of $G_2$ are washed out and thus no conversion from $s_2$  to $s_3$ takes place. On the contrary CN is when nitrate ($s_3$) accumulates because of the presence of OTU of $G_2$. 
 
-In the case of ecological diagrams (ED) the pairs are regrouped such that the points in the set $\mathcal{P}$ have the same non-active coordinates. Ecological diagrams provide more information than operating diagrams, in the sense that one can infer the operating diagram from an ecological diagram. In other words, instead of representing areas where either CN, PN or WO take place, ranges of pairs $(s_{in},D)$ where species coexist are represented.	
+In the case of ecological diagrams (ED) the pairs are regrouped such that the points in the set $\mathcal{P}$ have the same non-active coordinates. In other words, instead of representing areas where either CN, PN or WO take place, ranges of pairs $(s_{in},D)$ where species coexist are represented.	ED provide more information than OD, in the sense that one can deduce the latter from the former. 
 
 A first example using operating diagrams is presented to illustrate how adding interactions in a model consisting of 1 OTU in $G_1$ and 1 OTU in $G_2$ may lead to very different outcomes.
 
 \subsubsection{Case study 1: 1 AOB and 1 NOB}
 
-Consider the case where $n_1 = 1$ and $n_2 = 1$. The operating diagrams where no interactions take place ($A = 0$) and a non-zero interaction matrix is presented. When $A=0$ algorithm \ref{StabilityAnalysis} is no longer valid (A is not invertible), nevertheless the stability analysis is much simpler and is given in the supplementary material section. The interaction matrices are shown in \ref{case1_no_interactions} and \ref{case1_interactions}, the rational behind the second choice was to force a . Parameters can be seen in table \ref{kinetic_parameters_case_study_1}, while 
+Consider the case where $n_1 = 1$ and $n_2 = 1$. The operating diagrams when no interactions take place ($A = 0$) and a non-zero interaction matrix are presented. When $A=0$ algorithm \ref{StabilityAnalysis} is no longer valid (A is not invertible), nevertheless the stability analysis is much simpler and is given in the supplementary material section. The interaction matrices are shown in Figures \ref{case1_no_interactions} and \ref{case1_interactions}, the rational behind the second choice was to force a very strong interaction of $x_1$ on $x_2$ and observe its effects. The rest of parameters can be seen in Table \ref{kinetic_parameters_case_study_1}.
 
-The operating diagram can be seen in figure \ref{OD_no_interactions}, note how partial nitrification (washout of $G_2$). When compared to \ref{OD_no_interactions} one notes that at low $s_{in}$ the curve dividing the PN zone from the CN zone are alike. But since more $s_{in}$ means more $x_1$, at high $s_{in}$ the affine part $(1+ a_{21}x_1 +a_{22}x_2)$ of the growth function of $x_2$ plays a bigger role than substrate limitation ($\frac{s_2}{s_2+K_2}$).
+The operating diagrams can be seen in Figure \ref{OD_case_1}, note how partial nitrification (washout of $G_2$) of Figure \ref{OD_interactions} is much bigger when compared to Figure \ref{OD_no_interactions}. The shape of the PN region in \ref{OD_interactions} is somewhat unintuitive, because at a constant dilution rate (0.24 $day^{-1}$ for example) and an increasing $s_{in}$, one passes from a PN zone, to a CN zone, and then back again to a PN zone. The explanation lies in the fact that $x_1$ also increases with $s_{in}$, and the affine part $(1+ a_{21}x_1 +a_{22}x_2)$ of the growth function of $x_2$ plays a bigger role than substrate limitation ($\frac{s_2}{s_2+K_2}$). 
 
 
 \begin{table}[ht]
@@ -399,47 +414,47 @@ The operating diagram can be seen in figure \ref{OD_no_interactions}, note how p
 	~
 	\begin{subfigure}[b]{0.45\textwidth}
 		\includegraphics[width = \textwidth]{Stability/Interactions_case_study_1}
-		\caption{Interaction matrix of model \eqref{system}.}
+		\caption{A non-zero interaction matrix of model \eqref{system}.}
 		\label{case1_interactions}
 	\end{subfigure}
-	\caption{Interaction matrices. Note how the presence of $x_1$ affects very negatively $x_2$ in \eqref{case1_interactions}. The terms in the diagonal entries of the matrix represents intraspecies interactions, while the terms off thepo
-		 diagonal represent the interspecies interactions.}
+	\caption{Interaction matrices. Note how the presence of $x_1$ affects very negatively $x_2$ in Figure \ref{case1_interactions}, with respect to other interactions. The terms in the diagonal entries of the matrix represents intraspecies interactions, while the terms off the diagonal represent the interspecies interactions.}
 \end{figure} 
 
 \begin{figure}[h]
 	\centering
 	\begin{subfigure}[b]{0.45\textwidth}
 		\includegraphics[width = \textwidth]{Stability/OD_case_study_1_no_interactions}
-		\caption{Operating diagram of model \eqref{system} with no interactions (interaction matrix represented by \eqref{case1_no_interactions}).}
+		\caption{Operating diagram of model \eqref{system} with no interactions (interaction matrix represented by figure \ref{case1_no_interactions}).}
 		\label{OD_no_interactions}
 	\end{subfigure}
 ~
 	\begin{subfigure}[b]{0.45\textwidth}
 	\includegraphics[width = \textwidth]{Stability/OD_case_study_1}
-	\caption{Operating diagram of model \eqref{system} with interactions represented by \eqref{case1_interactions}.}
+	\caption{Operating diagram of model \eqref{system} with interactions represented by figure \ref{case1_interactions}.}
 	\label{OD_interactions}
 	\end{subfigure}
 	\caption{Note how \ref{OD_interactions} has a much larger zone where partial nitrification takes place. This is due to the negative interaction of $x_1$ on $x_2$.}
+	\label{OD_case_1}
 \end{figure} 
 \clearpage
 
 \textbf{Case study 2: 2 AOB and 2 NOB}
 
- The case study 2 is based on Dumont \textit{et al.}\cite{Dumont2016} model parameters. They proposed a distribution of parameters obtained from a Bayesian estimation method. Their fit describes well the dynamics of the two most abundant OTU in each functional group, but it still fails to capture the measured substrates dynamics. Kinetic parameters of case study 2 can be seen in table \ref{kinetic_parameters}. The estimated interaction matrix is shown in figure \ref{Interaction_1}. A second matrix is presented, which is obtained by the sign change of coefficient $a_{11}$ (figure \ref{Interaction_2}), and finally a third one is obtained by using a positive value for $a_{12}$ (figure \ref{Interaction_3}). 
-
-\begin{table}[ht]
-	\centering
-	\begin{tabular}{|l|l|l|l|}
-		\hline
-		Case study 2 kinetic parameters & $\mu_i\,[1/day]$ & $K_i\,[mg/L]$ & $\frac{1}{y_i} \, [gr/gr]$ \\ \hline
-		$x_1 \in G_1$ & 0.828  & 0.147 & 3.85  \\ \hline
-		$x_2\in G_1$ &0.828   & 0.147 &  3.85\\ \hline
-		$x_3\in G_2$ & 0.18 & 0.026 &  100 \\ \hline
-		$x_4\in G_2$ & 0.18 & 0.026 &  100 \\ \hline
-	\end{tabular}
-	\caption{Kinetic parameters of model \eqref{system} from Dumont \textit{et al.} \cite{Dumont2016}}
-	\label{kinetic_parameters}
-\end{table}
+ The case study 2 is based on Dumont \textit{et al.}\cite{Dumont2016} model parameters. They proposed a distribution of parameters obtained from a Bayesian estimation method. Their fit describes well the dynamics of the two most abundant OTU in each functional group, but it still fails to capture the measured substrates dynamics. Kinetic parameters of case study 2 can be seen in Table \ref{kinetic_parameters}. The estimated interaction matrix is shown in Figure \ref{Interaction_1}. A second matrix is presented, which is obtained by the sign change of coefficient $a_{11}$ (Figure \ref{Interaction_2}), and finally a third one is obtained by using a positive value for $a_{12}$ (Figure \ref{Interaction_3}). The idea is to show that qualitatively different outcomes can be obtained by changing one interaction at a time.
+ 
+ \begin{table}[ht]
+ 	\centering
+ 	\begin{tabular}{|l|l|l|l|}
+ 		\hline
+ 		Case study 2 kinetic parameters & $\mu_i\,[1/day]$ & $K_i\,[mg/L]$ & $\frac{1}{y_i} \, [gr/gr]$ \\ \hline
+ 		$x_1 \in G_1$ & 0.828  & 0.147 & 3.85  \\ \hline
+ 		$x_2\in G_1$ &0.828   & 0.147 &  3.85\\ \hline
+ 		$x_3\in G_2$ & 0.18 & 0.026 &  100 \\ \hline
+ 		$x_4\in G_2$ & 0.18 & 0.026 &  100 \\ \hline
+ 	\end{tabular}
+ 	\caption{Kinetic parameters of model \eqref{system} from Dumont \textit{et al.} \cite{Dumont2016}}
+ 	\label{kinetic_parameters}
+ \end{table}
 
 \begin{figure}[h]
 \begin{subfigure}[b]{0.32\textwidth}
@@ -464,21 +479,21 @@ The operating diagram can be seen in figure \ref{OD_no_interactions}, note how p
 \end{figure} 
 
 
-\begin{figure}[ht]
+\begin{figure}[h]
 	\centering
-	\begin{subfigure}[b]{0.32\textwidth}
+	\begin{subfigure}[t]{0.32\textwidth}
 	\includegraphics[width=\textwidth]{Stability/ED_parameters_Dumont}
 	\caption{Original parameters ecological diagram.}
 	\label{ED 1}
 	\end{subfigure}
 ~
-	\begin{subfigure}[b]{0.32\textwidth}
+	\begin{subfigure}[t]{0.32\textwidth}
 	\includegraphics[width=\textwidth]{Stability/ED_parameters_modified}
-	\caption{Modified interaction matrix ecological diagram.}
+	\caption{Modified interaction matrix ecological diagram. In the legend 1) and 2) represent the two different stable equilibria in each zone.}
 	\label{ED 2}
 	\end{subfigure}
 ~
-\begin{subfigure}[b]{0.32\textwidth}
+\begin{subfigure}[t]{0.32\textwidth}
 	\includegraphics[width=\textwidth]{Stability/ED_parameters_modified_2}
 	\caption{Modified interaction matrix ecological diagram.}
 	\label{ED 3}
@@ -488,19 +503,19 @@ The operating diagram can be seen in figure \ref{OD_no_interactions}, note how p
 	\label{ecological_diagrams}
 \end{figure}
 
-The ecological diagrams are presented in figure \ref{ecological_diagrams}. Comparing figure \ref{ED 1} with \ref{ED 2} one can see a very different situation. Note how every zone in figure \ref{ED 2} has two stable equilibria, meaning that the outcome of the system is determined by its initial conditions, particularly interesting is the green zone where either $x_1,x_3$ coexist or $x_2$ alone remains, because in operational terms this means that either PN or CN may take place.
+The ecological diagrams are presented in Figure \ref{ecological_diagrams}, where the legend indicates the species surviving in the zone of the respective colour. In Figure \ref{ED 2}, the system exhibits bi-stability (it is represented in numbering as 1) and 2) of the different possible equilibriums) . Comparing Figures \ref{ED 1} with \ref{ED 2} one can see a very different situation. Note how every zone in figure \ref{ED 2} has two stable equilibria, meaning that the outcome of the system is determined by its initial conditions, particularly interesting is the green zone where either $x_1,x_3$ coexist or $x_2$ only remains, because in operational terms this means that either PN or CN may take place.
 
-One can see that coexistence in the same functional group is never attained in figure \ref{ED 1}, whereas in figure \ref{ED 2} $x_1$ and $x_2$, both AOB, coexist in either partial or complete nitrification. That means that the model is able to overcome the competitive exclusion principle \cite{lobry2017chemostat} (CEP) paradigm. The CEP roughly states that if two species are growing on the same limiting resource, and their growth laws only depend non decreasingly on the resource, then only one of them will survive in the long run. This is interesting in light of reports on wastewater treatment plants where coexistence between species in nitrifying reactors has been shown \cite{Wagner2002}, thus implying that a more complex growth law (as shown in here) or model structure involving other biological processes is required to include microbial diversity in mathematical models. 
+One can see that coexistence in the same functional group is never attained in Figure \ref{ED 1} and \ref{ED 2}, whereas in figure \ref{ED 3} $x_1$ and $x_2$, both AOB, coexist in either partial or complete nitrification. That means that the competitive exclusion principle \cite{lobry2017chemostat} (CEP) does not hold. The CEP roughly states that if two species are growing on the same limiting resource, and their growth laws only depend non decreasingly on the resource, then only one of them will survive in the long run. This is interesting in light of reports on wastewater treatment plants where coexistence between species in nitrifying reactors has been shown \cite{Wagner2002}, thus implying that a more complex growth law (as shown in here) or model structure involving other biological processes is required to include microbial diversity in mathematical models. 
 
-\subsection{Remarks}
+\section*{Remarks}
 
-The model here presented serves to illustrate that by considering a more complex growth rate that tries to model ecological interactions one might explain differences in reactors operating under similar conditions. It also shows a new mechanism by which the CEP no longer holds and where multiple stable equilibria may appear. Since the gLV model discussed (and calibrated in \cite{Dumont2016}) fails to completely capture the dynamics observed in the chemostat experiments, the next section proposes a new model to study interactions.
+Model \eqref{system} serves to illustrate that by considering a more complex growth rate that tries to model ecological interactions one might explain differences in reactors operating under similar conditions. It also shows a new mechanism by which the CEP no longer holds and which explains how multiple stable equilibria may appear. Since the gLV model discussed fails to completely capture the dynamics observed in the chemostat experiments \cite{Dumont2016}, the next section proposes a new approach to study interactions.
 
 
 \section{Generalized approach for modelling interactions}
 In the previous sections interactions were modelled as an affine function of the OTU concentration that multiplies a substrate dependent growth equation. More generally the interaction function represents how the growth rate of species $i$ is affected by the concentration of other species, $x$: 
 
-Given a vector $(v_1,\dots,v_n)^\top$ the interaction function $\I$ is noted as:
+Given a vector $(v_1,\dots,v_n)^\top$ the interaction function $\I$ is denoted as:
 \begin{align}
 \begin{array}{rc}
 \I: \R_+^n \rightarrow & \R_+^n\\
@@ -527,7 +542,7 @@ Since the growth of a single strain in batch experiments is driven by the substr
 	The interaction function $\I$ previously defined satisfies:
 	\begin{enumerate}
 		\item $	\I \left( (0,\dots,0)^\top \right) = (1,\dots,1)^\top $
-		\item Let $\Omega$ be an open subset of $ \R^n $ then $\I \in C^1(\Omega)$.
+		\item There is an open set $\Omega \subset \R^n $ such that $\I \in C^1(\Omega)$.
 	\end{enumerate} 
 \end{hypo}
 
@@ -564,42 +579,43 @@ s.t.&
 
 The control $u(t)$ is intended to drive the system to be near a desired output $z(t)$, which in this context are the measurements of the concentrations of OTU. The term $\Vert(u -\vec{1}) \Vert_R$, was added for two reasons:
 \begin{itemize}
-\item First because the interest is testing the idea that interactions could be driving the system. Therefore adding a penalization in the objective function for each control to remain near $1$ can be seen as an attempt to explain data without any interaction.
+\item First because the interest is testing the idea that interactions could be driving the system. Therefore adding a penalization in the objective function for each control to remain near $1$ can be seen as an attempt to explain data without any interaction. In other words, if the control terms are found to drift from 1, it means that interactions are necessary to explain the system dynamics.
+
 \item Second, to force a regularized control. Otherwise note that $u$ is linear in \eqref{Controlsystem}, therefore if the integral cost does not have a non-linear expression of $u$ the optimal control will be of a bang-bang type with possibly singular arcs \cite{harmand2019optimal}. Since the objective is to find a differentiable expression of $I(x)$ the addition of the regularization term is deemed necessary.
 \end{itemize} 
 The problem of approximating the solution of the system to a desired reference ($z$ in this case) is called the optimal tracking problem. For solving such a problem the approach developed by Cimen \textit{et al.} \cite{Cimen2004, Cimen2008} was adapted to our problem. The method proposed involves the resolution of Approximating Sequences of Ricatti Equations (ASRE). 
 
-The method consists on iteratively calculating trajectories of system \eqref{Controlsystem} with a certain control and feeding a non-autonomous Ricatti differential equation with the resulting trajectory. Then a control law that uses the solution of the Ricatti equation is proposed and a new trajectory is calculated. The iteration is stopped when a convergence in the output or  the control is observed.
+The method consists on iteratively calculating trajectories of System \eqref{Controlsystem} with a certain control and feeding a non-autonomous Ricatti differential equation with the resulting trajectory. Then, a control law that uses the solution of the Ricatti equation is proposed and a new trajectory is calculated. The iteration is stopped when a convergence in the output or  the control is observed.
 
-The tracking problem does not consider a constrained control. Nevertheless, the methods of Cimen \textit{et al.}\cite{Cimen2004} were directly used with an explicit constraint in the synthesis of the control. Even though this is probably suboptimal when the control reaches its bounds, one at least is certain of its optimality when the control never reaches its constraints.
+The tracking problem does not consider a constrained control. Nevertheless, the methods of Cimen \textit{et al.}\cite{Cimen2004} were directly used with an explicit constraint in the synthesis of the control. Even though this is probably suboptimal when the control reaches its bounds, one at least is certain about its optimality when the control never reaches its constraints.
 
-Another departure from their method is that in their formulation an approximation of the dynamics for calculating the trajectories is used. They proved that such a linearisation converged to the original dynamics. In the case here presented the linearisation of the dynamics was not necessary.
+Another departure from their method is that in their formulation an approximation of the dynamics for calculating the trajectories is used. They proved that such a linearisation converges to the original dynamics. In the case here presented the linearisation of the dynamics was not necessary.
 
 The change of variable $u_i(t) = v_i(t) + 1$ is used for technical reasons explained in the supplementary material section. This in turn implies $v_i(t) \in [-1,\bar{u}-1]$.
 
-The feedback control $v(t)$, will be of the form $v(t) = -R^{-1}\tilde{B}^\top(t)\left(\tilde{P}(t)x(t)-s_f(t)\right)$. Where matrix $P(t)$ and vector $s_f(t)$ solve differential equations. In the appendix it is proved that because of the structure of the system one only needs to calculate $2n$ differential equations for the synthesis of the control, instead of $(n+3)^2 + (n+3)$ that would imply the direct application of the method. Which renders the method- at least theoretically- scalable for a growing number of OTU.
+The feedback control $v(t)$, will be of the form $v(t) = -R^{-1}\tilde{B}^\top(t)\left(\tilde{P}(t)x(t)-s_f(t)\right)$. Where matrix $P(t)$ and vector $s_f(t)$ solve differential equations. In the appendix it is proved that because of the structure of the system one only needs to calculate $2n$ differential equations for the synthesis of the control, instead of $(n+3)^2 + (n+3)$ that would imply the direct application of the method, which renders the method- at least theoretically- scalable for a growing number of OTU.
 
 \subsection{Proof of concept}
 
-The approach was tested against synthetic data generated by simulating model \eqref{system} using the parameters of the case study 1 (table \ref{kinetic_parameters_case_study_1}) with interaction matrix given by \eqref{case1_interactions}. In the operating diagram of the same case (figure \eqref{OD_interactions}) the red zone implies complete nitrification, while the green zone means partial nitrification. For integrating the former phenomena in the simulation, the system was simulated for 300 days, and perturbed at day 150 from the CN zone ($(s_{in},D) = (1.25,0.22)$) to a PN zone ($(s_{in},D) = (1.95,0.22)$). Simulations can be seen in figure \ref{synthetic_data}. Note how from day 150 the NOB population represented in figure \eqref{PC_synthetic_NOB} decreases, which in turn implies a decrease in $s_3$, as seen in figure \eqref{PC_synthetic_metabolites}.
+The approach was tested with data generated by simulating model \eqref{system} using the parameters of the case study 1 (Table \ref{kinetic_parameters_case_study_1}) with interaction matrix given by \eqref{case1_interactions}. In the operating diagram of the same case (figure \eqref{OD_interactions}) the red zone implies complete nitrification, while the green zone means partial nitrification. For integrating the former phenomena in the simulation, the system was simulated for 300 days, and perturbed at day 150 from the CN zone ($(s_{in},D) = (1.25,0.22)$) to a PN zone ($(s_{in},D) = (1.95,0.22)$). Simulations can be seen in figure \ref{synthetic_data}. Note how from day 150 the NOB population (OTU 2) represented in figure \eqref{PC_synthetic_NOB} decreases, which in turn implies a decrease in $s_3$, as seen in figure \eqref{PC_synthetic_metabolites}. In the case where no interactions take place, the OD seen in Figure \ref{OD_no_interactions} implies that $s_3$ would have accumulated all along the trajectory, since the perturbation still remains in the CN zone.
 
 
 \begin{figure}[h]
 	\centering
 	\begin{subfigure}{0.32 \linewidth}
-	\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_AOB_plot}
+ 	\includegraphics[width=\linewidth]{proof_of_concept/200525_POC_AOB_plot}
 	\caption{AOB.}
 	\label{PC_synthetic_AOB}
 	\end{subfigure}
 	\begin{subfigure}{0.32 \linewidth}
 	\centering
-	\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_NOB_plot}
+	\includegraphics[width=\linewidth]{proof_of_concept/200525_POC_NOB_plot}
 	\caption{NOB.}
 	\label{PC_synthetic_NOB}
 	\end{subfigure}
 	\begin{subfigure}{0.32 \linewidth}
 	\centering
-	\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_metabolites}
+	\includegraphics[width=\linewidth]{proof_of_concept/200525_POC_metabolites}
 	\caption{Metabolites.}
 	\label{PC_synthetic_metabolites}
 	\end{subfigure}
@@ -613,31 +629,33 @@ The approach was tested against synthetic data generated by simulating model \eq
 
 %For applying the optimal tracking approach, the choice of matrices $Q$ and $R$ are always of discussion in a quadratic regulator. $Q$ represents the covariance matrix of measurements, while $R$ is subject to interpretations depending on the context: in the case here presented it does not have \textit{a priori} definite meaning. For gaining some insight, its behaviour is studied when $\rho(R) \rightarrow 0$, with $\rho(R)$ being the spectral radius of matrix $R$. In the simulations here presented $Q = I_n$ and $R = \lambda I_n$. In the supplementary material section. $\lambda$ is varied from $10^{-1}$ to $10^{-7}$. The case $\lambda = 10^{-4}$ is shown in here for discussion. 
 
- For the tracking procedure the functions $f_i(s)$ and the yields $y_i$ were the same as those used for simulating the synthetic data (parameters in table \ref{kinetic_parameters_case_study_1}) and the control is meant to account for the interaction term. The $Q$ and $R$ matrices are $\lambda I_n$ and $I_n$, respectively, with $\lambda = 10^{-4}$. The results of the procedure to identify interactions can be seen in figure in figure \ref{POC_tracking}. Figures \ref{PC_total_biomass}, \ref{PC_AOB}, and \ref{PC_NOB} show the total biomass concentration, and the trajectories for the OTU belonging to $G_1$ and $G_2$, respectively. It can be seen that the method approaches well the trajectories of the OTU, with a better result for the AOB community, which can be explained by the one order of magnitude difference in their concentrations (which in turn is a consequence of the one order of magnitude difference in their yields). The metabolites concentration represented in figure \ref{PC_metabolites} are in accordance with the simulated: The method is able to reconstruct the metabolites trajectories from the community measurements. 
+ For the tracking procedure the functions $f_i(s)$ and the yields $y_i$ were the same as those used for simulating the synthetic data (parameters in table \ref{kinetic_parameters_case_study_1}) and the control is meant to account for the interaction term. The $Q$ and $R$ matrices were $\begin{bmatrix}
+ \lambda_1 I_{n_1} &0  \\ 0& \lambda_2 I_{n_2}
+ \end{bmatrix}$ and $I_n$, respectively, with $\lambda_1 = 10^{-4}$ and $\lambda_2 = 10^{-5}$ in order to better track the NOB trajectories, since they are less abundant. The results of the procedure to identify interactions can be seen in figure in figure \ref{POC_tracking}. Figures \ref{PC_total_biomass}, \ref{PC_AOB}, and \ref{PC_NOB} show the total biomass concentration, and the trajectories for the OTU belonging to $G_1$ and $G_2$, respectively. It can be seen that the method approaches well the trajectories of the OTU, with a better result for the AOB community, which can be explained by the one order of magnitude difference in their concentrations (which in turn is a consequence of the one order of magnitude difference in their yields). The metabolites concentration represented in figure \ref{PC_metabolites} are in accordance with the simulated: The method is able to reconstruct the metabolites trajectories from the community measurements. 
 
 
 \begin{figure}[h]
 	\centering
 	\begin{subfigure}{0.45 \linewidth}
-	\includegraphics[width= \textwidth]{proof_of_concept/250309_POC_try3_iter_2_Biomass}
+	\includegraphics[width= \textwidth]{proof_of_concept/200525_POC_iter_5_Biomass}
 	\caption{Total biomass.}
 	\label{PC_total_biomass}
 	\end{subfigure}
 ~
 	\begin{subfigure}{0.45 \linewidth}
-		\includegraphics[width=\textwidth]{proof_of_concept/250309_POC_try3_iter_2_metabolites}
+		\includegraphics[width=\textwidth]{proof_of_concept/200525_POC_iter_5_metabolites}
 		\caption{Metabolites. }
 		\label{PC_metabolites}
 	\end{subfigure}
 
 	\begin{subfigure}{0.45 \linewidth}
-		\includegraphics[width=\textwidth]{proof_of_concept/250309_POC_try3_iter_2_AOB_plot_1}
+		\includegraphics[width=\textwidth]{proof_of_concept/200525_POC_iter_5_AOB_plot_1}
 		\caption{AOB biomass.}
 		\label{PC_AOB}
 	\end{subfigure}
 	~
 	\begin{subfigure}{0.45 \linewidth}
-		\includegraphics[width=\textwidth]{proof_of_concept/250309_POC_try3_iter_2_NOB_plot_1}
+		\includegraphics[width=\textwidth]{proof_of_concept/200525_POC_iter_5_NOB_plot_1}
 		\caption{NOB biomass. }
 		\label{PC_NOB}
 	\end{subfigure}
@@ -652,37 +670,37 @@ Figure \ref{POC_control} shows the controls and the corrected growth rate for ea
 \begin{figure}[h]
 	\centering
 	\begin{subfigure}{0.45 \linewidth}
-		\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_try3_iter_2_Control_AOB_plot_1}
+		\includegraphics[width=\linewidth]{proof_of_concept/200525_POC_iter_5_Control_AOB_plot_1}
 	\caption{Control for the AOB population.}
 	\label{Control AOB no noise}
 	\end{subfigure}
 	\begin{subfigure}{0.45 \linewidth}
 		\centering
-		\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_try3_iter_2_Control_NOB_plot_1}
+		\includegraphics[width=\linewidth]{proof_of_concept/200525_POC_iter_5_Control_NOB_plot_1}
 	\caption{Control for the NOB population.}
 	\label{Control NOB no noise}
 	\end{subfigure}
 
 	\begin{subfigure}{0.45 \linewidth}
-		\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_try3_iter_2_growth_AOB_plot_1}
+		\includegraphics[width=\linewidth]{proof_of_concept/200525_POC_iter_5_growth_AOB_plot_1}
 		\caption{Growth rate of the model for AOB community.}
 		\label{AOB_growth_POC}
 	\end{subfigure}
 	\begin{subfigure}{0.45 \linewidth}
 		\centering
-		\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_try3_iter_2_growth_NOB_plot_1}
+		\includegraphics[width=\linewidth]{proof_of_concept/200525_POC_iter_5_growth_NOB_plot_1}
 	\caption{Growth rate of the model for the NOB community.}
 	\label{NOB_growth_POC}
 	\end{subfigure}
 
 	\begin{subfigure}{0.45 \linewidth}
-		\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_try3_iter_2_growth_control_AOB_plot_1}
+		\includegraphics[width=\linewidth]{proof_of_concept/200525_POC_iter_5_growth_control_AOB_plot_1}
 		\caption{Growth rate of the model for AOB community.}
 		\label{AOB_growth_control_POC}
 	\end{subfigure}
 	\begin{subfigure}{0.45 \linewidth}
 		\centering
-		\includegraphics[width=\linewidth]{proof_of_concept/250309_POC_try3_iter_2_growth_control_NOB_plot_1}
+		\includegraphics[width=\linewidth]{proof_of_concept/200525_POC_iter_5_growth_control_NOB_plot_1}
 		\caption{Growth rate of the model for the NOB community.}
 		\label{NOB_growth_control_POC}
 	\end{subfigure}
@@ -706,14 +724,11 @@ Figure \ref{POC_control} shows the controls and the corrected growth rate for ea
 
 The tracking problem was applied to data coming from a nitrification process with experimental conditions described in \cite{dumont2008observers}. For exploring the hypothesis of interactions as drivers of bioreactors performance environmental conditions should be kept as constant as possible. Therefore only data from day $183$ onwards was used because a change in the operating temperature happened at that point, which is known to have an effect on kinetics. For choosing which species belong in which functional group, the procedure described in \cite{Ugalde-Salas2019} was used: from day $183$ to day $315$: 31 OTU were identified in the $G_1$ group (AOB) and 5 in the $G_2$ functional group (NOB). 
 
+A first example of the procedure is performed when the classified OTU are regrouped in their assigned functional groups by adding their concentrations. A 5 dimensional dynamical system is obtained, thus there are only two interacting functional biomasses: this case is structurally the same as in the proof of concept, but here a real dataset is used. The same procedure is applied where no regrouping occurs and the system state grows to 39. 
 
-
-
-A first example of the procedure is performed when the classified OTU are regrouped in their assigned functional groups by adding their concentrations. A 5 dimensional dynamical system is obtained. The same procedure is applied where no regrouping occurs and the system state grows to 39. 
-
-The knowledge of functions $f_i(s)$ was based on a study of nitrification's kinetic parameters\cite{Wiesmann1994}. Particularly given the system's ammonium and nitrate concentration a Monod function (eq \eqref{monod}) was used for $G_1$ and $G_2$ with parameters given in table \ref{kinetic_parameters_application}. The yields were fitted to match the nitrogen mass balances. In this case the $Q$ and $R$ matrices were $\begin{bmatrix}
+The knowledge of functions $f_i(s)$ was based on a study of nitrification's kinetic parameters\cite{Wiesmann1994}. Particularly given the system's ammonium and nitrate concentration a Monod function (eq \eqref{monod}) was used for $G_1$ and $G_2$ with parameters given in table \ref{kinetic_parameters_application}. The yields were fitted to match the nitrogen mass balances. The $Q$ and $R$ matrices were the same as in the proof of concept section, that is $\begin{bmatrix}
 \lambda_1 I_{n_1} &0  \\ 0& \lambda_2 I_{n_2}
-\end{bmatrix}$ and $I_n$, respectively, with $\lambda_1 = 10^{-4}$ and $\lambda_2 = 10^{-5}$ in order to better track the NOB trajectories.
+\end{bmatrix}$ and $I_n$, respectively, with $\lambda_1 = 10^{-4}$ and $\lambda_2 = 10^{-5}$.
 
 
 \begin{align}
@@ -732,7 +747,7 @@ The knowledge of functions $f_i(s)$ was based on a study of nitrification's kine
 	\caption{A set of kinetic parameters of model \eqref{system}.}
 	\label{kinetic_parameters_application}
 \end{table}
-For the reader to gain understanding of the situation, a simulation of the system using the experiments operating parameters ($D$ and $s_{in}$) is presented without control (i.e. $u(t)= 1$) in  figure \ref{u=1 simulation.}. $s_3$ accumulates all along the trajectory, but when compared to data it is clear that $s_3$ stops accumulating after a while. 
+For the reader to gain understanding of the situation, a simulation of the system using the experiments operating parameters ($D$ and $s_{in}$) is presented without control (i.e. $u(t)= 1$) in  figure \ref{u=1 simulation.} nitrite ($s_3$) accumulates all along the trajectory, but when compared to data it is clear that $s_3$ stops accumulating after a while. 
 
 \begin{figure}[h]
 	\centering	
@@ -787,7 +802,7 @@ The growth rates of each functional group are shown in figure \ref{growth_applic
 
 The same procedure is applied without regrouping. The results on total biomass and metabolites are shown in figures \ref{Total Biomass application all} and \ref{Metabolites application all}, respectively. Both patterns still fit the data, but to a lesser degree of precision when compared to figure \ref{regroup_results}. This can be explained by noting in figure \ref{OTU abudance all} that the most abundant OTU are better tracked, thus the information contained in the least abundant species is not integrated in the model. When looking at the growth rates (figure \ref{growth all}) one again observes pulses for each OTU, note also that most OTU were present only for a fraction of the experiment's duration. 
 
-In both cases, the regrouped and individual tracking, the growth rate varies strongly, raising the question whether the observed pulses are emerging from interactions within the microbial community. When growth rates are compared to the proof of section it seems doubtful that a linear pairwise interaction model such as the gLV model could capture the complexity of the particular chemostat analysed. Perhaps these interactions are not constant through time (as in the gLV model) or a different interaction function should be thought of. However the former questions can not be fully clarified, because the quality of the genetic sequencing from molecular fingerprints might not be the best when compared to more recent techniques, thus it is unclear if the pulses are due to noise of the measurements.
+In both cases, the regrouped and individual tracking, the growth rate varies strongly, raising the question whether the observed pulses are emerging from interactions within the microbial community. When growth rates are compared to the proof of section it seems doubtful that a linear pairwise interaction model such as the gLV model could capture the complexity of the particular chemostat analysed. Perhaps these interactions are not constant through time (as in the gLV model) or a different interaction function should be thought of. However the former questions can not be fully clarified here, because the quality of the genetic sequencing from molecular fingerprints might not be the best when compared to more recent techniques, thus it is unclear if the pulses are due to noise of the measurements.
 
 The interpretation of the correction term as interactions is not the only possible reading. In other contexts the correction term might also be interpreted as a non accounted phenomena ranging from environmental factors (e.g. temperature, pH) to other biological factors (viruses, flock formation, pathogens). Alternative hypothesis for explaining the observed patterns in the microbial community should be considered as well. 
 
@@ -831,20 +846,25 @@ The interpretation of the correction term as interactions is not the only possib
 	\centering
 	\begin{subfigure}{0.45 \textwidth}
 		\includegraphics[width =\textwidth]{Application//200407_iter_20_AOB_plot_1}
+		\caption{Biomass OTU 1-10 in $G_1$ (AOB) }
 	\end{subfigure}
 	\begin{subfigure}{0.45 \textwidth}
 	\includegraphics[width =\textwidth]{Application//200407_iter_20_AOB_plot_2}
+	\caption{Biomass OTU 11-20 in $G_1$ (AOB) }
 	\end{subfigure}
 	\begin{subfigure}{0.45 \textwidth}
 	\includegraphics[width =\textwidth]{Application//200407_iter_20_AOB_plot_3}
+	\caption{Biomass OTU 21-30 in $G_1$ (AOB) }
 	\end{subfigure}
 	\begin{subfigure}{0.45 \textwidth}
 	\includegraphics[width =\textwidth]{Application//200407_iter_20_AOB_plot_4}
+	\caption{Biomass OTU 31 in $G_1$ (AOB) }
 	\end{subfigure}
 	\begin{subfigure}{0.45 \textwidth}
 	\includegraphics[width =\textwidth]{Application//200407_iter_20_NOB_plot_1}
+	\caption{Biomass OTU 32-36 in $G_2$ (NOB) }
 	\end{subfigure}
-	\caption{Tracking results when all OTU are tracked independently.}
+	\caption{Tracking results when all OTU are tracked independently. Note the different y-axis scales of each plot.}
 	\label{OTU abudance all}
 \end{figure}
 
@@ -853,18 +873,23 @@ The interpretation of the correction term as interactions is not the only possib
 	\centering
 	\begin{subfigure}{0.45 \textwidth}
 		\includegraphics[width =\textwidth]{Application//200407_iter_20_growth_control_AOB_plot_1}
+		\caption{Growth rate of OTU 1-10 in $G_1$ (AOB) }
 	\end{subfigure}
 	\begin{subfigure}{0.45 \textwidth}
 		\includegraphics[width =\textwidth]{Application//200407_iter_20_growth_control_AOB_plot_2}
+		\caption{Growth rate of OTU 11-20 in $G_1$ (AOB) }
 	\end{subfigure}
 	\begin{subfigure}{0.45 \textwidth}
 		\includegraphics[width =\textwidth]{Application//200407_iter_20_growth_control_AOB_plot_3}
+		\caption{Growth rate of OTU 21-30 in $G_1$ (AOB) }
 	\end{subfigure}
 	\begin{subfigure}{0.45 \textwidth}
 		\includegraphics[width =\textwidth]{Application//200407_iter_20_growth_control_AOB_plot_4}
+		\caption{Growth rate of OTU 31 in $G_1$ (AOB) }
 	\end{subfigure}
 	\begin{subfigure}{0.45 \textwidth}
 	\includegraphics[width =\textwidth]{Application//200407_iter_20_growth_control_NOB_plot_1}
+	\caption{Growth rate of OTU 32-36 in $G_2$ (NOB) }
 	\end{subfigure}
 	\caption{Growth rates obtained for each OTU when applying the tracking procedure without aggregation.}
 	\label{growth all}
