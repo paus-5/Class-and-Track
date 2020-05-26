@@ -4,21 +4,24 @@
 
 \usepackage{amssymb}
 \usepackage{amsthm}
+\usepackage{thmtools}
+\usepackage{thm-restate}
+\usepackage{hyperref}
 \usepackage{amsmath}
+\usepackage{cleveref}
 \usepackage{algorithm2e}
 \usepackage{graphicx}
 \usepackage{subcaption}
-\usepackage{hyperref}
 \usepackage{xcolor}
 \usepackage[version=4]{mhchem}
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\I}{\mathcal{I}}
 \DeclareMathOperator{\diag}{diag}
+\declaretheorem[name=Theorem]{thm}
+\declaretheorem[name=Lemma]{lemma}
 \newtheorem{defn}{Definition}
 \newtheorem{hypo}{H}
-\newtheorem{lemma}{Lemma}
-\newtheorem{theo}{Theorem}
 \usepackage[figuresright]{rotating}
 
 \graphicspath{{Images/}}
@@ -126,11 +129,17 @@ Consider the scenario of a continuous and homogeneous reactor: the input flow is
 \label{system}
 \begin{array}{cl}
 \dot{x_i} =& \left(\mu_i(s,x) -D \right)x_i \quad \forall i \in [n] \\
-\dot{s_1} =& \displaystyle (s_{in}-s_1)D+\sum\limits_{i\in G_1} y_{s_1/x_i}\mu_i(s,x) x_i  \\
-\dot{s_2} = & \displaystyle -s_2D+\sum\limits_{i\in [n]}y_{s_2/x_i}\mu_i(s,x)x_i  \\
-\dot{s_3} =&  \displaystyle -s_3D+\sum\limits_{i\in G_2}y_{s_3/x_i}\mu_i(s,x) x_i 
+\dot{s_1} =& \displaystyle (s_{in}-s_1)D - \sum\limits_{i\in G_1} \frac{1}{y_i} \mu_i(s,x) x_i  \\
+\dot{s_2} = & \displaystyle -s_2D+\sum\limits_{i\in G_1} \frac{1}{y_i} \mu_i(s,x) x_i -\sum\limits_{i\in G_2} \frac{1}{y_i} \mu_i(s,x) x_i \\
+\dot{s_3} =&  \displaystyle -s_3D+\sum\limits_{i\in G_2} \frac{1}{y_i} \mu_i(s,x) x_i  
 \end{array}
 \end{align}	
+
+Which can be written in a more compact notation using the stoichiometric matrix $Y$ and the $\diag$ operator.
+\begin{align}
+\label{Eq1X}	\dot{x} = & \diag(\mu(x,s) - D_{n\times 1})x \\
+\label{EqS}	\dot{s} = & \left(\begin{bmatrix} s_{in}&0&0 \end{bmatrix}^\top-s\right)D + Y\diag(\mu(x,s))x
+\end{align} 
 
 \subsection{Kinetic Equations}
 In the work of Dumont \textit{et al.} \cite{Dumont2016} the growth rates seen in equations \eqref{gLV growth1} and \eqref{gLV growth2} were calibrated against experimental data for the two most abundant OTU of each functional group.
@@ -160,7 +169,7 @@ Second, the equilibria of the system are derived. Possible equilibrium points fo
 
 A bound on the norm of the interaction matrix that depends on the initial conditions and parameters one establishes that solutions will remain positive and bounded. 
 
-\begin{lemma}
+\begin{restatable}{lemma}{systembounds}
 	\label{l1}
 	For initial conditions $(x_1(0),\dots,x_n(0),s_1(0),s_2(0),s_3(0)))\in \Omega$, there exists positive scalars $M_1$, $M_2$, and $M_3$ such that solutions to \eqref{system} satisfy the following inequalities:
 	\begin{align}
@@ -168,20 +177,20 @@ A bound on the norm of the interaction matrix that depends on the initial condit
 	&\sum \limits_{i \in G_2} \frac{1}{y_i}x_i + s_1 +s_2 \leq M_2 \\
 	&s_1 + s_2 + s_2 \leq M_3
 	\end{align}
-\end{lemma}
+\end{restatable}
 
 The proof can be seen in the supplementary material. A bound on the norm of $A$ is found such that every matrix $A$ respecting the bound, guaranties that $\Omega$ is a positively invariant set.
 
-\begin{theo}
+\begin{restatable}{thm}{wellposedness}
 	\label{theoWellPosedness}
 	For initial conditions $(x_1(0),\dots,x_n(0),s_1(0),s_2(0),s_3(0)))\in \Omega$, there exists a constant $M>0$ such that for every matrix $A$ satisfying $\Vert A \Vert_{\infty} \leq M $, the solutions of system \eqref{system} with growth rates given by \eqref{gLV growth1} and \eqref{gLV growth2}, remain in $\Omega$ and are bounded.
-\end{theo}
+\end{restatable}
 
 The proof can be seen in the supplementary material.
 
 \subsection{Equilibrium Points}
 
-In this section analytical expressions for equilibrium points are derived. However, no analytic expression concerning the stability of such points is presented. To answer the question of stability a numeric scheme is used by evaluating the Jacobian at the equilibrium point. At the end of the section an algorithm is provided for exploring all the possible equilibria.
+In this section analytical expressions for equilibrium points are shown. However, no analytic expression concerning the stability of such points is presented. To answer the question of stability a numeric scheme is used by evaluating the Jacobian at the equilibrium point. At the end of the section an algorithm is provided for exploring all the possible equilibria. All the computations for deriving the equations of this section can be found in the supplementary material.
 
 Model \eqref{system} is restated in a more compact form using matrix notation. Let $f(s)$ be such that,
 %
@@ -229,22 +238,27 @@ Observe that equilibrium points are by definition non-negative so the state vari
 
 \begin{defn}
 	Given an equilibrium point $(x^{eq},s^{eq})$ of system \eqref{system}, then the set of non-active coordinates $\mathcal{J}\subset \{1,\dots,n\}$ is defined as:
-	$\mathcal{J} = \{j_1, \dots, j_m\ : \, x^{eq}_{j_i} = 0 , \;i \in [m] \} $. $n_1^{act}$ and $n_2^{act}$ denote the number of positive entries of $x^{eq}$ of functional groups $G_1$ and $G_2$, respectively. $n^{act} = n-m$ denotes the total number of positive entries of $x^{eq}$. The active point $x^{act}\in \R^{n^{act}}$ is defined by the positive entries of $x^{eq}$. Analogously, the functions $f^{act}(s)$ and $\mu^{act}(x,s)$ are defined by the positive entries of $x^{eq}$. The active interactions $A^{act}$ is defined as the matrix $A$ without the $\mathcal{J}$ rows and columns. The active stoichiometry matrix $Y^{act}$ is the matrix $Y$ without the $\mathcal{J}$ columns. In summary, let $M$ be the matrix defined by taking out the $\mathcal{J}$ columns of the identity matrix of size $n$, then
-	 \begin{align}
-	 x^{eq} = Mx^{act} \\	
-	 f^{act}(s) = M^{\top}f(s) \\
-	 \mu^{act}(x,s) = M^{\top}\mu(x,s)\\
-	 Y^{act} = YM \\
-	 A^{act} = M^{\top}AM
-	 \end{align}.   
+	$\mathcal{J} = \{j_1, \dots, j_m\ : \, x^{eq}_{j_i} = 0 , \;i \in [m] \} $. $n_1^{act}$ and $n_2^{act}$ denote the number of positive entries of $x^{eq}$ of functional groups $G_1$ and $G_2$, respectively. $n^{act} = n-m$ denotes the total number of positive entries of $x^{eq}$. The active point $x^{act}\in \R^{n^{act}}$ is defined by the positive entries of $x^{eq}$. Analogously, the functions $f^{act}(s)$ and $\mu^{act}(x,s)$ are defined by the positive entries of $x^{eq}$. The active interactions $A^{act}$ is defined as the matrix $A$ without the $\mathcal{J}$ rows and columns. The active stoichiometry matrix $Y^{act}$ is the matrix $Y$ without the $\mathcal{J}$ columns. 
 \end{defn}
  
- Finally, for deriving the equilibrium points, it is desirable an invertible $A^{act}$ matrix. Therefore in what follows of the work it is assumed that matrix $A$ and some of its sub matrices have an inverse, this is stated properly in Hypothesis \ref{inverse hypothesis}. 
+ In order to derive the equilibrium points, it is desirable an invertible $A^{act}$ matrix. Therefore in what follows of the work it is assumed that matrix $A$ and some of its sub matrices have an inverse, this is stated properly in Hypothesis \ref{inverse hypothesis}. 
 
 \begin{hypo}
 	Let $A$ be the interaction matrix of size $n \in \N$ and $S$ be a proper subset of $[n]$ with $|S| = m$. Then the matrix $B \in \R^{(n-m) \times (n-m)}$ defined by taking out the $S$ rows and columns of matrix $A$ is invertible.
 	\label{inverse hypothesis}
 \end{hypo} 
+
+Assuming Hypothesis \ref{inverse hypothesis} a formula for the active points is derived from equation \eqref{Eq1}:
+
+\begin{align}
+\label{EqSome}x^{act} = (A^{act})^{-1}(\diag(f^{act}(s))^{-1}D_{n^{act}\times 1} - 1_{n^{act}\times 1})
+\end{align} 
+
+Note as well that at the equilibrium, $s_3$ can be defined in terms of $s_1$, $s_2$ and $s_{in}$. This is done by adding equations \eqref{Eq2}, \eqref{Eq3},  and \eqref{Eq4} which gives :
+
+\begin{align}
+s_{in} = s_1+s_2+s_3 \label{s1s2s3}
+\end{align}
 
 \subsubsection{Both functional groups are present}
 
@@ -253,48 +267,14 @@ The case where in each functional group remains at least one OTU is represented 
 	\label{hypothesis CN}
 \end{hypo} 
 
-From equation \eqref{Eq1} equilibrium points satisfy: 
 
-\begin{align}
-x_i = 0 \vee (\diag(f(s))(1_{n\times 1} + Ax) - D_{n\times 1})_i = 0 \quad \forall i \in [n] \\
-\Rightarrow  (\diag (f(s))(1_{n\times 1}+ Ax) - D_{n\times 1})_i = 0 \quad \forall i \in [n]\setminus \mathcal{J} \\
-\Leftrightarrow f_i(s)(1 + A_{i\bullet}x) - D = 0 \quad \forall i \in [n]\setminus \mathcal{J} \label{Extinction}
-\end{align} 
-
-note that $\forall j \in \mathcal{J}, \; x^{eq}_j = 0 $ therefore the coefficients $a_{ij}$ play no role in equation \eqref{Extinction} and one can rewrite equation \eqref{Extinction} as $\diag(f^{act}(s))(1_{n^{act}\times 1} + A^{act}x^{act}) - D_{n^{act} \times 1}=0 $. From hypothesis \ref{inverse hypothesis} matrix $A^{act}$ has an inverse. This gives the following lemma.
-
-\begin{lemma} 
-	The active point of the solution of \eqref{Extinction} solves the system of equations \eqref{EqSome}. 
-	\begin{align}
-	\label{EqSome}x^{act} = (A^{act})^{-1}(\diag(f^{act}(s))^{-1}D_{n^{act}\times 1} - 1_{n^{act}\times 1})
-	\end{align} 
-\end{lemma} 
-
-By replacing $x^{eq} = Mx^{act}$ in equation \eqref{Eq2}:
-
-
-\begin{align}
- (s_{in}-s_1)D + Y_{1\bullet} \diag(\mu(x,s))Mx^{act}  = 0 \\
-(s_{in}-s_1)D + Y^{act}_{1\bullet} \diag(\mu^{act}(x,s))x^{act}  = 0 \\ 
-(s_{in}-s_1)D + Y^{act}_{1\bullet} \diag(D_{n^{act}\times 1})x^{act}  = 0  \\
-(s_{in}-s_1) + Y^{act}_{1\bullet} x^{act}  = 0  \\
-\label{s1Equilibria} (s_{in}-s_1) + Y^{act}_{1\bullet}(A^{act})^{-1}(\diag(f^{act}(s))^{-1}D_{n^{act}\times 1} - 1_{n^{act}\times 1}) = 0
-\end{align}
-
-
-A similar expression is obtained when replacing \eqref{EqSome} in equation \eqref{Eq3}
-
-\begin{align}
-\label{s2Equilibria}-s_2+ Y^{act}_{2\bullet}(A^{act})^{-1}(\diag(f^{act}(s))^{-1}D_{n^{act}\times 1} - 1_{n^{act}\times 1}) = 0
-\end{align}
-
-From equation \eqref{s1Equilibria} $s_2$ can be written as a function of $s_1$:
+By replacing equation \eqref{EqSome} in equation \eqref{Eq2} $s_2$ can be written as a function of $s_1$:
 \begin{align}
 s_2 = \frac{s_1}{c_1s_1^2+c_2s_1+c_3} \label{S2(S1)}
 \end{align}
 
 
-Then by replacing  \eqref{S2(S1)} in equation \eqref{s2Equilibria}, one gets a fourth degree polynomial for $s_1$. 
+Then by replacing  \eqref{S2(S1)} in equation \eqref{Eq3}, one gets a fourth degree polynomial for $s_1$. 
 
 \begin{align}
 \label{Poly4} a_4s_1^4+a_3s_1^3+a_2s_1^2+a_1s_1+a_0 = 0
@@ -303,13 +283,7 @@ Then by replacing  \eqref{S2(S1)} in equation \eqref{s2Equilibria}, one gets a f
 
 Formulae for coefficients $c_1, c_2, c_3, a_0, a_1, a_2, a_3, a_4$ can be found in supplementary material. 
 
-Finally, in equilibrium, $s_3$ can be defined in terms of $s_1$, $s_2$ and $s_{in}$. This is done by adding equations \eqref{Eq2}, \eqref{Eq3},  and \eqref{Eq4} which gives :
-
-\begin{align}
-s_{in} = s_1+s_2+s_3 \label{s1s2s3}
-\end{align}
-
-If the system of equations \eqref{EqSome}, \eqref{S2(S1)}, \eqref{Poly4}, and \eqref{s1s2s3} provides only solutions with some negative entries then the set $\mathcal{J}$ can not define an equilibrium point.
+The equilibrium point can be calculated from the solutions of the system of equations \eqref{EqSome}, \eqref{s1s2s3}, \eqref{S2(S1)}, and \eqref{Poly4} with non negative coordinates. If the system only provides solutions with at least one negative entry then the set $\mathcal{J}$ can not define an equilibrium point.
 
 
 \subsubsection{Washout of $G_2$}
@@ -321,7 +295,7 @@ The washout of $G_2$ is equivalent to  hypothesis \ref{hypothesis washout G2}.
 	\label{hypothesis washout G2}
 \end{hypo} 
 
-Equations \eqref{EqSome} and \eqref{s1Equilibria} still hold, but in this case note that $f^{act}(s)$ does not contain any term involving $s_2$, and therefore one obtains a quadratic equation for $s_1$:
+Under this case note that $f^{act}(s)$ depends only on $s_1$. Therefore when equation \eqref{EqSome} is replaced in \eqref{Eq2}, one obtains a quadratic equation for $s_1$:
 
 \begin{align}
 \label{poly2_s1} a'_2 s_1^2 + a'_1s_1 + a'_0 = 0
@@ -329,19 +303,13 @@ Equations \eqref{EqSome} and \eqref{s1Equilibria} still hold, but in this case n
 
 Where $a'_i$ can be found in the appendix.
 
-Since $x_i = 0, \, \forall i \in G_2$ then from equation \eqref{Eq4}.
+Since $x_i = 0 \, \forall i \in G_2$ then from equation \eqref{Eq4}.
 \begin{align}
 \dot{s_3} = 0 = -s_3D \\
-\Rightarrow s_3 = 0
+\Rightarrow s_3 = 0 \label{no_s3}
 \end{align}
 
-Then by \eqref{s1s2s3} one obtains:
-
-\begin{align}
-s_{in} = s_1 + s_2
-\end{align}
-
-
+In this case the equilibrium point can be calculated from the solutions of the system of equations \eqref{EqSome}, \eqref{s1s2s3}, \eqref{poly2_s1}, and \eqref{no_s3} with non-negative coordinates. If the system only provides solutions with at least one negative entry then the set $\mathcal{J}$ can not define an equilibrium point.
 
 \subsubsection{Washout}
 	
@@ -354,8 +322,10 @@ The washout equilibria means $x_i = 0$ for every $i \in \{1,\dots, n_1\}$. This 
 
 From equation \eqref{Eq2}, one gets 
 \begin{align*} s_{in} = s_1 \end{align*}
-then \eqref{s1s2s3} implies \begin{align*}s_2 &= s_3 = 0 \\ \Rightarrow \dot{x_i} &= -Dx_i \quad \forall i = n_1+1, \dots, n\end{align*}   
-which has an equilibria at $x_i = 0$. 
+then \eqref{s1s2s3} implies 
+\begin{align*}s_2 &= s_3 = 0 \end{align*}   
+
+The equilibrium is then given by $\begin{pmatrix} 0_{1\times n}& s_{in}&0 &0 \end{pmatrix}^\top$.
 
 All the former discussion leads to a potential number of   $ (2^{n_1}-1)\cdot (4\cdot(2^{n_2}-1)+2)+1 $  different equilibria. Indeed: 
 \begin{align} \overbrace{(2^{n_1}-1)}^{\substack{\text{nonempty subsets} \\ \text{of }G_1 }} (\underbrace{4}_{\substack{\text{possible} \\ \text{solutions of} \\ \text{equation \eqref{Poly4}}}} \cdot\overbrace{(2^{n_2}-1)}^{\substack{\text{nonempty subsets} \\ \text{of  }G_2}}+\underbrace{2}_{\substack{G_2 \\ \text{Washout}}})+\overbrace{1}^\text{Washout} 
@@ -396,7 +366,7 @@ The operating diagrams can be seen in Figure \ref{OD_case_1}, note how partial n
 	\centering
 	\begin{tabular}{|l|l|l|l|}
 		\hline
-		Kinetic Parameters & $\mu_i\,[1/day]$ & $K_i\,[g/L]$ & $\frac{1}{y_i} \, [gr/gr]$ \\ \hline
+		Kinetic Parameters & $\bar{\mu}_i\,[1/day]$ & $K_i\,[g/L]$ & $\frac{1}{y_i} \, [gr/gr]$ \\ \hline
 		$x_1 \in G_1$ & 0.77  & 0.7 & 3.98  \\ \hline
 		$x_2\in G_2$ & 1.07 & 0.3 &  16.12 \\ \hline
 	\end{tabular}	
@@ -445,8 +415,8 @@ The operating diagrams can be seen in Figure \ref{OD_case_1}, note how partial n
  \begin{table}[ht]
  	\centering
  	\begin{tabular}{|l|l|l|l|}
- 		\hline
- 		Case study 2 kinetic parameters & $\mu_i\,[1/day]$ & $K_i\,[mg/L]$ & $\frac{1}{y_i} \, [gr/gr]$ \\ \hline
+ 		\hline \rule{0pt}{3.5ex}
+ 		Case study 2 kinetic parameters & $\mu_i\,[1/day]$ & $K_i\,[mg/L]$ & $\frac{1}{y_i} \, [gr/gr]$ \\ \hline 
  		$x_1 \in G_1$ & 0.828  & 0.147 & 3.85  \\ \hline
  		$x_2\in G_1$ &0.828   & 0.147 &  3.85\\ \hline
  		$x_3\in G_2$ & 0.18 & 0.026 &  100 \\ \hline
@@ -560,14 +530,14 @@ Consider the observable system \eqref{Controlsystem}, with $y(t) = x(t)$ being t
 \begin{array}{cl}
 \dot{x_i} =& \left(f_i(s)u_i(t) -D \right)x_i \quad \forall i \in G_1\\
 \dot{x_i} =& \left(f_i(s)u_i(t) -D \right)x_i \quad \forall i \in G_2\\
-\dot{s_1} =& \displaystyle (s_{in}-s_1)D-\sum\limits_{i \in G_1}\frac{1}{y_i}f_i(s)u_i(t) x_i  \\
-\dot{s_2} = & \displaystyle -s_2D+\sum\limits_{i \in G_1}\frac{1}{y_i}f_i(s)u_i(t)	-\sum\limits_{i \in G_2}\frac{1}{y_i}f_i(s)u_i(t) x_i  \\
-\dot{s_3} =&  \displaystyle -s_3D+\sum\limits_{i \in G_2}\frac{1}{y_i}f_i(s)u_i(t) x_i \\
+\dot{s_1} =& \displaystyle (s_{in}-s_1)D + \sum\limits_{i \in G_1}y_{s_1/x_i}f_i(s)u_i(t) x_i  \\
+\dot{s_2} = & \displaystyle -s_2D+\sum\limits_{i \in G_1 \cup G_2}y_{s_2/x_i}f_i(s)u_i(t)x_i  \\
+\dot{s_3} =&  \displaystyle -s_3D+\sum\limits_{i \in G_2}y_{s_3/x_i}f_i(s)u_i(t) x_i \\
 y  =& x
 \end{array}
 \end{align}	
 
- Consider the weighted norms defined by positive definite matrices $Q$ and $R$, represented by $\Vert \cdot \Vert_Q$ and $\Vert \cdot \Vert_R$, respectively, and a positive real $\bar{u}$. The optimal tracking problem is defined as: 
+ Consider the weighted norms defined by positive definite matrices $Q$ and $R$, represented by $\Vert \cdot \Vert_Q$ and $\Vert \cdot \Vert_R$, respectively, and $\bar{u}>0$. The optimal tracking problem is defined as: 
 
 \begin{align}
 \label{Optimal Control} \begin{array}{cc} \min &  \int \limits_{0}^{T} \Vert y - z \Vert_Q + \Vert(u -\vec{1}) \Vert_R dt\\
@@ -583,17 +553,13 @@ The control $u(t)$ is intended to drive the system to be near a desired output $
 
 \item Second, to force a regularized control. Otherwise note that $u$ is linear in \eqref{Controlsystem}, therefore if the integral cost does not have a non-linear expression of $u$ the optimal control will be of a bang-bang type with possibly singular arcs \cite{harmand2019optimal}. Since the objective is to find a differentiable expression of $I(x)$ the addition of the regularization term is deemed necessary.
 \end{itemize} 
-The problem of approximating the solution of the system to a desired reference ($z$ in this case) is called the optimal tracking problem. For solving such a problem the approach developed by Cimen \textit{et al.} \cite{Cimen2004, Cimen2008} was adapted to our problem. The method proposed involves the resolution of Approximating Sequences of Ricatti Equations (ASRE). 
+The problem of approximating the solution of the system to a desired reference ($z$ in this case) is called the optimal tracking problem. For solving such a problem the approach developed by Cimen \textit{et al.} \cite{Cimen2004, Cimen2008} was adapted to our problem. The method proposed involves the resolution of Approximating Sequences of Ricatti Equations (ASRE). It consists on iteratively calculating trajectories of System \eqref{Controlsystem} with a certain control law and subsequently feed a non-autonomous Ricatti differential equation with the resulting trajectory. Then, a new control law that uses the solution of the Ricatti equation is proposed and a new trajectory is calculated. The iteration is stopped when a convergence in the output or  the control is observed.
 
-The method consists on iteratively calculating trajectories of System \eqref{Controlsystem} with a certain control and feeding a non-autonomous Ricatti differential equation with the resulting trajectory. Then, a control law that uses the solution of the Ricatti equation is proposed and a new trajectory is calculated. The iteration is stopped when a convergence in the output or  the control is observed.
-
-The tracking problem does not consider a constrained control. Nevertheless, the methods of Cimen \textit{et al.}\cite{Cimen2004} were directly used with an explicit constraint in the synthesis of the control. Even though this is probably suboptimal when the control reaches its bounds, one at least is certain about its optimality when the control never reaches its constraints.
+The control term should remain positive for the system to be well posed (no negative states), and an upper bound was added to represent the fact that life cannot grow infinitely fast. The tracking problem does not consider a constrained control. Nevertheless, the methods of Cimen \textit{et al.}\cite{Cimen2004} were directly used with an explicit constraint in the synthesis of the control. Even though this is probably suboptimal when the control reaches its bounds, one at least is certain about its optimality when the control never reaches its constraints.
 
 Another departure from their method is that in their formulation an approximation of the dynamics for calculating the trajectories is used. They proved that such a linearisation converges to the original dynamics. In the case here presented the linearisation of the dynamics was not necessary.
 
-The change of variable $u_i(t) = v_i(t) + 1$ is used for technical reasons explained in the supplementary material section. This in turn implies $v_i(t) \in [-1,\bar{u}-1]$.
-
-The feedback control $v(t)$, will be of the form $v(t) = -R^{-1}\tilde{B}^\top(t)\left(\tilde{P}(t)x(t)-s_f(t)\right)$. Where matrix $P(t)$ and vector $s_f(t)$ solve differential equations. In the appendix it is proved that because of the structure of the system one only needs to calculate $2n$ differential equations for the synthesis of the control, instead of $(n+3)^2 + (n+3)$ that would imply the direct application of the method, which renders the method- at least theoretically- scalable for a growing number of OTU.
+The change of variable $u_i(t) = v_i(t) + 1$ is used for technical reasons explained in the supplementary material section. This in turn implies $v_i(t) \in [-1,\bar{u}-1]$. The feedback control $v(t)$, will be of the form $v(t) = -R^{-1}\tilde{B}^ \top(t)\left(\tilde{P}(t)x(t)-s_f(t)\right)$. Where matrix $P(t)$ and vector $s_f(t)$ solve differential equations. In the appendix it is proved that because of the structure of the system one only needs to calculate $2n$ differential equations for the synthesis of the control, instead of $(n+3)^2 + (n+3)$ that would imply the direct application of the method, which renders the method- at least theoretically- scalable for a growing number of OTU.
 
 \subsection{Proof of concept}
 
@@ -722,11 +688,11 @@ Figure \ref{POC_control} shows the controls and the corrected growth rate for ea
  
 %The method was stopped after 10 iterations where each iteration took approximately 800 seconds of computing time in a computer equipped with 8gb of RAM memory and Intel core i3-7100U CPU 2,40 GHz.\iffalse Cette phrase devrait figurer dans la partie précédente ?\fi
 
-The tracking problem was applied to data coming from a nitrification process with experimental conditions described in \cite{dumont2008observers}. For exploring the hypothesis of interactions as drivers of bioreactors performance environmental conditions should be kept as constant as possible. Therefore only data from day $183$ onwards was used because a change in the operating temperature happened at that point, which is known to have an effect on kinetics. For choosing which species belong in which functional group, the procedure described in \cite{Ugalde-Salas2019} was used: from day $183$ to day $315$: 31 OTU were identified in the $G_1$ group (AOB) and 5 in the $G_2$ functional group (NOB). 
+The tracking problem was applied to data coming from a nitrification process with experimental conditions described in \cite{dumont2008observers}. For exploring the hypothesis of interactions as drivers of bioreactors performance environmental conditions should be kept as constant as possible. Therefore only data from day $183$ onwards was used because a change in the operating temperature happened at that point, which is known to have an effect on kinetics. For choosing which species belong in which functional group, the procedure described of Ugalde-Salas \textit{et al.} \cite{Ugalde-Salas2019} was used. From day $183$ to day $315$ 31 OTU were identified in the $G_1$ group (AOB) and 5 in the $G_2$ functional group (NOB). 
 
 A first example of the procedure is performed when the classified OTU are regrouped in their assigned functional groups by adding their concentrations. A 5 dimensional dynamical system is obtained, thus there are only two interacting functional biomasses: this case is structurally the same as in the proof of concept, but here a real dataset is used. The same procedure is applied where no regrouping occurs and the system state grows to 39. 
 
-The knowledge of functions $f_i(s)$ was based on a study of nitrification's kinetic parameters\cite{Wiesmann1994}. Particularly given the system's ammonium and nitrate concentration a Monod function (eq \eqref{monod}) was used for $G_1$ and $G_2$ with parameters given in table \ref{kinetic_parameters_application}. The yields were fitted to match the nitrogen mass balances. The $Q$ and $R$ matrices were the same as in the proof of concept section, that is $\begin{bmatrix}
+The knowledge of functions $f_i(s)$ was based on a study of nitrification's kinetic parameters\cite{Wiesmann1994}. Particularly given the system's ammonium and nitrate concentration a Monod function (eq \eqref{monod}) was used for $G_1$ and $G_2$ with parameters given in table \ref{kinetic_parameters_application} calculated from the equation of Table 2 of the same article. The yields were fitted to match the nitrogen mass balances. The $Q$ and $R$ matrices were the same as in the proof of concept section, that is $\begin{bmatrix}
 \lambda_1 I_{n_1} &0  \\ 0& \lambda_2 I_{n_2}
 \end{bmatrix}$ and $I_n$, respectively, with $\lambda_1 = 10^{-4}$ and $\lambda_2 = 10^{-5}$.
 
@@ -744,7 +710,7 @@ The knowledge of functions $f_i(s)$ was based on a study of nitrification's kine
 		$x_1 \in G_1$ & 1.97  & $7\cdot 10^{-1}$ & 4.49  \\ \hline
 		$x_2\in G_2$ & 1.87 & $5.4\cdot 10^{-1}$ &  45.51 \\ \hline
 	\end{tabular}	
-	\caption{A set of kinetic parameters of model \eqref{system}.}
+	\caption{A set of kinetic parameters of model \eqref{Controlsystem}.}
 	\label{kinetic_parameters_application}
 \end{table}
 For the reader to gain understanding of the situation, a simulation of the system using the experiments operating parameters ($D$ and $s_{in}$) is presented without control (i.e. $u(t)= 1$) in  figure \ref{u=1 simulation.} nitrite ($s_3$) accumulates all along the trajectory, but when compared to data it is clear that $s_3$ stops accumulating after a while. 
@@ -899,7 +865,7 @@ The interpretation of the correction term as interactions is not the only possib
 \clearpage
 \section{Conclusions and Perspectives}
 
-Last decades advances in genetic sequencing and microbial ecology have opened a gap for modellers in biochemical processes to integrate this valuable information. Considering the success of mass balance models to predict and pilot bioreactors, one should build upon these existing models. This article proposed a naïve approach to start filling the gap of microbial ecology and biochemical process modelling: The approach can be simply described as correcting the growth rate of each individual species from genetic sequencing measurements, and observing what would that imply according to the (pseudo)stoichiometric equations involved. If one already posses a model for describing a particular bioprocess the use of the techniques here presented can be applied in a straightforward manner if one has already identified the microbial species involved with a particular functionality of the system.
+Last decades advances in genetic sequencing and microbial ecology have opened a gap for modellers in biochemical processes to integrate this valuable information. Considering the success of mass balance models to predict and pilot bioreactors, one should build upon these existing models. This article proposed a naïve approach to start filling the gap of microbial ecology and biochemical process modelling: The approach can be simply described as correcting the growth rate of each individual species from genetic sequencing measurements, . If one already posses a model for describing a particular bioprocess the use of the techniques here presented can be applied in a straightforward manner if one has already identified the microbial species involved with a particular functionality of the system.
 
 The tracking model was proposed  in a chemostat setting as a way to correct a substrate limited expression. However the technique could be used in contexts where less information on the growth function of microbes is known. If one supposes nothing on the growth expression but the fact that is bounded (life cannot grow infinitely fast) the model becomes a linear model and one recovers a classic quadratic regulator for linear systems. Nevertheless, even in the former case, the synthesis of the optimal bounded control remains an open theoretical challenge.
 
@@ -916,8 +882,10 @@ All the codes can be recovered from the following repository \url{https://github
 
 \section{Supplementary Material}
 
+\subsection{Proofs of \cref{l1} and \cref{theoWellPosedness}}
 
-\textbf{Proof of lemma \ref{l1}}
+\systembounds* 
+
 \begin{proof}
 	Define 
 	\begin{align}
@@ -959,7 +927,8 @@ All the codes can be recovered from the following repository \url{https://github
 	By defining $M_2 = \max\left \{ \displaystyle \sum \limits_{i=n_1 +1 }^{n} \frac{1}{y_i}x_i(0) + s_1(0) +s_2(0), \bar{s} \right\}$, and $M_3 =\max\left \{ s_1(0) +s_2(0) + s_3(0), \bar{s} \right\} $ and noting that $z_2(t)$ and $z_3(t)$ satisfies the same differential equations as $z_1$ the above reasoning may be applied and one has the desired bounds.
 \end{proof}
 
-\textbf{Proof of theorem \ref{theoWellPosedness}}
+
+\wellposedness*
 
 \begin{proof}
 	If any coordinate of the solution becomes zero, then it's derivative is either zero, or positive. The bound will follow from Lemma \ref{l1}.
@@ -968,23 +937,26 @@ All the codes can be recovered from the following repository \url{https://github
 	
 	If $s_1 = 0$, then $\dot{s_1} = Ds_{in} > 0$. Therefore $s_1(t) \geq 0$.
 	
-	If $s_2 = 0$ then note first that by adding both inequalities from Lemma \eqref{l1} and since, $s_1,x_i \geq 0$ one has:
+	If $s_2 = 0$ then note first that by adding both inequalities from Lemma \eqref{l1}:
 	\begin{align*}
-	\sum \limits_{i \in G_1 \cup G_2}  \frac{1}{y_i} x_i + 2s_1 + s_2 \leq M_1 + M_2 \\
-	\Rightarrow \sum \limits_{i = 1}^{n}  \frac{1}{y_i} x_i + 2s_1 \leq M_1 + M_2 \\
-	\Rightarrow \sum \limits_{i = 1}^{n}  \frac{1}{y_i} x_i \leq M_1 + M_2\\ 
+	\sum \limits_{i \in G_1 \cup G_2}  \frac{1}{y_i} x_i + 2s_1 + s_2 \leq M_1 + M_2 
+	\end{align*}
+	let $\bar{k} = \min \left\{ \frac{1}{y_i}  : \; i\in [n] \right \}$ and since $s_1,x_i \geq 0$ one has:
+	\begin{align*}
 	\Rightarrow \bar{k} \sum  \limits_{i = 1}^{n}   x_i  \leq M_1 + M_2  \\
 	\Leftrightarrow \bar{k} \sum  \limits_{i = 1}^{n}   \vert x_i \vert  \leq M_1 + M_2  \\
 	\Leftrightarrow \bar{k} \Vert x \Vert_1  \leq M_1 + M_2  \\
 	\Rightarrow   \bar{k} \Vert x \Vert_{\infty} \leq M_1 + M_2
 	\end{align*}
 	
-	Where $\bar{k} = \min \left\{ \frac{1}{y_i}  : \; i\in [n] \right \}$.
 	
-	Define $M := \dfrac{\bar{k}}{M_1 + M_2}$, and let $A$ be a matrix such that $\Vert A \Vert_{\infty} \leq M$. Then since $\Vert Ax \Vert_{\infty} \leq 1 \Rightarrow \forall i=1,\dots,n \; (1 + A_{i\bullet}x) \geq 0 $, and $\Vert Ax \Vert_{\infty} \leq \Vert A \Vert_{\infty} \Vert x\Vert_{\infty} \leq M \frac{1}{M}$.
-	One has proven that:
+	Define $M := \dfrac{\bar{k}}{M_1 + M_2}$, and let $A$ be a matrix such that $\Vert A \Vert_{\infty} \leq M$. Since
+	\begin{align*} \Vert Ax \Vert_{\infty} \leq 1 \Rightarrow   (1 + A_{i\bullet}x) \geq 0 \quad \forall i \in [n]
+	\end{align*}
+	
+	and $\Vert Ax \Vert_{\infty} \leq \Vert A \Vert_{\infty} \Vert x\Vert_{\infty} \leq M \frac{1}{M}$. One has proven that:
 	\begin{align}
-	\label{Bound1} \forall i=1,\dots,n \;  \;  (1 + A_{i\bullet}x) \geq 0 
+	\label{Bound1}  \;   (1 + A_{i\bullet}x) \geq 0  \quad \forall i \in [n]
 	\end{align} 
 	
 	Therefore $\dot{s_2} = \displaystyle \sum \limits_{i \in G_1 } \frac{1}{y_i}\mu_i(s_1,x)x_i =  \sum \limits_{i \in G_1 } \frac{1}{y_i}\bar{\mu_i}f_i(s)(1+A_{i \bullet }x)x_i \geq 0$. Therefore $s_2(t) \geq 0$.
@@ -992,240 +964,194 @@ All the codes can be recovered from the following repository \url{https://github
 	Note that since one has proven that $s_2 \geq 0$, bound \eqref{Bound1} is valid for any time, and not only when $s_2 = 0$. 
 	If $s_3 = 0$ then $\dot{s_3} = \sum \limits_{i \in G_2 }^{n}\frac{1}{y_i}\mu_i(s_2,x)\geq 0$. Therefore $s_3 \geq 0$.
 	
-	For the boundedness it suffices to notice from Lemma \ref{l1} that the sum of positive elements is bounded, therefore each element is bounded.
+	For the boundedness it suffices to notice from \cref{l1} that the sum of positive elements is bounded, therefore each element is bounded.
 \end{proof}
 
-\subsection{Properties of diag operator}
+\subsection{Deduction of  Equilibrium points}
 
-Notice that for two vectors $v_1$ and $v_2$ the following holds:
-\begin{align}
-\diag(v_1)\diag(v_2) = \diag(v_2)\diag(v_1) 
-\end{align}
 
-Suppose $v \in \R^n$ such that $v_i \neq 0 \forall i \in [n]$. Define $v^{-1}:= \left( \dfrac{1}{v_1},\dots,\dfrac{1}{v_n} \right)$ then the inverse of $\diag(v)$ exists and is $\diag(v^{-1})$:
+Recall that 
 
 \begin{align}
-\diag(v)^{-1} = \diag(v^{-1}) 
+f_i(s) = \begin{cases}
+\bar{\mu}_i \dfrac{s_1}{K_i + s_1} \quad \forall i \in G_1 \\
+\bar{\mu}_i \dfrac{s_2}{K_i + s_2} \quad \forall i \in G_2
+\end{cases}
 \end{align}
 
-\subsection{Inverse of A and products}
-Notice that $\begin{bmatrix}
-A_1 \\ A_2
-\end{bmatrix} A^{-1} = \begin{bmatrix}
-A_1A^{-1} \\ A_2A^{-1}
-\end{bmatrix}=I $.
+then $\mu(x,s) = \diag(f(s))(1_{n\times 1} + Ax)$ thus, system \eqref{system} is rewritten as follows. 
 
-Then $A_1A^{-1}= \begin{bmatrix}
-I_{n_1}& 0_{n_2 \times 1} 
-\end{bmatrix}$ and $A_2A^{-1}= \begin{bmatrix}
-0_{n_1 \times 1} & I_{n_2}
-\end{bmatrix}$.
-
-For notation purposes it is useful to define: \begin{align}
-B := \diag(k) A^{-1}.
-\end{align}
-
-\subsection{Deduction of  \eqref{s1Equilibria}}
-
-Replacing \eqref{xEquilibria} in \eqref{Eq2} yields :
+%\begin{align}
+%\label{Eq1}	\dot{x} = & \diag(x)(\diag(f(s))(1_{n\times 1} + Ax) - D_{n\times 1}) \\
+%\label{Eq2}	\dot{s_1} = & (s_{in}-s_1)D + \begin{bmatrix}
+%-(1_{n_1\times 1} +A_1x) \\0
+%\end{bmatrix}^\top \diag(k) \diag(f(s))x \\
+%\label{Eq3}	\dot{s_2} = & -s_2D+
+%\begin{bmatrix}
+%1_{n_1\times 1} +A_1x \\ -(1_{n_2\times 1} +A_2x)
+%\end{bmatrix}^\top \diag(k) \diag(f(s))x \\	
+%\label{Eq4}	\dot{s_3} = & -s_3D+\begin{bmatrix}
+%0	\\(1_{n_2\times 1} +A_2x) 
+%\end{bmatrix}^\top \diag(k) \diag(f(s))x 
+%\end{align} 
 \begin{align}
-(s_{in}-s_1)D- \begin{bmatrix}
-1_{n_1 \times 1}+A_1A^{-1}(\diag(f(s))^{-1}D_{n_1 \times 1}-1_{n_1 \times 1}) \\0_{n_2 \times 1}
-\end{bmatrix}^\top \diag(k)\diag(f(s))A^{-1}(\diag(f(s))^{-1}D_{n \times 1}-1_{n \times 1})=0 \\
-(s_{in}-s_1)D-	\begin{bmatrix}
-1_{n_1 \times 1}+\begin{bmatrix}
-I_{n_1} & 0_{n_2 \times 1} 
-\end{bmatrix}(\diag(f(s))^{-1}D_{n \times 1}-1_{n \times 1}) \\0_{n_2\times 1}
-\end{bmatrix}^\top \diag(k)\diag(f(s))A^{-1}(\diag(f(s))^{-1}D_{n \times 1}-1_{n \times 1}) = 0 \\
-(s_{in}-s_1)D-	\begin{bmatrix}
-D_{n_1 \times 1}\\0_{n_2 \times 1}
-\end{bmatrix}^T\diag(f(s))^{-1}\diag(f(s)) \diag(k) A^{-1}(\diag(f(s))^{-1}D_{n \times 1}-1_{n \times 1}) = 0  \\
-(s_{in}-s_1)D-\begin{bmatrix}
-D_{n_1 \times 1} \\0_{n_2\times 1}
-\end{bmatrix}^\top \diag(k)A^{-1}(\diag(f(s))^{-1}D_{n \times 1}-1_{n_1 \times 1}) = 0 \\
-(s_{in}-s_1)- \begin{bmatrix}
-1_{n_1 \times 1}\\0_{n_2 \times 1}
-\end{bmatrix}^\top B (\diag(f(s))^{-1}D_{n \times 1} - 1_{n \times 1}) = 0 
-\end{align}
+\tag{\ref{Eq1}}	\dot{x} = & \diag(\mu(x,s) - D_{n\times 1})x \\
+\tag{\ref{Eq2}}	\dot{s_1} = & (s_{in}-s_1)D + Y_{1\bullet} \diag(\mu(x,s))x \\
+\tag{\ref{Eq3}}	\dot{s_2} = & -s_2D+
+Y_{2\bullet} \diag(\mu(x,s))x\\	
+\tag{\ref{Eq4}}	\dot{s_3} = & -s_3D+Y_{3\bullet} \diag(\mu(x,s))x 
+\end{align} 
 
-\subsection{Deduction of \eqref{s2Equilibria}}
-Analogous as before, replacing \eqref{xEquilibria} in \eqref{Eq3} yields :
+Recall $\mathcal{J}$ the set of non-active coordinates. Let $M$ be the matrix defined by taking out the $\mathcal{J}$ columns of the identity matrix of size $n$. When $M$ multiplies from the left it adds rows of zeros to the multiplied matrix in the $\mathcal{J}$ coordinates. When matrix $M$ multiplies from the right it takes out the $\mathcal{J}$ columns of the multiplied matrix. When $M^\top$ multiplies from the left it takes out the $\mathcal{J}$ rows of the multiplied matrix. When $M^{\top}$ multiplies from the right it adds columns of zeros to the multipled matrix in the $\mathcal{J}$ coordinates. This gives the following relationships:
+	\begin{align}
+	x^{eq} = Mx^{act} \\	
+	f^{act}(s) = M^{\top}f(s) \\
+	\mu^{act}(x,s) = M^{\top}\mu(x,s)\\
+	Y^{act} = YM \\
+	M^\top M = I_{n^{act}}
+	\end{align}.   
+
+From equation \eqref{Eq1} equilibrium points satisfy: 
+
 \begin{align}
--s_2D+
-\begin{bmatrix}
-(\diag(\mu_A)^{-1} \vec{D}) \\ -(\diag(\mu_B)^{-1} \vec{D})
-\end{bmatrix}^\top \diag(\mu)\diag(y)^{-1} A^{-1}(\diag(\mu)^{-1}\vec{D}-\vec{1}) = 0 \\
--s_2D+
-\begin{bmatrix}
-\vec{D} \\ - \vec{D}
-\end{bmatrix}^\top \diag(y)^{-1} A^{-1}(\diag(\mu)^{-1}\vec{D}-\vec{1}) = 0\\
--s_2+
-\begin{bmatrix}
-\vec{1} \\ - \vec{1}
-\end{bmatrix}^\top B(\diag(\mu)^{-1}\vec{D}-\vec{1}) = 0
-\end{align}
+x_i = 0 \vee (\diag(f(s))(1_{n\times 1} + Ax) - D_{n\times 1})_i = 0 \quad \forall i \in [n] \\
+\Rightarrow  (\diag (f(s))(1_{n\times 1}+ Ax) - D_{n\times 1})_i = 0 \quad \forall i \in [n]\setminus \mathcal{J} \\
+\Leftrightarrow f_i(s)(1 + A_{i\bullet}x) - D = 0 \quad \forall i \in [n]\setminus \mathcal{J} \label{Extinction}
+\end{align} 
+
+note that $\forall j \in \mathcal{J}, \; x^{eq}_j = 0 $ therefore the coefficients $a_{ij}$ play no role in equation \eqref{Extinction} and one can rewrite equation \eqref{Extinction} as 
 \begin{align} 
--s_2D+ \begin{bmatrix}
-1_{n_1 \times 1}+A_1A^{-1}(\diag(f(s))^{-1}D_{n_1 \times 1}-1_{n_1 \times 1}) \\-(1_{n_1 \times 1}+A_2A^{-1}(\diag(f(s))^{-1}D_{n_1 \times 1}-1_{n_1 \times 1})
-\end{bmatrix}^\top \diag(k)\diag(f(s))A^{-1}(\diag(f(s))^{-1}D_{n \times 1}-1_{n \times 1}) = 0 \\
--s_2D+	\begin{bmatrix}
-1_{n_1 \times 1}+\begin{bmatrix}
-I_{n_1} & 0_{n_2 \times 1} 
-\end{bmatrix}(\diag(f(s))^{-1}D_{n \times 1}-1_{n \times 1}) \\-(1_{n_1 \times 1}+\begin{bmatrix}
-0_{n_1 \times 1} & I_{n_2} 
-\end{bmatrix}(\diag(f(s))^{-1}D_{n_1 \times 1}-1_{n_1 \times 1})
-\end{bmatrix}^\top \diag(k)\diag(f(s))A^{-1}(\diag(f(s))^{-1}D_{n \times 1}-1_{n \times 1}) = 0 \\
--s_2D +	\begin{bmatrix}
-D_{n_1 \times 1}\\-D_{n_2 \times 1}
-\end{bmatrix}^T\diag(f(s))^{-1}\diag(f(s)) \diag(k) A^{-1}(\diag(f(s))^{-1}D_{n \times 1}-1_{n \times 1}) = 0  \\
--s_2D+\begin{bmatrix}
-D_{n_1 \times 1} \\-D_{n_2\times 1}
-\end{bmatrix}^\top \diag(k)A^{-1}(\diag(f(s))^{-1}D_{n \times 1}-1_{n_1 \times 1}) = 0 \\
--s_2 + \begin{bmatrix}
-1_{n_1 \times 1}\\1_{n_2 \times 1}
-\end{bmatrix}^\top B (\diag(f(s))^{-1}D_{n \times 1} - 1_{n \times 1}) = 0 
-\end{align}
-\subsection{Deduction of \eqref{S2(S1)}}
-
-
-Note that 
-\begin{align}  (\diag(f(s))^{-1}D_{n\times 1}-1_{n\times1})  & = \begin{array}{cc} 
-\begin{bmatrix}
-\left(D\frac{K_1+s_1}{\bar{\mu}_{1}s_1}-1 \right) \\ \vdots \\ \left(D\frac{K_n+s_2}{\bar{\mu}_{n}s_2}-1\right) 
-\end{bmatrix} & \hspace{-0.5cm}\begin{array}{c} \left\} n_1\right. \\ \\ \left\} n_2\right.\end{array}
-\end{array} \\
-\label{invMu} 
-& = \begin{bmatrix}
-\dfrac{DK_1+(D-\bar{\mu}_1)s_1}{\bar{\mu}_{1}s_1} \\ \vdots \\ \dfrac{DK_n+(D-\bar{\mu}_n)s_2}{\bar{\mu}_{n}s_2} 
-\end{bmatrix}
+\label{mu=D}\mu^{act}(x,s) = \diag(f^{act}(s))(1_{n^{act}\times 1} + A^{act}x^{act}) = D_{n^{act} \times 1} 
 \end{align}
 
-Replacing \eqref{invMu} in \eqref{s1Equilibria}.
+From hypothesis \ref{inverse hypothesis} matrix $A^{act}$ has an inverse. This gives the following formula
+	\begin{align}
+	x^{act} = (A^{act})^{-1}(\diag(f^{act}(s))^{-1}D_{n^{act}\times 1} - 1_{n^{act}\times 1}) \tag{\ref{EqSome}}
+	\end{align} 
+
+
+
+Note as well that at the equilibrium, $s_3$ can be defined in terms of $s_1$, $s_2$ and $s_{in}$. This is done by adding equations \eqref{Eq2}, \eqref{Eq3},  and \eqref{Eq4} which gives :
 
 \begin{align}
-(s_{in}-s_1)-	\begin{bmatrix}
-1_{n_1 \times 1} \\0_{n_2\times 1}
-\end{bmatrix}^\top  B\begin{bmatrix}
-\dfrac{DK_1+(D-\bar{\mu}_1)s_1}{\bar{\mu}_{1}s_1} \\ \vdots \\ \dfrac{DK_n+(D-\bar{\mu}_n)s_2}{\bar{\mu}_{n}s_2} 
-\end{bmatrix} = 0 \\
-(s_{in}-s_1) - \sum \limits_{i=1}^{n_1}\left(\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_1}{\bar{\mu}_{j}s_1} +\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_2}{\bar{\mu}_{j}s_2} \right) = 0 \quad / \cdot s_1s_2 \\
-(s_{in}-s_1)s_1s_2 - \sum \limits_{i=1}^{n_1}\left(\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_1}{\bar{\mu}_{j}}s_2 +\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_2}{\bar{\mu}_{j}}s_1 \right) = 0 \\
-(s_{in}-s_1)s_1s_2 - \sum \limits_{i=1}^{n_1}\left(\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}s_2 +\sum \limits_{j = 1}^{n} B_{ij}\dfrac{(D-\bar{\mu}_j)}{\bar{\mu}_{j}}s_2s_1 + \sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}s_1 \right) = 0  \\
-s_2\left((s_{in}-s_1)s_1 - \sum \limits_{i=1}^{n_1}  \left( \sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}} + \sum \limits_{j = 1}^{n} B_{ij}\dfrac{(D-\bar{\mu}_j)}{\bar{\mu}_{j}}s_1 \right)  \right) =  \sum \limits_{i=1}^{n_1}\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}s_1 \\
-s_2\left(-s_{1}^2  +  \left( s_{in}\underbrace{- \sum \limits_{i=1}^{n_1} \sum \limits_{j = 1}^{n} B_{ij}\dfrac{(D-\bar{\mu}_j)}{\bar{\mu}_{j}}}_{\beta_1}\right) s_1 \underbrace{ - \sum \limits_{i=1}^{n_1}  \sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}}_{\beta_2}  \right) = \underbrace{\sum \limits_{i=1}^{n_1}\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}}_{\beta_3}s_1 \\
-s_2\left(-s_{1}^2  +  \left( s_{in}+\beta_1 \right) s_1 +\beta_2  \right) = \beta_3 s_1
-\end{align} 
-
-From the last expression it should be clear that formula \eqref{S2(S1)} holds, it is just a matter of identifying the coefficients.
-\begin{itemize}
-	\item $\beta_1 =  - \sum \limits_{i=1}^{n_1} \sum \limits_{j = 1}^{n} B_{ij}\dfrac{(D-\bar{\mu}_j)}{\bar{\mu}_{j}}$
-	\item $\beta_2 =-\sum \limits_{i=1}^{n_1}  \sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}$
-	\item $\beta_3 = \sum \limits_{i=1}^{n_1}\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}} $
-	\item $c_1 = \dfrac{-1}{\beta_3}$
-	\item $c_2 =  \dfrac{s_{in} + \beta_1}{\beta_3}$
-	\item $c_3 = \dfrac{\beta_2}{\beta_3}$
-\end{itemize}
-
-\subsection{Deduction of \eqref{Poly4}}
-
-Again, replacing \eqref{invMu} in \eqref{s2Equilibria}.
-\begin{align}
--s_2+
-\begin{bmatrix}
-1_{n_1 \times 1}\\ - 1_{n_2 \times 1}
-\end{bmatrix}^\top B\begin{bmatrix}
-\dfrac{DK_1+(D-\bar{\mu}_1)s_1}{\bar{\mu}_{1}s_1} \\ \vdots \\ \dfrac{DK_n+(D-\bar{\mu}_n)s_2}{\bar{\mu}_{n}s_2} 
-\end{bmatrix} = 0 \\
-\begin{array}{c} \displaystyle  -s_2 + \sum \limits_{i=1}^{n_1}\left(\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_1}{\bar{\mu}_{j}s_1} +\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_2}{\bar{\mu}_{j}s_2} \right) \\
-\displaystyle - \sum \limits_{i=n_1+1}^{n}\left(\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_1}{\bar{\mu}_{j}s_1} +\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_2}{\bar{\mu}_{j}s_2} \right)= 0
-\end{array} \quad / \cdot s_1s_2 \\
-\begin{array}{c} \displaystyle  -s_1s_2^2 +\sum \limits_{i=1}^{n_1}\left(\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_1}{\bar{\mu}_{j}}s_2 +\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_2}{\bar{\mu}_{j}}s_1 \right) \\
-\displaystyle -  \sum \limits_{i=n_1+1}^{n}\left(\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_1}{\bar{\mu}_{j}}s_2 +\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_2}{\bar{\mu}_{j}}s_1 \right)= 0
-\end{array} \\
-\begin{array}{c} \displaystyle  -s_1s_2^2 + \sum \limits_{i=1}^{n_1}\left(\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}s_2 +\sum \limits_{j = 1}^{n} B_{ij}\dfrac{(D-\bar{\mu}_j)}{\bar{\mu}_{j}}s_2s_1 + \sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}s_1\right) \\
-\displaystyle -  \sum \limits_{i=n_1+1}^{n}\left(\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}s_2 +\sum \limits_{j = 1}^{n} B_{ij}\dfrac{(D-\bar{\mu}_j)}{\bar{\mu}_{j}}s_2s_1 + \sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}s_1 \right)= 0
-\end{array}\\
-\begin{array}{c} \displaystyle  -s_1s_2^2  - \beta_2s_2 -\beta_1s_1s_2 + \beta_3s_1 
-\underbrace{- \sum \limits_{i=n_1+1}^{n}\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}}_{\beta_4}s_2 \underbrace{-\sum \limits_{i=n_1+1}^{n}\sum \limits_{j = 1}^{n} B_{ij}\dfrac{(D-\bar{\mu}_j)}{\bar{\mu}_{j}}}_{\beta_5}s_2s_1\underbrace{ -\sum \limits_{i=n_1+1}^{n}\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}}_{\beta_6}s_1 = 0
-\end{array}\\
--s_1s_2^2  - \beta_2s_2 -\beta_1s_1s_2 + \beta_3s_1 + \beta_4s_2 +\beta_5s_1s_2 + \beta_6s_1  = 0 \\
-\label{Prepoly4} (\beta_4-\beta_2)s_2 + (\beta_3+\beta_6)s_1 + (\beta_5 - \beta_1)s_1s_2- s_1s_2^2 = 0 
-\end{align}
-\begin{itemize}
-	\item  $\displaystyle  \beta_4 = - \sum \limits_{i=n_1+1}^{n}\sum \limits_{j = 1}^{n_1} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}$
-	\item $\displaystyle  \beta_5 = -\sum \limits_{i=n_1+1}^{n}\sum \limits_{j = 1}^{n} B_{ij}\dfrac{(D-\bar{\mu}_j)}{\bar{\mu}_{j}}$
-	\item $\displaystyle \beta_6 =  -\sum \limits_{i=n_1+1}^{n}\sum \limits_{j = n_1+1}^{n} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}$
-\end{itemize}
-
-Then replace \eqref{S2(S1)} in \eqref{Prepoly4}: 
-\begin{align}
-(\beta_4-\beta_2)\dfrac{s_1}{c_1s_1^2+c_2s_1+c_3} + (\beta_3+\beta_6)s_1 + (\beta_5 - \beta_1)s_1\dfrac{s_1}{c_1s_1^2+c_2s_1+c_3}- s_1\left(\frac{s_1}{c_1s_1^2+c_2s_1+c_3}\right)^2 = 0 \quad / \cdot \frac{1}{s_1} \\
-(\beta_4-\beta_2)\dfrac{1}{c_1s_1^2+c_2s_1+c_3} + (\beta_3+\beta_6) + (\beta_5 - \beta_1)\dfrac{s_1}{c_1s_1^2+c_2s_1+c_3}- \left(\frac{s_1}{c_1s_1^2+c_2s_1+c_3}\right)^2 = 0  \quad / \cdot (c_1s_1^2+c_2s_1+c_3)^2 \\
-(\beta_4-\beta_2)(c_1s_1^2+c_2s_1+c_3)+ (\beta_3+\beta_6)(c_1s_1^2+c_2s_1+c_3)^2 + (\beta_5 - \beta_1)(c_1s_1^2+c_2s_1+c_3)s_1 - s_1^2 = 0   \\
-\begin{array}{c}(\beta_4-\beta_2)(c_1s_1^2+c_2s_1+c_3)+ (\beta_3+\beta_6)(c_1^2s_1^4+c_2^2s_1^2+c_3^2 + 2 c_1c_2s_1^3 + 2c_2c_3s_1 + 2 c_1c_3s_1^2)\\ \\  + (\beta_5 - \beta_1)(c_1s_1^2+c_2s_1+c_3)s_1 - s_1^2 = 0 \end{array} \\
-\begin{array}{c} \underbrace{(\beta_3+\beta_6)c_1^2}_{a_4} s_1^4 + (\underbrace{(\beta_3 + \beta_6)(2c_1c_2) +  (\beta_5 -\beta_1)c_1}_{a_3})s_1^3 + (\underbrace{(\beta_4 - \beta_2)c_1 +(\beta_3 + \beta_6)(c_2^2 + 2c_1c_3) + (\beta_5-\beta_1)c_2-1}_{a_2})s_1^2 \\ 
-+(\underbrace{(\beta_4 -\beta_2)c_2 + (\beta_3 + \beta_6)2c_2c_3+(\beta_5-\beta_1)c_3}_{a_1})s_1 + \underbrace{(\beta_4-\beta_2)c_3 + (\beta_3 + \beta_6)c_3^2}_{a_0} = 0
-\end{array}
+s_{in} = s_1+s_2+s_3 \tag{\ref{s1s2s3}}
 \end{align}
 
-Which yields \eqref{Poly4}.
-\begin{itemize}
-	\item $a_4 = (\beta_3+\beta_6)c_1^2$ 
-	\item $a_3 = (\beta_3 + \beta_6)(2c_1c_2) +  (\beta_5 -\beta_1)c_1$
-	\item $a_2 = (\beta_4 - \beta_2)c_1 +(\beta_3 + \beta_6)(c_2^2 + 2c_1c_3) + (\beta_5-\beta_1)c_2-1$
-	\item $a_1 = (\beta_4 -\beta_2)c_2 + (\beta_3 + \beta_6)2c_2c_3+(\beta_5-\beta_1)c_3$
-	\item $a_0 = (\beta_4-\beta_2)c_3 + (\beta_3 + \beta_6)c_3^2$
-\end{itemize}
+\subsubsection{Both functional groups are present}
 
-\textbf{Note:} When calculating the equilibria with the extinction of some OTU under H \ref{noWashoutHyp}, coefficients are calculated with $B = \diag(k^{act})(A^{act})^{-1}$. The indexes are redefined to be taken only in $i,j \in [n] \setminus \mathcal{J}$ by formula \eqref{EquilibriaFormula}.
+The case where in each functional group remains at least one OTU is represented by Hypothesis \ref{hypothesis CN}.
 
-\subsection{Deduction of \eqref{S1NOBWashout}}
-For auxiliary purposes $B:= \diag(k^{act})(A^{act})^{-1}$. 
+By replacing $x^{eq} = Mx^{act}$ in equation \eqref{Eq2} yields
 
-Under hypothesis \ref{WashoutG2}, the $j \in \mathcal{J}$ entries of vector $\diag(k) \diag(f(s))x^{eq} $ are zero. 
-Note also that $(A_1x^{eq})_i = (A^{act}x^{act})_i, \, \forall i \in [n] \setminus \mathcal{J}$.
 
-Then the cross product in equation \eqref{Eq2} can be reduced:
+\begin{align}
+(s_{in}-s_1)D + Y_{1\bullet} \diag(\mu(x,s))Mx^{act}  = 0 \\
+(s_{in}-s_1)D + Y^{act}_{1\bullet} \diag(\mu^{act}(x,s))x^{act}  = 0 
+\end{align}
+
+Replacing \eqref{mu=D} gives: 
+
 \begin{align} 
-\begin{bmatrix}
-1_{n_1\times 1}+A_1x^{eq} \\0
-\end{bmatrix}^\top \diag(k) \diag(f(s))x^{eq} = [1_{(n-m)\times 1} - A^{act}x^{act}]^\top \diag(k^{act}) \diag(f^{act}(s))x^{act} 
-\end{align} 
-Therefore replacing \eqref{EquilibriaFormula} and \eqref{EqSome} in \eqref{Eq2}.
-
-\begin{align}
-0 &= (s_{in}-s_1)D- [1_{(n-m)\times 1} - A^{act}x^{act}]^\top \diag(k^{act}) \diag(f^{act}(s))x^{act}\\
-&= (s_{in}-s_1)D- [1_{(n-m)\times 1} - A^{act}(A^{act})^{-1}(\diag(f^{act}(s))^{-1}D_{(n-m)\times 1} - 1_{(n-m)\times 1})]^\top \dots \\ & \diag(k^{act}) \diag(f^{act}(s))(A^{act})^{-1}(\diag(f^{act}(s))^{-1}D_{(n-m)\times 1} - 1_{(n-m)\times 1})\\
-&  =  (s_{in}-s_1)-1_{(n-m)\times 1}^\top
-B(\diag(f^{act}(s))^{-1}D_{(n-m)\times 1} - 1_{(n-m)\times 1})
+(s_{in}-s_1)D + Y^{act}_{1\bullet} \diag(D_{n^{act}\times 1})x^{act}  = 0  \\
+(s_{in}-s_1) + Y^{act}_{1\bullet} x^{act}  = 0  \\
+\label{s1Equilibria} (s_{in}-s_1) + Y^{act}_{1\bullet}(A^{act})^{-1}(\diag(f^{act}(s))^{-1}D_{n^{act}\times 1} - 1_{n^{act}\times 1}) = 0
 \end{align} 
 
-
-$s_2$ does not appear in the previous equation. Then as before (using the numeration of active indexes):
+For notation and indexing purposes it is useful to define: 
 \begin{align}
-\diag(\mu^{act})^{-1}D_{(n-m)\times 1} - 1_{(n-m)\times 1} = \begin{bmatrix}
-\dfrac{DK_1+(D-\bar{\mu}_1)s_1}{\bar{\mu}_{1}s_1} \\ \vdots \\ \dfrac{DK_{n-m}+(D-\bar{\mu}_{n-m})s_1}{\bar{\mu}_{n-m}s_1}
-\end{bmatrix}
+B := Y^{act}_{1\bullet} (A^{act})^{-1}M^\top.
+\end{align}
+(note $B_j = 0 \, \forall j \in \mathcal{J}$) and equation \eqref{s1Equilibria} reads as follows:
+
+\begin{align}
+(s_{in}-s_1) + Y^{act}_{1\bullet}(A^{act})^{-1}\underbrace{M^\top M}_{I_{n^{act}}}(\diag(f^{act}(s))^{-1} D_{n^{act}\times 1} - 1_{n^{act}\times 1}) = 0\\
+\displaystyle s_{in} - s_1 + \sum \limits_{i \in G_1} B_i \left(\dfrac{K_i+s_1}{\bar{\mu_i}s_1}D - 1 \right) + \sum \limits_{i \in G_2 } B_i \left(\dfrac{K_i+s_2}{\bar{\mu_i}s_2}D - 1 \right)= 0 \\
+\displaystyle s_{in} - s_1 + \sum \limits_{i \in G_1 } DB_i \dfrac{K_i+s_1}{\bar{\mu_i}s_1}+ \sum \limits_{i \in G_2 } DB_i \dfrac{K_i+s_2}{\bar{\mu_i}s_2} - \sum \limits_{i \in G_1 \cup G_2}B_i= 0 \quad /\cdot s_1s_2
+\\
+\displaystyle s_1s_2 s_{in}- s^2_1s_2 + \sum \limits_{i \in G_1} s_2DB_i \dfrac{K_i+s_1}{\bar{\mu_i}}+ \sum \limits_{i \in G_2 } s_1DB_i \dfrac{K_i+s_2}{\bar{\mu_i}} - s_1s_2\sum \limits_{i \in G_1 \cup G_2}B_i= 0 \\
+\displaystyle s_1s_2 s_{in}- s^2_1s_2 + s_2\sum \limits_{i \in G_1 } \frac{DB_iK_i}{\bar{\mu_i}}+s_1s_2\sum \limits_{i \in G_1 } \frac{DB_i}{\bar{\mu_i}}+ s_1\sum \limits_{i \in G_2 } \frac{DB_iK_i}{\bar{\mu_i}} + s_1s_2\sum \limits_{i \in G_2 } \dfrac{DB_i}{\bar{\mu_i}} - s_1s_2\sum \limits_{i \in G_1 \cup G_2}B_i= 0 \\
+\displaystyle s_2\left(s_1s_{in} - s^2_1 + \sum \limits_{i \in G_1} \frac{DB_iK_i}{\bar{\mu_i}} +s_1\sum \limits_{i \in G_1 } \dfrac{DB_i}{\bar{\mu_i}}+s_1\sum \limits_{i \in G_2 } \dfrac{DB_i}{\bar{\mu_i}}  - s_1\sum \limits_{i \in G_1 \cup G_2}B_i  \right) = - s_1\sum \limits_{i \in G_2 } \frac{DB_iK_i}{\bar{\mu_i}} \\
+\displaystyle s_2\left( - s^2_1 +s_1\left(s_{in}+\sum \limits_{i \in G_1 \cup \in G_2 } B_i\left(\dfrac{D}{\bar{\mu_i}}-1\right) \right) + \sum \limits_{i \in G_1} \frac{DB_iK_i}{\bar{\mu_i}}\right) = - s_1\sum \limits_{i \in G_2 } \frac{DB_iK_i}{\bar{\mu_i}}
+\end{align}
+ 
+and so we arrive to formula
+\begin{align}
+s_2 = \frac{s_1}{b_1s_1^2+b_2s_1+b_3} \tag{\ref{S2(S1)}}
 \end{align}
 
-Therefore:
-
+where
 \begin{align}
-(s_{in}-s_1)- 1_{(n-m)\times 1}^\top 
-B\begin{bmatrix}
-\dfrac{DK_1+(D-\bar{\mu}_1)s_1}{\bar{\mu}_{1}s_1} \\ \vdots \\ \dfrac{DK_{n-m}+(D-\bar{\mu}_{n-m})s_1}{\bar{\mu}_{n-m}s_1}
-\end{bmatrix} = 0 \\
-(s_{in}-s_1) -\frac{1}{y_A} \sum \limits_{i=1}^{n-m}\sum \limits_{j=1}^{n-m} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_1}{\bar{\mu}_{j}s_1}  = 0 \quad /\cdot s_1 \\
-(s_{in} - s_1)s_1   -\frac{1}{y_A} \sum \limits_{i=1}^{n-m}\sum \limits_{j=1}^{n-m} B_{ij}\dfrac{DK_j+(D-\bar{\mu}_j)s_1}{\bar{\mu}_{j}}  = 0 \\
--s_1^2 + \left( s_{in}-\frac{1}{y_A} \sum \limits_{i=1}^{n-m}\sum \limits_{j=1}^{n-m} B_{ij}\dfrac{(D-\bar{\mu}_j)}{\bar{\mu}_{j}} \right)s_1 - \frac{1}{y_A} \sum \limits_{i=1}^{n-m}\sum \limits_{j=1}^{n-m} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}} =0
+\displaystyle b_1 & =  \left(\sum \limits_{i \in G_2 } \frac{DB_iK_i}{\bar{\mu_i}} \right)^{-1} \\
+\displaystyle b_2 & = -\left(s_{in}+\sum \limits_{i \in G_1 \cup \in G_2 } B_i\left(\dfrac{D}{\bar{\mu_i}}-1\right) \right) \left(\sum \limits_{i \in G_2 } \frac{DB_iK_i}{\bar{\mu_i}} \right)^{-1} \\
+\displaystyle b_3 & = -\sum \limits_{i \in G_1} \frac{DB_iK_i}{\bar{\mu_i}} \left(\sum \limits_{i \in G_2 } \frac{DB_iK_i}{\bar{\mu_i}} \right)^{-1} \\
 \end{align} 
 
-Identifying coefficients
-\begin{itemize}
-	\item $a'_2 = -1$
-	\item $a'_1 = s_{in}-\frac{1}{y_A} \sum \limits_{i=1}^{n-m}\sum \limits_{j = 1}^{n-m} B_{ij}\dfrac{(D-\bar{\mu}_j)}{\bar{\mu}_{j}}$
-	\item $a'_0 =- \frac{1}{y_A} \sum \limits_{i=1}^{n-m}\sum \limits_{j = 1}^{n-m} B_{ij}\dfrac{DK_j}{\bar{\mu}_{j}}$ 
-\end{itemize}
+The same computations must be done with equation \eqref{Eq3}, which is structurally very similar to \eqref{Eq2}. So some steps are skipped. By replacing $x^{eq} = Mx^{act}$ in equation \eqref{Eq2} yields
+
+\begin{align}
+\label{s2Equilibria} -s_2 + Y^{act}_{2\bullet}(A^{act})^{-1}(\diag(f^{act}(s))^{-1}D_{n^{act}\times 1} - 1_{n^{act}\times 1}) = 0
+\end{align}
+
+It is again useful to define:
+
+\begin{align}
+C: = Y^{act}_{2\bullet} (A^{act})^{-1}M^\top.
+\end{align}
+
+\begin{align}
+-s_2 + Y^{act}_{2\bullet}(A^{act})^{-1}\underbrace{M^\top M}_{I_{n^{act}}}(\diag(f^{act}(s))^{-1} D_{n^{act}\times 1} - 1_{n^{act}\times 1}) = 0\\
+- s_2 + \sum \limits_{i \in G_1 } DC_i \dfrac{K_i+s_1}{\bar{\mu_i}s_1}+ \sum \limits_{i \in G_2 } DC_i \dfrac{K_i+s_2}{\bar{\mu_i}s_2} - \sum \limits_{i \in G_1 \cup G_2}C_i= 0 \quad /\cdot s_1s_2
+\\
+\displaystyle- s_1s_2^2 + s_2\sum \limits_{i \in G_1 } \frac{DC_iK_i}{\bar{\mu_i}}+s_1s_2\sum \limits_{i \in G_1 } \frac{DC_i}{\bar{\mu_i}}+ s_1\sum \limits_{i \in G_2 } \frac{DC_iK_i}{\bar{\mu_i}} + s_1s_2\sum \limits_{i \in G_2 } \dfrac{DC_i}{\bar{\mu_i}} - s_1s_2\sum \limits_{i \in G_1 \cup G_2}C_i= 0 \\
+\displaystyle s_1\left( - s^2_2 +s_2\sum \limits_{i \in G_1 \cup \in G_2 } C_i\left(\dfrac{D}{\bar{\mu_i}}-1\right)  + \sum \limits_{i \in G_2} \frac{DC_iK_i}{\bar{\mu_i}}\right) = - s_2\sum \limits_{i \in G_1 } \frac{DC_iK_i}{\bar{\mu_i}}
+\end{align}
+
+and one arrives to expression:
+\begin{align}
+\label{s1(s2)} s_1 = \dfrac{s_2}{c_1s_2^2 + c_2s_2 + c_3}
+\end{align}
+where
+\begin{align}
+\displaystyle c_1 & =  \left(\sum \limits_{i \in G_1 } \frac{DC_iK_i}{\bar{\mu_i}} \right)^{-1} \\
+\displaystyle c_2 & = -\sum \limits_{i \in G_1 \cup \in G_2 } C_i\left(\dfrac{D}{\bar{\mu_i}}-1\right)  \left(\sum \limits_{i \in G_1 } \frac{DC_iK_i}{\bar{\mu_i}} \right)^{-1} \\
+\displaystyle c_3 & = -\sum \limits_{i \in G_2} \frac{DC_iK_i}{\bar{\mu_i}} \left(\sum \limits_{i \in G_1 } \frac{DC_iK_i}{\bar{\mu_i}} \right)^{-1} \\
+\end{align} 
+Then by replacing  \eqref{S2(S1)} in equation \eqref{s1(s2)}, one gets a fifth degree polynomial for $s_1$. 
+
+\begin{align}
+s_1\left( c_1\left( \frac{s_1}{b_1s_1^2+b_2s_1+b_3} \right)^2 + c_2\left( \frac{s_1}{b_1s_1^2+b_2s_1+b_3} \right) + c_3 \right) =  \frac{s_1}{b_1s_1^2+b_2s_1+b_3}  \quad /\cdot  \left(b_1s_1^2+b_2s_1+b_3\right)^2\\
+s_1\left( c_1s_1 + c_2s_1\left(b_1s_1^2+b_2s_1+b_3\right)  + c_3\left(b_1s_1^2+b_2s_1+b_3\right)^2 \right) =  s_1\left(b_1s_1^2+b_2s_1+b_3\right) \\
+s_1\left( c_1s_1 + c_2s_1\left(b_1s_1^2+b_2s_1+b_3\right)  + c_3\left(b_1s_1^2+b_2s_1+b_3\right)^2 - \left(b_1s_1^2+b_2s_1+b_3\right) \right) = 0 
+\end{align} 
+
+\begin{align}
+\label{Poly4} a_4s_1^4+a_3s_1^3+a_2s_1^2+a_1s_1+a_0 = 0
+\end{align}
+
+
+Formulae for coefficients $c_1, c_2, c_3, a_0, a_1, a_2, a_3, a_4$ can be found in supplementary material. 
+
+The equilibrium point can be calculated from the solutions of the system of equations \eqref{EqSome}, \eqref{s1s2s3}, \eqref{S2(S1)}, and \eqref{Poly4} with non negative coordinates. If the system only provides solutions with at least one negative entry then the set $\mathcal{J}$ can not define an equilibrium point.
+
+
+\subsubsection{Washout of $G_2$}
+
+The washout of $G_2$ is represented in Hypothesis \ref{hypothesis washout G2}. 
+
+Under this case note that $f^{act}(s)$ depends only on $s_1$. Therefore when equation \eqref{EqSome} is replaced in \eqref{Eq2}, one obtains a quadratic equation for $s_1$:
+
+\begin{align}
+\label{poly2_s1} a'_2 s_1^2 + a'_1s_1 + a'_0 = 0
+\end{align}
+
+
+Since $x_i = 0 \, \forall i \in G_2$ then from equation \eqref{Eq4}.
+\begin{align}
+\dot{s_3} = 0 = -s_3D \\
+\Rightarrow s_3 = 0 \tag{\ref{no_s3}}
+\end{align}
+
+In this case the equilibrium point can be calculated from the solutions of the system of equations \eqref{EqSome}, \eqref{s1s2s3}, \eqref{poly2_s1}, and \eqref{no_s3} with non-negative coordinates. If the system only provides solutions with at least one negative entry then the set $\mathcal{J}$ can not define an equilibrium point.
 
 
 \subsection{Jacobian of the system}
@@ -1301,18 +1227,17 @@ J_{44} &= -D
 
 For applying the methods developed in \cite{Cimen2004}. Define the system state $X = (x,s)$. Make the change of variables $v_i = u_i - 1$ with $v = (v_1,\dots,v_n)$ are applied to system \eqref{Controlsystem}. The system may be rewritten then as:
 \begin{align} 
+\label{Controlsystem_CV}
 \begin{array}{cl}
 \dot{x_i} =& \left(f_i(s)(1+v_i(t)) -D \right)x_i \quad \forall i \in G_1\\
 \dot{x_i} =& \left(f_i(s)(1+v_i(t)) -D \right)x_i \quad \forall i \in G_2\\
-\dot{s_1} =& \displaystyle s_1\left(\frac{s_{in}}{s_1}-1\right)D-\sum\limits_{i \in G_1}\frac{1}{y_i}f_i(s)(1+v_i(t)) x_i  \\
-\dot{s_2} = & \displaystyle -s_2D+\sum\limits_{i \in G_1}\frac{1}{y_i}f_i(s)(1+v_i(t))	-\sum\limits_{i \in G_2}\frac{1}{y_i}f_i(s)(1+v_i(t)) x_i  \\
-\dot{s_3} =&  \displaystyle -s_3D+\sum\limits_{i \in G_2}^{n_1+n_2}\frac{1}{y_i}f_i(s)(1+v_i(t)) x_i \\
-y(t) & = g(x,s)
+\dot{s_1} =& \displaystyle s_1\left(\frac{s_{in}}{s_1}-1\right)D+\sum\limits_{i \in G_1}y_{s_1/x_i}f_i(s)(1+v_i(t)) x_i  \\
+\dot{s_2} = & \displaystyle -s_2D+\sum\limits_{i \in G_1 \cup G_2}y_{s_2/x_i}f_i(s)(1+v_i(t))x_i	  \\
+\dot{s_3} =&  \displaystyle -s_3D+\sum\limits_{i \in G_2}^{n_1+n_2}y_{s_3/x_i}f_i(s)(1+v_i(t)) x_i \\
+y(t) & =x(t)
 \end{array}
 \end{align}	
-
-Define $k_{G_1} = \left ( \frac{1}{y_1},\dots,\frac{1}{y_{nA}}\right )^\top \in \R^{n_1}$,  $k_{G_2} = \left(\frac{1}{y_{n_1+1}},\dots,\frac{1}{y_{n}}\right )^\top \in \R^{n_2}$, and
-
+Define: 
 \begin{align}
 \label{A_matrix} A\left (X\right) = \begin{bmatrix}
 A_{11}(X) & A_{12}(X) \\ A_{21}(X) & A_{22}(X)
@@ -1321,14 +1246,10 @@ A_{11}(X) & A_{12}(X) \\ A_{21}(X) & A_{22}(X)
 B_1(X) \\ B_2(X)
 \end{bmatrix} 
 \end{align}
-
+with 
 \begin{align}
 A_{11}(X) &= \diag(f(s)- D_{n\times 1} ) \\
-A_{21}(X) &=  \begin{bmatrix} 
-f(s)^\top \begin{bmatrix} -\diag(k_{G_1}) & 0_{n_1 \times n_2} \end{bmatrix}^\top  \\
-f(s)^\top \begin{bmatrix} \diag(k_{G_1}) & -\diag(k_{G_2}) \end{bmatrix}^\top   \\
-f(s)^\top \begin{bmatrix} 0_{n_2 \times n_1} & \diag(k_{G_2}) \end{bmatrix}^\top 
-\end{bmatrix}  \\
+A_{21}(X) &=  Y\diag(f(s))\\
 A_{12}(X) &=  0_{n \times 3} \\
 A_{22}(X) &= \begin{bmatrix} \left(\frac{s_{in}}{s_1}-1\right)D & 0 & 0 \\ 
 0 &-D & 0 \\ 
@@ -1337,14 +1258,14 @@ A_{22}(X) &= \begin{bmatrix} \left(\frac{s_{in}}{s_1}-1\right)D & 0 & 0 \\
 
 \begin{align}
 B_1(X) &= \diag(f(s))\diag(x)  \\
-B_2(X) &= \begin{bmatrix}
-f(s)^\top \diag(x) \begin{bmatrix} -\diag(k_{G_1}) & 0_{n_1 \times n_2} \end{bmatrix}^\top \\
-f(s)^\top \diag(x) \begin{bmatrix} \diag(k_{G_1}) & -\diag(k_{G_2}) \end{bmatrix}^\top  \\
-f(s)^\top \diag(x) \begin{bmatrix} 0_{n_2 \times n_1} & \diag(k_{G_2}) \end{bmatrix}^\top  
-\end{bmatrix}
+B_2(X) &= Y\diag(f(s))\diag(x)
 \end{align}
-
-Then the system \eqref{Controlsystem} can be rewritten as:
+\begin{align}
+C(X) & = \begin{bmatrix}
+\diag(I_n) & 0_{n\times 3}
+\end{bmatrix}
+\end{align} 
+Then the system \eqref{Controlsystem_CV} can be rewritten as:
 
 \begin{align}
 \dot{X} &= A(X)X + B(X)v \\
@@ -1356,9 +1277,11 @@ $z(t)\in \R^n$ is the measured vector containing the OTU concentrations in time.
 J(v) = \left(z(t_f) - C(X) X(t_f)\right)^\top F\left(z(t_f) - C(X) X(t_f)\right) +  \int \limits_{t_0}^{t_f} \left(z(t) - C(X) X(t)\right)^\top Q \left(z(t) -C(X)X(t)\right) + v(t)^\top R v(t)
 \end{align}
 
-where $F,Q$ and $R$ are positive definite matrices. Particularly in all simulations $R = \lambda I_n$ for some $\lambda >0$, so all controls have the same weight. Since there is no interest in the final time, we define $F = 0$. $Q$ is a diagonal matrix.
+where $F,Q$ and $R$ are positive definite matrices. Since there is no interest in the final time $F = 0$. $Q$ and $R$ are taken as diagonal matrices, in that way the system can be reduced as shown below. Particularly after testing the model in the proof of concept and data, the $Q$ and $R$ matrices were $\begin{bmatrix}
+\lambda_1 I_{n_1} &0  \\ 0& \lambda_2 I_{n_2}
+\end{bmatrix}$ and $I_n$, respectively, with $\lambda_1 = 10^{-4}$ and $\lambda_2 = 10^{-5}$.
 
-Define the dynamic sequences for $i \in \N \cup \{0\}$, $\dot{X}^{[i]}$ as :
+Define the dynamic sequences for $i \in \N $, $\dot{X}^{[i]}$ as :
 
 \begin{align}
 \dot{X}^{[i]} &= A(X^{[i]})X^{[i]} + B(X^{[i]})v^{[i]} \quad i\in \N \\
@@ -1366,7 +1289,7 @@ y^{[i]} &= X^{[i]} \quad i\in \N \\
 X^{[i]}(t_0) &= X_0 \quad i\in \N
 \end{align} 
 
-And for $i = -1$ define $X^{[-1]}(t) = X_0$.
+And for $i = 0$ define $X^{[0]}(t)$ as the solution of \eqref{Controlsystem_CV} with $v(t) \equiv 0 $. 
 
 The control law is given by
 \begin{align}
@@ -1426,7 +1349,7 @@ Recall $A_{11} = \diag \left( f\left(s^{[i-1]}\right)- D_{n\times 1} \right)$, a
 \tilde{P}^{[i]}(t_f) = 0
 \end{align}
 
-Inspecting the former equation one notices that if $i\neq j$, $P_{ij}(t) = 0$ is a solution of all non diagonal entries when $R$ is diagonal. And therefore by existence and uniqueness they should be constantly zero. Hence only the diagonal entries should be calculated. 
+Inspecting the former equation one notices that if $i\neq j$, $P_{ij}(t) = 0$ is a solution of all non diagonal entries when $R$ is diagonal. And therefore, once again, by existence and uniqueness they should be constantly zero. Hence only the diagonal entries should be calculated. 
 \begin{align}
 \dot{\tilde{P}}^{[i]}_{jj}(t)= -Q_{jj}- 2 \left(f_j\left(s^{[i-1]}\right)- D \right)\tilde{P}^{[i]}_{jj} + R^{-1}\left(\tilde{P}^{[i]}_{jj}\right)^2f_j\left(s^{[i-1]}\right)^2\left(x^{[i-1]}_j\right)^2  \\
 \tilde{P}^{[i]}_{jj}(t_f) = 0
