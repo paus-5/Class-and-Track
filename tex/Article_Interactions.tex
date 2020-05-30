@@ -56,7 +56,7 @@ As a departing point, the work of Dumont et al.\cite{Dumont2016} is presented in
 Notations used throughout the article:
 \begin{enumerate}
 	\item $n$: the number of OTU considered.
-	\item $n_i, \, i \in \{1,2\}$: the number of OTU in functional group $G_i$. In the example $G_1$ corresponds to Ammonium oxidizing bacteria (AOB) and $G_2$ corresponds to Ammonium oxidizing bacteria (NOB).
+	\item $n_i, \, i \in \{1,2\}$: the number of OTU in functional group $G_i$. In the example $G_1$ corresponds to ammonium oxidizing bacteria (AOB) and $G_2$ corresponds to nitrite oxidizing bacteria (NOB).
 	\item Let $m$ be an interger then $[m]:=\{1,\dots,n \}$. 
 	\item $x_i$ :  is the concentration of OTU $i$ measured in $[g/l]$. $i \in [n]$. 
 	\item $x$: vector $(x_1,\dots,x_n)^\top$.
@@ -64,7 +64,7 @@ Notations used throughout the article:
 	\item $s_2$ : concentration of substrate 2 in $[g/l]$. In the example $s_2$ represents nitrite. 
 	\item $s_3$ : concentration of substrate 3 in $[g/l]$. In the example $s_3$ represents nitrate.
 	\item $s_{in}$: entry concentration of substrate $1$ in $[g/l]$. May depend on time $s_{in} = s_{in}(t)$.
-	\item $s$:  vector $(s_1,s_2,s_3)$. Refered to as metabolites.
+	\item $s$:  vector $(s_1,s_2,s_3)^\top$. Referred to as metabolites.
 	\item $\I_i(t,x)$ : Interaction function of OTU $i \in \{1,\dots,n\}$.
 	\item $\mu_i(s,x)$ : growth function of OTU $i \in \{1,\dots,n\}$.
 	\item $\mu = (\mu_1(s,x), \dots, \mu_n(s,x))$ vector containing the growth function of every OTU.
@@ -123,7 +123,7 @@ Furthermore, for each $ i \in [n]$, OTU $i$ is characterized by its process rate
 An example of this process is the nitrification process where group $G_1$ is known as Ammonium oxidizing Bacteria (AOB), and group $G_2$ is known as Nitrite oxidizing Bacteria (NOB) \cite{SHARMA1977897}. 
 \subsection{Mass Balance Equations}
 
-Consider the scenario of a continuous and homogeneous reactor: the input flow is the same as the output flow, with a dilution rate $D$. The input flow contains a concentration $s_{in}$ of substrate $s_1$. Note that $s_{in}$ and $D$ are time dependent. Each OTU grows at a rate $\mu_i(s,x)$. System \eqref{system} represents this situation. A specific case of $\mu_i(s,x)$ is given in the next subsection. 
+Consider the scenario of a continuous and homogeneous reactor: the input flow is the same as the output flow, with a dilution rate $D$. The input flow contains a concentration $s_{in}$ of substrate $s_1$. Each OTU grows at a rate $\mu_i(s,x)$. System \eqref{system} represents this situation. A specific case of $\mu_i(s,x)$ is given in the next subsection. 
 
 \begin{align} 
 \label{system}
@@ -135,7 +135,7 @@ Consider the scenario of a continuous and homogeneous reactor: the input flow is
 \end{array}
 \end{align}	
 
-Which can be written in a more compact notation using the stoichiometric matrix $Y$ and the $\diag$ operator.
+System \eqref{system} can also be written in a more compact form using the stoichiometric matrix $Y$ and the $\diag$ operator.
 \begin{align}
 \label{Eq1X}	\dot{x} = & \diag(\mu(x,s) - D_{n\times 1})x \\
 \label{EqS}	\dot{s} = & \left(\begin{bmatrix} s_{in}&0&0 \end{bmatrix}^\top-s\right)D + Y\diag(\mu(x,s))x
@@ -150,7 +150,7 @@ In the work of Dumont \textit{et al.} \cite{Dumont2016} the growth rates seen in
 \end{align}
 
 The term $\left(1+\sum \limits_{j\in [n]} a_{ij} x_{j} \right)$ accounts for pairwise interactions affecting the growth rate of each OTU, while the term $\bar{\mu}_i\dfrac{s_j}{K_i + s_j}$ is a Monod growth expression, where $\bar{\mu}_i$ represents the maximum growth rate, and $K_i$ the half saturation constant \cite{monod1942recherches}. Let $A$ denote the matrix
-with entries $a_{ij}$ hereafter referred to as the interaction matrix. Dumont\textit{ et al.} did not analyse their model but simply provided a number of simulation results using parameter values identified from experimental data. The following section of this article deals with the mathematical analysis of model \eqref{system} with growth rates given by \eqref{gLV growth1} and \eqref{gLV growth2}.
+with entries $a_{ij}$ hereafter referred to as the interaction matrix. Dumont\textit{ et al.} did not analyse their model but simply provided several simulations using parameter values identified from experimental data. The following section of this article deals with the mathematical analysis of model \eqref{system} with growth rates given by \eqref{gLV growth1} and \eqref{gLV growth2}.
 
 \section{Mathematical Analysis}
 
@@ -192,7 +192,7 @@ The proof can be seen in the supplementary material.
 
 In this section analytical expressions for equilibrium points are shown. However, no analytic expression concerning the stability of such points is presented. To answer the question of stability a numeric scheme is used by evaluating the Jacobian at the equilibrium point. At the end of the section an algorithm is provided for exploring all the possible equilibria. All the computations for deriving the equations of this section can be found in the supplementary material.
 
-Model \eqref{system} is restated in a more compact form using matrix notation. Let $f(s)$ be such that,
+Let $f(s)$ be such that,
 %
 %\begin{align} A = \begin{bmatrix}
 %A_1\\A_2
@@ -241,7 +241,7 @@ Observe that equilibrium points are by definition non-negative so the state vari
 	$\mathcal{J} = \{j_1, \dots, j_m\ : \, x^{eq}_{j_i} = 0 , \;i \in [m] \} $. $n_1^{act}$ and $n_2^{act}$ denote the number of positive entries of $x^{eq}$ of functional groups $G_1$ and $G_2$, respectively. $n^{act} = n-m$ denotes the total number of positive entries of $x^{eq}$. The active point $x^{act}\in \R^{n^{act}}$ is defined by the positive entries of $x^{eq}$. Analogously, the functions $f^{act}(s)$ and $\mu^{act}(x,s)$ are defined by the positive entries of $x^{eq}$. The active interactions $A^{act}$ is defined as the matrix $A$ without the $\mathcal{J}$ rows and columns. The active stoichiometry matrix $Y^{act}$ is the matrix $Y$ without the $\mathcal{J}$ columns. 
 \end{defn}
  
- In order to derive the equilibrium points, it is desirable an invertible $A^{act}$ matrix. Therefore in what follows of the work it is assumed that matrix $A$ and some of its sub matrices have an inverse, this is stated properly in Hypothesis \ref{inverse hypothesis}. 
+ In order to derive the equilibrium points, it is desirable an invertible $A^{act}$ matrix. Therefore in what follows of the work it is assumed that matrix $A$ and some of its submatrices have an inverse, this is stated properly in Hypothesis \ref{inverse hypothesis}. 
 
 \begin{hypo}
 	Let $A$ be the interaction matrix of size $n \in \N$ and $S$ be a proper subset of $[n]$ with $|S| = m$. Then the matrix $B \in \R^{(n-m) \times (n-m)}$ defined by taking out the $S$ rows and columns of matrix $A$ is invertible.
@@ -270,7 +270,7 @@ The case where in each functional group remains at least one OTU is represented 
 
 By replacing equation \eqref{EqSome} in equation \eqref{Eq2} $s_2$ can be written as a function of $s_1$:
 \begin{align}
-s_2 = \frac{s_1}{c_1s_1^2+c_2s_1+c_3} \label{S2(S1)}
+s_2 = \frac{s_1}{b_1s_1^2+b_2s_1+b_3} \label{S2(S1)}
 \end{align}
 
 
@@ -281,7 +281,7 @@ Then by replacing  \eqref{S2(S1)} in equation \eqref{Eq3}, one gets a fourth deg
 \end{align}
 
 
-Formulae for coefficients $c_1, c_2, c_3, a_0, a_1, a_2, a_3, a_4$ can be found in supplementary material. 
+Formulae for coefficients $b_1, b_2, b_3, a_0, a_1, a_2, a_3, a_4$ can be found in supplementary material. 
 
 The equilibrium point can be calculated from the solutions of the system of equations \eqref{EqSome}, \eqref{s1s2s3}, \eqref{S2(S1)}, and \eqref{Poly4} with non negative coordinates. If the system only provides solutions with at least one negative entry then the set $\mathcal{J}$ can not define an equilibrium point.
 
@@ -349,11 +349,13 @@ For checking local asymptotic stability of the equilibrium points, the Jacobian 
 \end{algorithm}
 
 
-Operating and ecological diagrams are created by running algorithm \ref{StabilityAnalysis} for different pairs $(s_{in},D)$. In the case of operating diagrams\cite{lobry2017chemostat} (OD) all the pairs $(s_{in},D)$ are regrouped such that the points of the set $\mathcal{P}$ represent when partial nitrification (PN), complete nitrification (CN), washout (WO), or a combination of them may arise \cite{KHIN2004519}. PN refers to the state when nitrite $s_2$, accumulates because the OTU of $G_2$ are washed out and thus no conversion from $s_2$  to $s_3$ takes place. On the contrary CN is when nitrate ($s_3$) accumulates because of the presence of OTU of $G_2$. 
+Operating and ecological diagrams are created by running algorithm \ref{StabilityAnalysis} for different pairs $(s_{in},D)$. In the case of operating diagrams\cite{lobry2017chemostat} (OD) all the pairs $(s_{in},D)$ are regrouped such that the points of the set $\mathcal{P}$ represent when partial nitrification (PN), complete nitrification (CN), washout (WO), or a combination of them may arise \cite{KHIN2004519}. PN refers to the state when nitrite ($s_2$) accumulates because the OTU of $G_2$ are washed out and thus no conversion from $s_2$  to $s_3$ takes place. On the contrary CN is when nitrate ($s_3$) accumulates because of the presence of OTU of $G_2$. 
 
 In the case of ecological diagrams (ED) the pairs are regrouped such that the points in the set $\mathcal{P}$ have the same non-active coordinates. In other words, instead of representing areas where either CN, PN or WO take place, ranges of pairs $(s_{in},D)$ where species coexist are represented.	ED provide more information than OD, in the sense that one can deduce the latter from the former. 
 
 A first example using operating diagrams is presented to illustrate how adding interactions in a model consisting of 1 OTU in $G_1$ and 1 OTU in $G_2$ may lead to very different outcomes.
+
+The important question of the existence of limit cycles was not resolved in this work. In the numerical analysis of this model at least one stable equilibrium was found for any choice of parameters. This obviously does not exclude the existence of limit cycles, but to what concerns the authors' intuitions there always seems to be at least one stable equilibrium point.
 
 \subsubsection{Case study 1: 1 AOB and 1 NOB}
 
@@ -387,7 +389,7 @@ The operating diagrams can be seen in Figure \ref{OD_case_1}, note how partial n
 		\caption{A non-zero interaction matrix of model \eqref{system}.}
 		\label{case1_interactions}
 	\end{subfigure}
-	\caption{Interaction matrices. Note how the presence of $x_1$ affects very negatively $x_2$ in Figure \ref{case1_interactions}, with respect to other interactions. The terms in the diagonal entries of the matrix represents intraspecies interactions, while the terms off the diagonal represent the interspecies interactions.}
+	\caption{Interaction matrices. Note how the presence of $x_1$ affects very negatively $x_2$ in Figure \ref{case1_interactions}, with respect to other interactions. The terms in the diagonal entries of the matrix represent intraspecies interactions, while the terms off the diagonal represent the interspecies interactions.}
 \end{figure} 
 
 \begin{figure}[h]
@@ -459,21 +461,21 @@ The operating diagrams can be seen in Figure \ref{OD_case_1}, note how partial n
 ~
 	\begin{subfigure}[t]{0.32\textwidth}
 	\includegraphics[width=\textwidth]{Stability/ED_parameters_modified}
-	\caption{Modified interaction matrix ecological diagram. In the legend 1) and 2) represent the two different stable equilibria in each zone.}
+	\caption{ED from interaction matrix on Figure \ref{Interaction_2}. In the legend 1) and 2) represent the two different stable equilibria in each zone.}
 	\label{ED 2}
 	\end{subfigure}
 ~
 \begin{subfigure}[t]{0.32\textwidth}
 	\includegraphics[width=\textwidth]{Stability/ED_parameters_modified_2}
-	\caption{Modified interaction matrix ecological diagram.}
+	\caption{ED from interaction matrix on Figure \ref{Interaction_3}.}
 	\label{ED 3}
 \end{subfigure}
 
-	\caption{Ecological diagrams for both cases. The different zones represent the combination of surviving species in the steady state. PN takes place when neither $x_3$ nor $x_4$ are present. Note that in figure \ref{ED 2} two stable equilibria exist for each zone. CN takes place if $x_3$ or $x_4$ are present. }
+	\caption{Ecological diagrams. The different zones represent the combination of surviving species in the steady state. PN takes place when neither $x_3$ nor $x_4$ are present. CN takes place if $x_3$ or $x_4$ are present. Note that in figure \ref{ED 2} two stable equilibria exist for each zone. }
 	\label{ecological_diagrams}
 \end{figure}
 
-The ecological diagrams are presented in Figure \ref{ecological_diagrams}, where the legend indicates the species surviving in the zone of the respective colour. In Figure \ref{ED 2}, the system exhibits bi-stability (it is represented in numbering as 1) and 2) of the different possible equilibriums) . Comparing Figures \ref{ED 1} with \ref{ED 2} one can see a very different situation. Note how every zone in figure \ref{ED 2} has two stable equilibria, meaning that the outcome of the system is determined by its initial conditions, particularly interesting is the green zone where either $x_1,x_3$ coexist or $x_2$ only remains, because in operational terms this means that either PN or CN may take place.
+The ecological diagrams are presented in Figure \ref{ecological_diagrams}, where the legend indicates the species surviving in the zone of the respective colour. In Figure \ref{ED 2}, the system exhibits bi-stability (it is represented in numbering as 1) and 2) of the different possible equilibriums). Note how every zone in figure \ref{ED 2} has two stable equilibria, meaning that the outcome of the system is determined by its initial conditions, particularly interesting is the green zone where either $x_1,x_3$ coexist or only $x_2$ remains, because in operational terms this means that either PN or CN may take place. When compared to Figure \ref{ED 1}, one can see that this change in the interactions of the microbial community can dramatically change the outcome of the reactor in a large operating zone. 
 
 One can see that coexistence in the same functional group is never attained in Figure \ref{ED 1} and \ref{ED 2}, whereas in figure \ref{ED 3} $x_1$ and $x_2$, both AOB, coexist in either partial or complete nitrification. That means that the competitive exclusion principle \cite{lobry2017chemostat} (CEP) does not hold. The CEP roughly states that if two species are growing on the same limiting resource, and their growth laws only depend non decreasingly on the resource, then only one of them will survive in the long run. This is interesting in light of reports on wastewater treatment plants where coexistence between species in nitrifying reactors has been shown \cite{Wagner2002}, thus implying that a more complex growth law (as shown in here) or model structure involving other biological processes is required to include microbial diversity in mathematical models. 
 
@@ -553,13 +555,13 @@ The control $u(t)$ is intended to drive the system to be near a desired output $
 
 \item Second, to force a regularized control. Otherwise note that $u$ is linear in \eqref{Controlsystem}, therefore if the integral cost does not have a non-linear expression of $u$ the optimal control will be of a bang-bang type with possibly singular arcs \cite{harmand2019optimal}. Since the objective is to find a differentiable expression of $I(x)$ the addition of the regularization term is deemed necessary.
 \end{itemize} 
-The problem of approximating the solution of the system to a desired reference ($z$ in this case) is called the optimal tracking problem. For solving such a problem the approach developed by Cimen \textit{et al.} \cite{Cimen2004, Cimen2008} was adapted to our problem. The method proposed involves the resolution of Approximating Sequences of Ricatti Equations (ASRE). It consists on iteratively calculating trajectories of System \eqref{Controlsystem} with a certain control law and subsequently feed a non-autonomous Ricatti differential equation with the resulting trajectory. Then, a new control law that uses the solution of the Ricatti equation is proposed and a new trajectory is calculated. The iteration is stopped when a convergence in the output or  the control is observed.
+The problem of approximating the solution of the system to a desired reference ($z$ in this case) is called the optimal tracking problem. For solving such a problem the approach developed by Cimen \textit{et al.} \cite{Cimen2004, Cimen2008} was adapted to our problem. The method proposed involves the resolution of Approximating Sequences of Ricatti Equations (ASRE). It consists of iteratively calculating trajectories of System \eqref{Controlsystem} with a certain control law to later feed a non-autonomous Ricatti differential equation with the resulting trajectory. Then, a new control law that uses the solution of the Ricatti equation is proposed and a new trajectory is calculated. The iteration is stopped when a convergence in the output or  the control is observed.
 
 The control term should remain positive for the system to be well posed (no negative states), and an upper bound was added to represent the fact that life cannot grow infinitely fast. The tracking problem does not consider a constrained control. Nevertheless, the methods of Cimen \textit{et al.}\cite{Cimen2004} were directly used with an explicit constraint in the synthesis of the control. Even though this is probably suboptimal when the control reaches its bounds, one at least is certain about its optimality when the control never reaches its constraints.
 
 Another departure from their method is that in their formulation an approximation of the dynamics for calculating the trajectories is used. They proved that such a linearisation converges to the original dynamics. In the case here presented the linearisation of the dynamics was not necessary.
 
-The change of variable $u_i(t) = v_i(t) + 1$ is used for technical reasons explained in the supplementary material section. This in turn implies $v_i(t) \in [-1,\bar{u}-1]$. The feedback control $v(t)$, will be of the form $v(t) = -R^{-1}\tilde{B}^ \top(t)\left(\tilde{P}(t)x(t)-s_f(t)\right)$. Where matrix $P(t)$ and vector $s_f(t)$ solve differential equations. In the appendix it is proved that because of the structure of the system one only needs to calculate $2n$ differential equations for the synthesis of the control, instead of $(n+3)^2 + (n+3)$ that would imply the direct application of the method, which renders the method- at least theoretically- scalable for a growing number of OTU.
+The change of variable $u_i(t) = v_i(t) + 1$ is used for technical reasons explained in the supplementary material section. This in turn implies $v_i(t) \in [-1,\bar{u}-1]$. The feedback control $v(t)$, will be of the form $v(t) = -R^{-1}\tilde{B}^ \top(t)\left(\tilde{P}(t)x(t)-s_f(t)\right)$. Where matrix $P(t)$ and vector $s_f(t)$ solve differential equations. In the supplementary material it is proved that, thanks to the structure of the system, one only needs to calculate $2n$ differential equations for the synthesis of the control, instead of $(n+3)^2 + (n+3)$ that would imply the direct application of the method, which renders the method- at least theoretically- scalable for a growing number of OTU.
 
 \subsection{Proof of concept}
 
@@ -692,7 +694,7 @@ The tracking problem was applied to data coming from a nitrification process wit
 
 A first example of the procedure is performed when the classified OTU are regrouped in their assigned functional groups by adding their concentrations. A 5 dimensional dynamical system is obtained, thus there are only two interacting functional biomasses: this case is structurally the same as in the proof of concept, but here a real dataset is used. The same procedure is applied where no regrouping occurs and the system state grows to 39. 
 
-The knowledge of functions $f_i(s)$ was based on a study of nitrification's kinetic parameters\cite{Wiesmann1994}. Particularly given the system's ammonium and nitrate concentration a Monod function (eq \eqref{monod}) was used for $G_1$ and $G_2$ with parameters given in table \ref{kinetic_parameters_application} calculated from the equation of Table 2 of the same article. The yields were fitted to match the nitrogen mass balances. The $Q$ and $R$ matrices were the same as in the proof of concept section, that is $\begin{bmatrix}
+The knowledge of functions $f_i(s)$ was based on a study of nitrification's kinetic parameters\cite{Wiesmann1994}. Particularly given the system's ammonium and nitrite concentration a Monod function (eq \eqref{monod}) was used for $G_1$ and $G_2$ with parameters given in table \ref{kinetic_parameters_application} calculated from the equation of Table 2 of the same article. The yields were fitted to match the nitrogen mass balances. The $Q$ and $R$ matrices were the same as in the proof of concept section, that is $\begin{bmatrix}
 \lambda_1 I_{n_1} &0  \\ 0& \lambda_2 I_{n_2}
 \end{bmatrix}$ and $I_n$, respectively, with $\lambda_1 = 10^{-4}$ and $\lambda_2 = 10^{-5}$.
 
@@ -768,7 +770,7 @@ The growth rates of each functional group are shown in figure \ref{growth_applic
 
 The same procedure is applied without regrouping. The results on total biomass and metabolites are shown in figures \ref{Total Biomass application all} and \ref{Metabolites application all}, respectively. Both patterns still fit the data, but to a lesser degree of precision when compared to figure \ref{regroup_results}. This can be explained by noting in figure \ref{OTU abudance all} that the most abundant OTU are better tracked, thus the information contained in the least abundant species is not integrated in the model. When looking at the growth rates (figure \ref{growth all}) one again observes pulses for each OTU, note also that most OTU were present only for a fraction of the experiment's duration. 
 
-In both cases, the regrouped and individual tracking, the growth rate varies strongly, raising the question whether the observed pulses are emerging from interactions within the microbial community. When growth rates are compared to the proof of section it seems doubtful that a linear pairwise interaction model such as the gLV model could capture the complexity of the particular chemostat analysed. Perhaps these interactions are not constant through time (as in the gLV model) or a different interaction function should be thought of. However the former questions can not be fully clarified here, because the quality of the genetic sequencing from molecular fingerprints might not be the best when compared to more recent techniques, thus it is unclear if the pulses are due to noise of the measurements.
+In both cases, the regrouped and individual tracking, the growth rate varies strongly, raising the question whether the observed pulses are emerging from interactions within the microbial community. When growth rates are compared to the proof of section it seems doubtful that a linear pairwise interaction model such as the gLV model could capture the complexity of the particular chemostat analysed. Perhaps these interactions are not constant through time (as opposed to the gLV model) or a different interaction function should be thought of. However the former questions can not be fully clarified here, because the quality of the genetic sequencing from molecular fingerprints might not be the best when compared to more recent techniques, thus it is unclear if the pulses are due to noise of the measurements.
 
 The interpretation of the correction term as interactions is not the only possible reading. In other contexts the correction term might also be interpreted as a non accounted phenomena ranging from environmental factors (e.g. temperature, pH) to other biological factors (viruses, flock formation, pathogens). Alternative hypothesis for explaining the observed patterns in the microbial community should be considered as well. 
 
@@ -865,13 +867,11 @@ The interpretation of the correction term as interactions is not the only possib
 \clearpage
 \section{Conclusions and Perspectives}
 
-Last decades advances in genetic sequencing and microbial ecology have opened a gap for modellers in biochemical processes to integrate this valuable information. Considering the success of mass balance models to predict and pilot bioreactors, one should build upon these existing models. This article proposed a naïve approach to start filling the gap of microbial ecology and biochemical process modelling: The approach can be simply described as correcting the growth rate of each individual species from genetic sequencing measurements, . If one already posses a model for describing a particular bioprocess the use of the techniques here presented can be applied in a straightforward manner if one has already identified the microbial species involved with a particular functionality of the system.
+Last decades advances in genetic sequencing and microbial ecology have opened a gap for modellers in biochemical processes to integrate this valuable information. Considering the success of mass balance models to predict and pilot bioreactors, new models should be built upon them. This article exposed what can be gained from combining population-based models as used in ecology with functional group based approaches as used in bioengineering. The analysis of the gLV model proposed by Dumont \textit{et al.} \cite{Dumont2016} already shows that such a combination can give way to models that include bi-stability, coexistence within a functional group, and unintuitive operational insights such as raising the input ammonium $s_{in}$ to achieve partial nitrification. The increased number of parameters of this particular model obviously hinders its potential application, but it surely helps to illustrate what can be gained by joining both types of models. The mathematical analysis focused on the particular case of pairwise interactions, which can be seen as a first order approximation of the introduced concept of interaction function. This opens the question for a broader class of interaction functions that could represent well complex microbial ecosystems, particularly bioreactors. 
 
-The tracking model was proposed  in a chemostat setting as a way to correct a substrate limited expression. However the technique could be used in contexts where less information on the growth function of microbes is known. If one supposes nothing on the growth expression but the fact that is bounded (life cannot grow infinitely fast) the model becomes a linear model and one recovers a classic quadratic regulator for linear systems. Nevertheless, even in the former case, the synthesis of the optimal bounded control remains an open theoretical challenge.
+In that line of reasoning, in order to understand what this interaction function should look like, a data-driven approach was presented. It can be simply described as correcting the growth rate expression of each individual species in a mass balance model, by explicitly assuming a control loop on the growth rate depending on the species state variables and the measured abundances. The reconstructed growth rates seem to consist of pulses, suggesting that a form of a possible interaction function should reproduce this behaviour, however since the quality of molecular fingerprints is not the best, one can not discard the possibility that this is due to noise of the measurements. In spite of the former, one is able to recover the substrates dynamics, implying that the hypothesis of microbial interactions as drivers of a bioprocess, in the form of feedback loops affecting each others growth rates, is not far-fetched. 
 
-The interaction function introduced tries to address the issue of prediction from genetic sequencing. The analysis of the gLV model proposed by Dumont \textit{et al.} \cite{Dumont2016} shows that such a model structure can give way to bi-stability, coexistence within a functional group, and unintuitive operational insights such as raising the input ammonium $s_{in}$ to achieve partial nitrification. From the application section one can see that by correcting the growth rate one is able to recuperate the substrates dynamics, suggesting that interactions are driving the system. This opens the question for a broader class of interaction functions that could represent well complex microbial ecosystems, particularly biorreactors. 
-
-One of the next steps in this line of research would be to synthesize a control that is able to reconstruct the interaction functions, and not just the dynamics of the species. One might bypass the end point issue of the current control scheme by, for example, by a very thorough use of the pontryagin maximum principle for the synthesis of the control. In a more general view the reconstruction of the growth function in chemostat systems is already subject to problems of identifiability \cite{Dochain2003}: integrating genetic sequencing could provide a path for more certainty in model calibration.
+The use of the tracking technique can be applied in a straightforward manner to already existing models in mixed homogeneous bioreactors, under the condition that the the microbial species have already been identified with a particular functionality of the system. Even though the tracking model was proposed for a chemostat setting as a way to correct a substrate limited expression, the method could be used in contexts where less information on the growth function of microbes is known. If one supposes nothing on the growth expression but the fact that is bounded (life cannot grow infinitely fast) the model becomes a linear model and one recovers a classic quadratic regulator for linear systems. Nevertheless, even in the former case, the synthesis of the optimal bounded control remains an open theoretical challenge. One might bypass this issue of the current control scheme by, for example, a very thorough use of the Pontryagin maximum principle for the synthesis of the control. In a more general view the reconstruction of the growth function in chemostat systems is already subject to problems of identifiability\cite{Dochain2003}, integrating genetic sequencing could provide a path for more certainty in model calibration. 
 
 
 \section{Codes}
@@ -1065,8 +1065,8 @@ B := Y^{act}_{1\bullet} (A^{act})^{-1}M^\top.
 
 \begin{align}
 (s_{in}-s_1) + Y^{act}_{1\bullet}(A^{act})^{-1}\underbrace{M^\top M}_{I_{n^{act}}}(\diag(f^{act}(s))^{-1} D_{n^{act}\times 1} - 1_{n^{act}\times 1}) = 0\\
-\displaystyle s_{in} - s_1 + \sum \limits_{i \in G_1} B_i \left(\dfrac{K_i+s_1}{\bar{\mu_i}s_1}D - 1 \right) + \sum \limits_{i \in G_2 } B_i \left(\dfrac{K_i+s_2}{\bar{\mu_i}s_2}D - 1 \right)= 0 \\
-\displaystyle s_{in} - s_1 + \sum \limits_{i \in G_1 } DB_i \dfrac{K_i+s_1}{\bar{\mu_i}s_1}+ \sum \limits_{i \in G_2 } DB_i \dfrac{K_i+s_2}{\bar{\mu_i}s_2} - \sum \limits_{i \in G_1 \cup G_2}B_i= 0 \quad /\cdot s_1s_2
+\displaystyle s_{in} - s_1 + \sum \limits_{i \in G_1} B_i \left(\dfrac{K_i+s_1}{\bar{\mu_i}s_1}D - 1 \right) + \sum \limits_{i \in G_2 } B_i \left(\dfrac{K_i+s_2}{\bar{\mu_i}s_2}D - 1 \right)= 0 \label{to_be_reused}\\
+\displaystyle s_{in} - s_1 + \sum \limits_{i \in G_1 } DB_i \dfrac{K_i+s_1}{\bar{\mu_i}s_1}+ \sum \limits_{i \in G_2 } DB_i \dfrac{K_i+s_2}{\bar{\mu_i}s_2} - \sum \limits_{i \in G_1 \cup G_2}B_i= 0 \quad /\cdot s_1s_2 
 \\
 \displaystyle s_1s_2 s_{in}- s^2_1s_2 + \sum \limits_{i \in G_1} s_2DB_i \dfrac{K_i+s_1}{\bar{\mu_i}}+ \sum \limits_{i \in G_2 } s_1DB_i \dfrac{K_i+s_2}{\bar{\mu_i}} - s_1s_2\sum \limits_{i \in G_1 \cup G_2}B_i= 0 \\
 \displaystyle s_1s_2 s_{in}- s^2_1s_2 + s_2\sum \limits_{i \in G_1 } \frac{DB_iK_i}{\bar{\mu_i}}+s_1s_2\sum \limits_{i \in G_1 } \frac{DB_i}{\bar{\mu_i}}+ s_1\sum \limits_{i \in G_2 } \frac{DB_iK_i}{\bar{\mu_i}} + s_1s_2\sum \limits_{i \in G_2 } \dfrac{DB_i}{\bar{\mu_i}} - s_1s_2\sum \limits_{i \in G_1 \cup G_2}B_i= 0 \\
@@ -1120,108 +1120,153 @@ Then by replacing  \eqref{S2(S1)} in equation \eqref{s1(s2)}, one gets a fifth d
 
 \begin{align}
 s_1\left( c_1\left( \frac{s_1}{b_1s_1^2+b_2s_1+b_3} \right)^2 + c_2\left( \frac{s_1}{b_1s_1^2+b_2s_1+b_3} \right) + c_3 \right) =  \frac{s_1}{b_1s_1^2+b_2s_1+b_3}  \quad /\cdot  \left(b_1s_1^2+b_2s_1+b_3\right)^2\\
-s_1\left( c_1s_1 + c_2s_1\left(b_1s_1^2+b_2s_1+b_3\right)  + c_3\left(b_1s_1^2+b_2s_1+b_3\right)^2 \right) =  s_1\left(b_1s_1^2+b_2s_1+b_3\right) \\
-s_1\left( c_1s_1 + c_2s_1\left(b_1s_1^2+b_2s_1+b_3\right)  + c_3\left(b_1s_1^2+b_2s_1+b_3\right)^2 - \left(b_1s_1^2+b_2s_1+b_3\right) \right) = 0 
+s_1\left( c_1s_1^2 + c_2s_1\left(b_1s_1^2+b_2s_1+b_3\right)  + c_3\left(b_1s_1^2+b_2s_1+b_3\right)^2 \right) =  s_1\left(b_1s_1^2+b_2s_1+b_3\right) \\
+s_1\left( c_1s_1^2 + c_2s_1\left(b_1s_1^2+b_2s_1+b_3\right)  + c_3\left(b_1s_1^2+b_2s_1+b_3\right)^2 - \left(b_1s_1^2+b_2s_1+b_3\right) \right) = 0 \\
+s_1\left( c_3b_1^2s_1^4+(c_2b_1+2c_3b_1b_2)s_1^3+(c_1+c_2b_2 +c_3(b_2^2 + 2b_1b_3)-b_1)s_1^2+(c_2b_3+2c_3b_3b_2 -b_2)s_1+(b_3 + c_3b_3^2)\right) = 0 
 \end{align} 
 
+thus 
 \begin{align}
-\label{Poly4} a_4s_1^4+a_3s_1^3+a_2s_1^2+a_1s_1+a_0 = 0
+\tag{\ref{Poly4}} a_4s_1^4+a_3s_1^3+a_2s_1^2+a_1s_1+a_0 = 0 \quad  \vee \quad s_1 = 0
 \end{align}
 
+where 
+\begin{align}
+a_0 & = b_3 + c_3b_3^2\\
+a_1 & = c_2b_3+2c_3b_3b_2 -b_2\\
+a_2 & = c_1+c_2b_2 +c_3(b_2^2 + 2b_1b_3)-b_1 \\
+a_3 & = c_2b_1+2c_3b_1b_2\\
+a_4 & = c_3b_1^2
+\end{align}
 
-Formulae for coefficients $c_1, c_2, c_3, a_0, a_1, a_2, a_3, a_4$ can be found in supplementary material. 
-
-The equilibrium point can be calculated from the solutions of the system of equations \eqref{EqSome}, \eqref{s1s2s3}, \eqref{S2(S1)}, and \eqref{Poly4} with non negative coordinates. If the system only provides solutions with at least one negative entry then the set $\mathcal{J}$ can not define an equilibrium point.
 
 
 \subsubsection{Washout of $G_2$}
 
 The washout of $G_2$ is represented in Hypothesis \ref{hypothesis washout G2}. 
 
-Under this case note that $f^{act}(s)$ depends only on $s_1$. Therefore when equation \eqref{EqSome} is replaced in \eqref{Eq2}, one obtains a quadratic equation for $s_1$:
+Under this case note that $f^{act}(s)$ depends only on $s_1$. By replacing again $x^{eq} = Mx^{act}$ in equation \eqref{Eq1}, one obtains the same computations as in the previous section, so retake equation \eqref{to_be_reused}
 
 \begin{align}
-\label{poly2_s1} a'_2 s_1^2 + a'_1s_1 + a'_0 = 0
+\displaystyle s_{in} - s_1 + \sum \limits_{i \in G_1} B_i \left(\dfrac{K_i+s_1}{\bar{\mu_i}s_1}D - 1 \right) + \sum \limits_{i \in G_2 } B_i \left(\dfrac{K_i+s_2}{\bar{\mu_i}s_2}D - 1 \right)= 0  \tag{\ref{to_be_reused}}
 \end{align}
 
+Since $G_1 \subset \mathcal{J} $ then $B_i = 0 \forall i \in G_2$ thus \eqref{to_be_reused} becomes:
 
-Since $x_i = 0 \, \forall i \in G_2$ then from equation \eqref{Eq4}.
+
 \begin{align}
-\dot{s_3} = 0 = -s_3D \\
-\Rightarrow s_3 = 0 \tag{\ref{no_s3}}
+\displaystyle s_{in} - s_1 + \sum \limits_{i \in G_1} B_i \left(\dfrac{K_i+s_1}{\bar{\mu_i}s_1}D - 1 \right) = 0 \quad /\cdot s_1 \\
+\displaystyle s_1s_{in} - s_1^2 + \sum \limits_{i \in G_1} B_i \left(\dfrac{K_i+s_1}{\bar{\mu_i}}D - s_1 \right)= 0 \\
+\displaystyle s_1s_{in} - s_1^2 + \sum \limits_{i \in G_1} B_i \dfrac{DB_iK_i}{\bar{\mu_i}} + s_1\sum \limits_{i \in G_1}B_i\left(\dfrac{D}{\bar{\mu_i}}-1\right) = 0
 \end{align}
 
-In this case the equilibrium point can be calculated from the solutions of the system of equations \eqref{EqSome}, \eqref{s1s2s3}, \eqref{poly2_s1}, and \eqref{no_s3} with non-negative coordinates. If the system only provides solutions with at least one negative entry then the set $\mathcal{J}$ can not define an equilibrium point.
-
+And so a quadratic equation for $s_1$ is obtained.
+\begin{align}
+\tag{\ref{poly2_s1}} a'_2 s_1^2 + a'_1s_1 + a'_0 = 0
+\end{align}
+where
+\begin{align}
+a'_2 &= -1 \\
+a'_1 &= s_{in} + \sum \limits_{i \in G_1}B_i\left(\dfrac{D}{\bar{\mu_i}}-1\right) \\
+a'_0 &=\sum \limits_{i \in G_1} B_i \dfrac{DB_iK_i}{\bar{\mu_i}} 
+\end{align}
 
 \subsection{Jacobian of the system}
-The jacobian is a square matrix of dimension $n\times 3$. The entries corresponding to the derivative of the first $n$ functions in the first $n$ variables can be calculated by the use of the chain rule. Define:
-\begin{align*} 
-& \begin{array}{rc}
-h_1:\mathcal{M}_{n \times n}(\R) \times \R^n \rightarrow & \R^n \\
-(M,y) \rightarrow & My
-\end{array}  \\
-&\begin{array}{rl}
-h_2: \R^n \times \R^3  \rightarrow & \R^n \\
-(x,s) \rightarrow & \diag(f(s))\left(1_{n\times 1}+ Ax\right)-D_{n\times 1}
-\end{array} 	
-\end{align*}
 
-The first $n$ equations of system \eqref{system} may be written then as $\dot{x} =  h(x,s) = h_1(\diag(x), h_2(s,x))$, by the chain rule: 
-\begin{align} D_xh(x,s) &= D_M h_1(\diag(x),h_2(x,s))\circ D_x \diag (x) + D_yh_1(\diag(x),h_2(x,s))\circ D_xh_2(x,s)  \\ &=
-\diag(h_2(x,s))+\diag(x)\diag(f(s))A  \label{n2_entries}
+ Recall that $f:X\rightarrow Y$ is a function, then its derivative is $f':X \rightarrow L(X,Y)$ where $L(X,Y)$ denotes the set of continuous linear mappings from $X$ to $Y$, such that $\Vert f(x)-f(a) -f'(a)[x-a] \Vert = o(\Vert x-a \Vert) $, where the linear mapping $f'(a)$ is evaluated at $[x-a]$ \cite{cartan1971differential}. In the case where $X=\R^n$ and $Y = \R^m$, $f'(x)$ is the Jacobian matrix evaluated at point x, furthermore $f'(x)[e_j]$ (where $e_j$ is the canonical $j$-th vector) is the $j$-th column of the Jacobian matrix evaluated at point $x$. 
+
+If $f$ is linear then $f'(a)= f$ for any $a \in X$. In the case of the $\diag$ operator, we observe it is linear, therefore $\diag'(a)[x]= \diag(x) $
+
+In the case of bilinear mappings another formula holds, let $h: X_1 \times X_2 \rightarrow Y$ be bilinear. Then $h'(a_1,a_2)[x_1,x_2] = h(x_1,a_2) + h(a_1,x_2)$.
+In the case of the function $h_1: \mathcal{M}_{n\times n}(\R) \times \R^n \mapsto \R^n$ such that $h_1(M,x) = Mx$, one can see that $h_1'(A,x)[B,y] = Bx + Ay$.
+
+
+The chain rule states that $f:X \rightarrow Y$ and $g: Y\rightarrow Z$, if $h:= g \circ f$ then $h'(a) = g'(f(a))\circ f'(a)$. 
+Take the expression $h: (x,y)\in \R^n\times \R^n \mapsto \diag(x)y$. It is clear that $h = h_1(\diag(x), y) $. By the chain rule:
+
+\begin{align}
+h'(x,y)[a,b] &= h_1'(\diag(x),y)\circ( \diag'(x), \, I_n)[a,b] \\
+& = h_1'(\diag(x),y)[ \diag(a), b] \\
+ &= \diag(a)y + \diag(x)b
+\end{align}
+Note finally that function $h$ is symmetric, i.e. $h(x,y) = h(y,x)$.
+Then going back to our system.
+\begin{align}
+	\dot{x} = & g_1(x,s)= \diag(\mu(x,s) - D_{n\times 1})x \\
+	\dot{s} = & g_2(x,s)= \left(\begin{bmatrix} s_{in}&0&0 \end{bmatrix}^\top-s\right)D + Y\diag(\mu(x,s))x
+\end{align} 
+where $\mu(x,s) = \diag(f(s))(1_{n\times 1}+Ax)$
+For a fixed $s$, let $\mu_s(x): x \mapsto  \diag(f(s))(1+Ax)$ then, $\mu_s'(x) = \diag(f(s))A$ . Let $g_{1s}(x):= h(\mu_s(x) - D_{n\times 1},x)=g_1(x,s)$, then compute $g_{1s}'$:
+\begin{align} 
+g_{1s}'(x)[e_j]&=h'(\mu_s(x) - D_{n\times 1},x) \circ (\mu_s'(x),I_n)[e_j, e_j]\\
+&=h'(\mu_s(x)- D_{n\times 1},x) [\diag(f(s))Ae_j , e_j]  \\
+&=\diag(\diag(f(s))Ae_j)x +  \diag(\mu_s(x)- D_{n\times 1})e_j \\
+&=\diag(f(s))\diag(A_{\bullet j})x +  \diag(\mu_s(x)- D_{n\times 1})e_j \\
+&=\diag(f(s))\diag(x)A_{\bullet j} +  \diag(\mu_s(x)- D_{n\times 1})e_j \\
+\Rightarrow  g_{1s}'(x) &= \diag(f(s))\diag(x)A +  \diag(\mu_s(x)- D_{n\times 1})
 \end{align}
 
-Expression \eqref{n2_entries} corresponds to the first $n\times n$ entries of the Jacobian of system \eqref{system}.
+Again, for a fixed $s$, let $g_{2s}(x):= \left(\begin{bmatrix} s_{in}&0&0 \end{bmatrix}^\top-s\right)D + Yh(\mu_s(x),x)=g_2(x,s)$, then compute $g_{2s}'$:
 
-Define:
+\begin{align} 
+g_{2s}'(x)[e_j]&=Yh'(\mu_s(x),x) \circ (\mu_s'(x),I_n)[e_j, e_j]\\
+&=Y\left(\diag(f(s))\diag(x)A_{\bullet j} +  \diag(\mu_s(x))e_j \right) \\
+\Rightarrow g_{2s}'(x) &= Y(\diag(f(s))\diag(x)A +  \diag(\mu_s(x)))
+\end{align}
 
+
+Let $f_{G_1}(s_1)$ the function containing the first $n_1$ components of function $f(s)$ and $f_{G_2}(s_2)$ the function containing the last $n_2$ components of function $f(s)$ so one can write 
+
+\begin{align}
+f(s) = \begin{pmatrix}
+f_{G_1}(s_1) \\
+f_{G_2}(s_2)
+\end{pmatrix}
+\end{align}
+
+One can see then that:
+
+\begin{align}
+f'(s)= \begin{bmatrix}
+f_{G_1}'(s_1) & 0_{n_1\times 2} \\
+0_{n_2\times 1} & \begin{matrix} f_{G_2}'(s_2) & 0_{n_2\times 1} \end{matrix}  \\ 
+\end{bmatrix}
+\end{align}
+ 
+Now for a fixed $x$ let $\mu_x(s): s \mapsto   \diag(f(s))(1_{n\times 1}+Ax)$, therefore $\mu_x'(s) =\diag(1+Ax)f'(s)$. Let $g_{1x}(s):= h(\mu_x(s) - D_{n\times 1},x)=g_1(x,s)$, then compute $g_{1x}'$:
+
+\begin{align} 
+g_{1x}'(s)[e_j]&=h'(\mu_x(s) - D_{n\times 1},x) \circ (\mu_x'(s),0)[e_j, e_j]\\
+g_{1x}'(s)[e_j]&=h'(\mu_x(s) - D_{n\times 1},x) [\mu_x'(s)e_j, 0]\\
+g_{1x}'(s)[e_j]&=\diag(\mu_x'(s)e_j)x \\
+g_{1x}'(s)[e_j]&=\diag(x)\mu_x'(s)e_j \\
+g_{1x}' &= \diag(x)\diag(1+Ax)f'(s)
+\end{align}
+
+Again, for a fixed $x$ let $g_{2x}(s):= \left(\begin{bmatrix} s_{in}&0&0 \end{bmatrix}^\top-s\right)D + Yh(\mu_s(x),x)=g_2(x,s)$, then compute $g_{1x}'$:
+
+\begin{align}
+g_{2x}'(s)[e_j] = -DI_ne_j + Y h'(\mu_x(s),x)\circ (\mu_x'(s),0)[e_j,e_j] \\
+g_{2x}'(s)[e_j] &= -DI_ne_j + Y h'(\mu_x(s),x)[\mu_x'(s)e_j, 0] \\
+g_{2x}'(s)[e_j] &= -DI_ne_j + Y \diag(x)\mu_x'(s)e_j \\
+g_{2x}'(s) &= -DI_n+ Y \diag(x)\diag(1+Ax)f'(s)
+\end{align} 
+
+
+Finally note that:
 \begin{align*}
-f_A' := \left( \dfrac{\partial f_1}{\partial s_1}, \dots, \dfrac{\partial f_{n_1}}{\partial s_1} \right)^\top = \left(\dfrac{\bar{\mu}_1K_1}{(K_1 + s_1)^2},\dots, \dfrac{\bar{\mu}_{n_1}K_{n_1}}{(K_{n_1} + s_1)^2} \right)^\top \in \R^{n_1} \\
-f_B' := \left( \dfrac{\partial f_{n_1+1}}{\partial s_2}, \dots, \dfrac{\partial f_{n}}{\partial s_2} \right)^\top = \left( \dfrac{\bar{\mu}_{n_1+1}K_{n_1+1}}{(K_{n_1+1} + s_2)^2},\dots, \dfrac{\bar{\mu}_{n}K_{n}}{(K_{n} + s_2)^2} \right)^\top \in \R^{n_2}
+f_{G_1}' := \left( \dfrac{\partial f_1}{\partial s_1}, \dots, \dfrac{\partial f_{n_1}}{\partial s_1} \right)^\top = \left(\dfrac{\bar{\mu}_1K_1}{(K_1 + s_1)^2},\dots, \dfrac{\bar{\mu}_{n_1}K_{n_1}}{(K_{n_1} + s_1)^2} \right)^\top \in \R^{n_1} \\
+f_{G_2}' := \left( \dfrac{\partial f_{n_1+1}}{\partial s_2}, \dots, \dfrac{\partial f_{n}}{\partial s_2} \right)^\top = \left( \dfrac{\bar{\mu}_{n_1+1}K_{n_1+1}}{(K_{n_1+1} + s_2)^2},\dots, \dfrac{\bar{\mu}_{n}K_{n}}{(K_{n} + s_2)^2} \right)^\top \in \R^{n_2}
 \end{align*}
 
 Then the Jacobian of the system may be expressed as:
 \begin{align}
 \label{Jacobian_system}
- J(x,s_1,s_2,s_3) = \begin{bmatrix}
-J_{11} & J_{12} & J_{13} & J_{14} \\
-J_{21} & J_{22} & J_{23} & J_{24} \\
-J_{31} & J_{32} & J_{33} & J_{34} \\
-J_{41} & J_{42} & J_{43} & J_{44} 
+ J(x,s) = \begin{bmatrix}
+g_{1s}'(x) & g_{1x}'(s) \\
+g_{2s}'(x) & g_{2x}'(s) \\
 \end{bmatrix} 
 \end{align} 
-with 
-\begin{align}
-J_{11} &=  \diag(\diag(f(s))(1_{n\times 1} +Ax)-D_{n\times 1})
-+\diag(f(s))\diag(x)A \\
-J_{12} &= \diag(x)\diag(1_{n \times 1}+Ax)\begin{bmatrix} f_A' \\ 0_{n_2 \times 1} \end{bmatrix}  \\
-J_{13} &=\diag(x)\diag(1_{n\times 1}+Ax)\begin{bmatrix} 0_{n_1 \times 1} \\ f_B' \end{bmatrix} \\
-J_{14} &= 0_{n\times 3}\\
-J_{21} &= -\begin{bmatrix}
-1_{n_1 \times 1} + A_1 x \\ 0_{n_2 \times 1} \end{bmatrix}^\top \diag(y)^{-1} \diag (f(s))  + (\diag(k)\diag(f(s))x)^\top\begin{bmatrix} A_1 \\ 0 \end{bmatrix}  \\
-J_{22} &= -D  - \begin{bmatrix} 1_{n_1 \times 1} + A_1x \\ 0 \end{bmatrix}^\top \diag(k) \diag\left( \begin{bmatrix}\mu_A' \\ 0 \end{bmatrix}\right)x \\
-J_{23} & = 0 \\
-J_{24} &= 0 \\
-J_{31} &= \begin{bmatrix} \left(1_{n_1 \times 1}+A_1x \right)\\ - \left(1_{n_2 \times 1} + A_2x \right)  \end{bmatrix}^\top \diag(k) \diag(f(s)) 
-+  (\diag(k)\diag(f(s))x)^\top \begin{bmatrix}A_1 \\ -A_2\end{bmatrix} \\
-J_{32} &= \begin{bmatrix}\left(1_{n_1 \times 1} + A_1x\right)\\ -\left(1_{n_2 \times 1} + A_2x\right)\end{bmatrix}^\top \diag(k) \diag\left( \begin{bmatrix}
-f_A' \\ 0\end{bmatrix}\right)x \\
-J_{33} &= -D + \begin{bmatrix} \left(1_{n_1 \times 1} + A_1x\right) \\ -\left(1_{n_2\times 1}+ A_2x\right) \end{bmatrix}^\top \diag(k)\diag\left(
-\begin{bmatrix}
-0 \\ f_B'
-\end{bmatrix}\right)x  \\
-J_{34} &= 0 \\
-J_{41} &= \begin{bmatrix}0 \\ 1_{n_2 \times 1} + A_2x \end{bmatrix}^\top\diag(k) \diag(f(s)) 
-+ (\diag(k)\diag(f(s))x)^\top\begin{bmatrix} 
-0 \\ A_2
-\end{bmatrix} \\
-J_{42} &= 0 \\
-J_{43} &= \begin{bmatrix} 0 \\(1_{n_2\times 1} + A_2x) \end{bmatrix}^\top \diag(k) \diag\left(\begin{bmatrix}
-0 \\ f_B'
-\end{bmatrix}\right) x \\
-J_{44} &= -D
-\end{align}
 
 \subsection{Tracking Problem reformulation and details}
 
