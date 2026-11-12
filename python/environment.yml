@@ -1,0 +1,13 @@
+name: class-and-track
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - numpy
+  - scipy
+  - matplotlib
+  - pandas
+  - xlrd
+  - highspy
+  - pyscipopt
+  - casadi

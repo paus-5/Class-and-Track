@@ -3,3 +3,5 @@
 *.aux
 *.gz
 *.spl
+__pycache__/
+python/results/
