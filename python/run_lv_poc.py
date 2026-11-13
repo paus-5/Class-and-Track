@@ -147,17 +147,20 @@ if best is not None:
           f"{np.linalg.norm(best['A'] - A_true) / np.linalg.norm(A_true):.3f}")
 
 # Profile of the fit cost in a12: is a12 constrained by the data at all?
-try:
-    e = estimate_interactions(M, t_data, Z, x0, t0, tf, A_init=A_true,
-                              fixed={(i, j): A_true[i, j] for i in range(n) for j in range(n)})
-    print(f"\ncost at the true A (all entries fixed): J = {e['J']:.3e}  "
-          f"(> 0 only through discretisation / noise)")
-except RuntimeError as err:
-    print(f"\ncost at the true A: failed: {str(err).split(chr(39))[-2]}")
+# Cost at the true A, by simulation (fixing every entry in the collocation NLP leaves no
+# degrees of freedom and IPOPT stalled for > 1 h).  Same cost as estimate_interactions.
+def fit_cost(A):
+    Xs = simulate_glv(M, A, x0, (t0, tf), t_eval=t_data).y[:n]
+    return float(np.sum(((Xs - Z) / np.abs(Z).max(1, keepdims=True)) ** 2))
+
+print(f"\ncost at the true A (simulation): J = {fit_cost(A_true):.3e};  "
+      f"at the direct estimate (simulation): J = {fit_cost(best['A']):.3e}" if best is not None
+      else f"\ncost at the true A (simulation): J = {fit_cost(A_true):.3e}")
 print("\nprofile in a12 (other entries free, warm start from the true A):")
 for a12 in (-0.5, -0.2, 0.0, 0.1, 0.2, 0.5):
     try:
-        e = estimate_interactions(M, t_data, Z, x0, t0, tf, A_init=A_true, fixed={(0, 1): a12})
+        e = estimate_interactions(M, t_data, Z, x0, t0, tf, A_init=A_true, fixed={(0, 1): a12},
+                                  ipopt_opts={"ipopt.max_cpu_time": 300.0})
         print(f"    a12 = {a12:5.2f}: J = {e['J']:.3e}  A = {e['A'].ravel().round(4)}", flush=True)
     except RuntimeError as err:
         print(f"    a12 = {a12:5.2f}: failed: {str(err).split(chr(39))[-2]}", flush=True)
