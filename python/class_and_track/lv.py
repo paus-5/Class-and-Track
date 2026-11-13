@@ -59,10 +59,11 @@ def regress_interactions(t, U, X, t_window=None, weights=None):
 
 def estimate_interactions(M: NitrificationModel, t_data, Z, x0, t0, tf, q=None,
                           n_intervals=None, degree=3, S_data=None, s_weight=0.0,
-                          A_init=None, ipopt_opts=None):
+                          A_init=None, fixed=None, ipopt_opts=None):
     """Fit A (n x n) in the gLV model to biomass data Z (n, len(t_data)) by collocation.
     Cost: sum_k q.(x(t_k) - z_k)^2 (+ s_weight * |s(t_k) - S_k|^2 if S_data given).
-    The data times must lie on the grid t0 + k h (default h = 1 day). x0 is fixed."""
+    The data times must lie on the grid t0 + k h (default h = 1 day). x0 is fixed.
+    fixed: {(i, j): value} entries of A held fixed (for profiling)."""
     n, nx, d = M.n, M.n + 3, degree
     N = n_intervals or int(round(tf - t0))
     tk = np.linspace(t0, tf, N + 1)
@@ -74,10 +75,15 @@ def estimate_interactions(M: NitrificationModel, t_data, Z, x0, t0, tf, q=None,
     if not np.allclose(tk[k_data], t_data):
         raise ValueError("data times must lie on the collocation grid")
 
-    # Initial guess: simulation with A_init (default 0)
+    # Initial guess: biomasses from the data (interpolated), substrates from a simulation
+    # with A_init (default 0).  Starting the biomasses at the simulation instead made IPOPT
+    # hit its iteration limit.
     A0 = np.zeros((n, n)) if A_init is None else np.asarray(A_init, float)
     sim = simulate_glv(M, A0, x0, (t0, tf))
     ref_n, ref_c = np.maximum(sim.sol(tk), 0), np.maximum(sim.sol(tc.ravel()), 0).reshape(nx, N, d)
+    for i in range(n):
+        ref_n[i] = np.interp(tk, t_data, Z[i])
+        ref_c[i] = np.interp(tc.ravel(), t_data, Z[i]).reshape(N, d)
     scale = np.maximum(np.r_[np.abs(Z).max(1), np.abs(ref_n[n:]).max(1)], 1e-6)
 
     Xa, Xcs, As = ca.SX.sym("Xa", nx), ca.SX.sym("Xc", nx, d), ca.SX.sym("A", n, n)
@@ -93,7 +99,15 @@ def estimate_interactions(M: NitrificationModel, t_data, Z, x0, t0, tf, q=None,
     interval = interval.map(N, [False, False, True, False, False], [False])   # A shared
 
     opti = ca.Opti()
-    Xn, Xc, A = opti.variable(nx, N + 1), opti.variable(nx, N * d), opti.variable(n, n)
+    Xn, Xc = opti.variable(nx, N + 1), opti.variable(nx, N * d)
+    # Fixed entries are substituted as constants (not equality constraints, which made
+    # IPOPT's restoration phase fail); only the free entries are decision variables.
+    fixed = fixed or {}
+    free = [(i, j) for i in range(n) for j in range(n) if (i, j) not in fixed]
+    a_free = opti.variable(len(free)) if free else None
+    entries = {ij: a_free[k] for k, ij in enumerate(free)}
+    entries.update({ij: ca.MX(float(v)) for ij, v in fixed.items()})
+    A = ca.vertcat(*[ca.horzcat(*[entries[(i, j)] for j in range(n)]) for i in range(n)])
     Dc = np.array([M.D(t) for t in tc.ravel()]).reshape(N, d).T
     Sc = np.array([M.s_in(t) for t in tc.ravel()]).reshape(N, d).T
     opti.subject_to(ca.vec(interval(Xn[:, :N], Xc, A, Dc, Sc)) == 0)
@@ -101,7 +115,7 @@ def estimate_interactions(M: NitrificationModel, t_data, Z, x0, t0, tf, q=None,
     opti.subject_to(Xn[:, 0] == np.asarray(x0) / scale)
     opti.subject_to(ca.vec(Xc) >= 0)
 
-    Xd = Xn[:n, k_data] * ca.repmat(ca.DM(scale[:n]), 1, len(k_data))
+    Xd =Xn[:n, k_data] * ca.repmat(ca.DM(scale[:n]), 1, len(k_data))
     E = (Xd - ca.DM(Z)) / ca.repmat(ca.DM(np.abs(Z).max(1)), 1, len(k_data))
     J = ca.sum2(ca.sum1(ca.repmat(ca.DM(q), 1, len(k_data)) * E**2))
     if S_data is not None and s_weight > 0:
@@ -111,12 +125,14 @@ def estimate_interactions(M: NitrificationModel, t_data, Z, x0, t0, tf, q=None,
     opti.minimize(J)
     opti.set_initial(Xn, ref_n / scale[:, None])
     opti.set_initial(Xc, ref_c.reshape(nx, N * d) / scale[:, None])
-    opti.set_initial(A, A0)
+    if free:
+        opti.set_initial(a_free, [A0[i, j] for i, j in free])
     opts = {"ipopt.print_level": 0, "print_time": False, "ipopt.max_iter": 3000,
             "ipopt.tol": 1e-10, "ipopt.sb": "yes"}
     opts.update(ipopt_opts or {})
     opti.solver("ipopt", opts)
     sol = opti.solve()
-    return dict(A=np.atleast_2d(sol.value(A)), J=float(sol.value(J)),
+    A_val = np.array([[float(sol.value(entries[(i, j)])) for j in range(n)] for i in range(n)])
+    return dict(A=A_val, J=float(sol.value(J)),
                 status=opti.stats()["return_status"], t_nodes=tk,
                 X=sol.value(Xn) * scale[:, None])

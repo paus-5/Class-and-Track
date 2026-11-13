@@ -81,20 +81,6 @@ Phi = x_mid_tr[:, (tm >= win[0]) & (tm <= win[1])].T
 sv = np.linalg.svd(Phi / np.abs(Phi).max(0), compute_uv=False)
 print(f"    singular values of the scaled regressors x(t): {sv}  (cond = {sv[0] / sv[-1]:.1f})")
 
-# ---- 3b. direct estimation of A in the ODE ---------------------------------------------
-tic = time.time()
-est = estimate_interactions(M, t_data, Z, x0, t0, tf)
-print(f"\n(b) direct estimation of A from biomasses: {est['status']} in {time.time() - tic:.1f}s, "
-      f"J = {est['J']:.3e}\n{est['A']}")
-print(f"    rel. error |A_hat - A| / |A| = {np.linalg.norm(est['A'] - A_true) / np.linalg.norm(A_true):.3f}")
-for A_init in (A_true, np.full((n, n), 1.0), np.full((n, n), -1.0), rng.normal(0, 1, (n, n))):
-    try:
-        e2 = estimate_interactions(M, t_data, Z, x0, t0, tf, A_init=A_init)
-        print(f"    restart from A0 = {A_init.ravel().round(2)} -> {e2['A'].ravel().round(4)}  "
-              f"J = {e2['J']:.3e} ({e2['status']})")
-    except RuntimeError as err:
-        print(f"    restart from A0 = {A_init.ravel().round(2)} -> failed ({str(err)[-40:]})")
-
 # ---- figures ---------------------------------------------------------------------------
 C_TRUE, C_TR, C_REG, C_EST, C_DATA, C_OL = "#0b0b0b", "#2a78d6", "#eb6834", "#1baf7a", "#52514e", "#898781"
 plt.rcParams.update({"font.size": 9, "axes.grid": True, "grid.color": "#e1e0d9",
@@ -140,4 +126,38 @@ for i, ax in enumerate(axes):
 axes[0].legend(fontsize=7)
 fig.tight_layout()
 fig.savefig(FIG / f"lv_poc_regression_{tag}.png")
-print(f"\nfigures: {FIG / f'lv_poc_{tag}.png'}, {FIG / f'lv_poc_regression_{tag}.png'}")
+print(f"\nfigures: {FIG / f'lv_poc_{tag}.png'}, {FIG / f'lv_poc_regression_{tag}.png'}", flush=True)
+
+# ---- 3b. direct estimation of A in the ODE (benchmark) ---------------------------------
+print("\n(b) direct estimation of A in the gLV ODE from the biomass data (several starts):")
+best = None
+for A_init in (np.zeros((n, n)), A_reg, np.full((n, n), 1.0), rng.normal(0, 1, (n, n))):
+    tic = time.time()
+    try:
+        e = estimate_interactions(M, t_data, Z, x0, t0, tf, A_init=A_init)
+        print(f"    from A0 = {A_init.ravel().round(2)} -> A = {e['A'].ravel().round(4)}  "
+              f"J = {e['J']:.3e}  ({e['status']}, {time.time() - tic:.0f}s)", flush=True)
+        if best is None or e["J"] < best["J"]:
+            best = e
+    except RuntimeError as err:
+        print(f"    from A0 = {A_init.ravel().round(2)} -> failed: {str(err).split(chr(39))[-2]} "
+              f"({time.time() - tic:.0f}s)", flush=True)
+if best is not None:
+    print(f"    best: rel. error |A_hat - A| / |A| = "
+          f"{np.linalg.norm(best['A'] - A_true) / np.linalg.norm(A_true):.3f}")
+
+# Profile of the fit cost in a12: is a12 constrained by the data at all?
+try:
+    e = estimate_interactions(M, t_data, Z, x0, t0, tf, A_init=A_true,
+                              fixed={(i, j): A_true[i, j] for i in range(n) for j in range(n)})
+    print(f"\ncost at the true A (all entries fixed): J = {e['J']:.3e}  "
+          f"(> 0 only through discretisation / noise)")
+except RuntimeError as err:
+    print(f"\ncost at the true A: failed: {str(err).split(chr(39))[-2]}")
+print("\nprofile in a12 (other entries free, warm start from the true A):")
+for a12 in (-0.5, -0.2, 0.0, 0.1, 0.2, 0.5):
+    try:
+        e = estimate_interactions(M, t_data, Z, x0, t0, tf, A_init=A_true, fixed={(0, 1): a12})
+        print(f"    a12 = {a12:5.2f}: J = {e['J']:.3e}  A = {e['A'].ravel().round(4)}", flush=True)
+    except RuntimeError as err:
+        print(f"    a12 = {a12:5.2f}: failed: {str(err).split(chr(39))[-2]}", flush=True)
