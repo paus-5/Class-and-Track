@@ -25,11 +25,18 @@ sys.path.insert(0, str(Path(__file__).parent))
 from class_and_track.asre import solve
 from class_and_track.data import REPO, problem_from_classification_mat
 
-args = [a for a in sys.argv[1:] if not a.startswith("--")]
+argv = sys.argv[1:]
+cls = None
+if "--class" in argv:                     # e.g. --class B: direct run with reactor B's classification
+    i = argv.index("--class")
+    cls = argv[i + 1]
+    del argv[i:i + 2]
+args = [a for a in argv if not a.startswith("--")]
 vmin = float(args[0]) if len(args) > 0 else -1.0
 vmax = float(args[1]) if len(args) > 1 else 0.5
 lam = float(args[2]) if len(args) > 2 else 1e-5
 tag = f"v[{vmin},{vmax}]_lam{lam:g}"
+suffix = f"_class{cls}" if cls else ""
 
 HERE = Path(__file__).parent
 RES, FIG = HERE / "results", HERE / "figures"
@@ -57,13 +64,24 @@ def load(name):
         return pickle.load(fh)
 
 
-prob = problem_from_classification_mat(
-    REPO / "Classification" / "MAT_files" / "Classification_day_183_315_gurobi.mat", x0_from="t0")
+MAT = REPO / "Classification" / "MAT_files" / "Classification_day_183_315_gurobi.mat"
+if cls:
+    classification = dict(np.load(RES / f"classification_{cls}_l2.npz"))
+else:
+    import warnings
+    from scipy.io import loadmat
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        classification = loadmat(MAT, squeeze_me=True)
+prob = problem_from_classification_mat(MAT, classification=classification, x0_from="t0")
 M, n, nA = prob.model, prob.model.n, prob.model.nA
-labels = [f"AOB {i + 1}" for i in range(nA)] + [f"NOB {i + 1}" for i in range(n - nA)]
+otu_idx = np.r_[np.flatnonzero(np.round(classification["class_AOB"])),
+                np.flatnonzero(np.round(classification["class_NOB"]))]
+labels = [f"E{otu_idx[i] + 1} ({'AOB' if i < nA else 'NOB'})" for i in range(n)]
 
-asre = load(f"asre_reactor_A_t0_{tag}.pkl")
-direct = load(f"direct_reactor_A_{tag}.pkl")
+asre = None if cls else load(f"asre_reactor_A_t0_{tag}.pkl")
+direct = load(f"direct_reactor_A_{tag}{suffix}.pkl")
+tag += suffix
 if asre is None and direct is None:
     sys.exit(f"no results for {tag} in {RES}")
 
@@ -80,7 +98,7 @@ t_data, z_data = prob.t_otu[in_win], prob.z_data[in_win]
 
 # ---- 1. cost per ASRE iteration -------------------------------------------------------
 fig, ax = plt.subplots(figsize=(6.5, 3.6))
-asre_runs = sorted(RES.glob(f"asre_reactor_A_t0_*_lam{lam:g}.pkl"))
+asre_runs = [] if cls else sorted(RES.glob(f"asre_reactor_A_t0_*_lam{lam:g}.pkl"))
 colors = {f"v[{vmin},{vmax}]": C_ASRE, "v[-1.0,inf]": C_ASRE2, "v[-inf,inf]": C_MUTED}
 J_open = None
 for p in asre_runs:
@@ -93,6 +111,7 @@ for p in asre_runs:
     ax.plot(its, Js, "-o", color=c, lw=2, ms=4, mec="#fcfcfb", mew=1, label=f"ASRE {bounds}")
 if direct is not None:
     ax.axhline(direct["J"], color=C_DIRECT, lw=2, ls="--", label=f"direct v[{vmin},{vmax}]")
+    J_open = direct.get("J_open", J_open)
 if J_open is not None:
     ax.axhline(J_open, color=C_OPEN, lw=1, ls=":", label="open loop (no control)")
 ax.set_yscale("log")

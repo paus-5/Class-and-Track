@@ -23,16 +23,43 @@ def _numeric_block(path: Path) -> np.ndarray:
     return df.to_numpy(float)
 
 
-def load_biomass(reactor: str):
+def load_biomass(reactor: str, absolute_time: bool = False):
+    """absolute_time=False reproduces MATLAB (t - t(1)); note B.xls starts at day 5, so
+    MATLAB's Reactor B times are shifted by 5 days. Use absolute_time=True to compare reactors."""
     d = _numeric_block(DATA / f"{reactor}.xls")
-    t_obs = d[:, 0] - d[0, 0]
+    t_obs = d[:, 0] - (0.0 if absolute_time else d[0, 0])
     return dict(t_obs=t_obs, biomass=d[:, 1], s_in=d[:, 2], S1=d[:, 3], S2=d[:, 4],
                 S3=d[:, 5], dilution_rate=d[:, 6] / REACTOR_VOLUME_L)
 
 
-def load_relative_abundance(reactor: str):
+def load_relative_abundance(reactor: str, absolute_time: bool = False):
     d = _numeric_block(DATA / f"especes{reactor}.xls")
-    return d[:, 0] - d[0, 0], d[:, 1:]
+    return d[:, 0] - (0.0 if absolute_time else d[0, 0]), d[:, 1:]
+
+
+def classification_inputs(reactor: str, t_change=183.0, delta_t=132.0, absolute_time=True):
+    """Port of the preamble of Classification/main.m: returns the MIP inputs
+    W (n_considered, T), xG1, xG2 (T,), plus considered OTU indices and OTU_interp."""
+    from scipy.integrate import solve_ivp
+    b = load_biomass(reactor, absolute_time)
+    t_otu, rel = load_relative_abundance(reactor, absolute_time)
+    rel = rel / rel.sum(1, keepdims=True)
+    t_obs = b["t_obs"]
+    idx = np.flatnonzero((t_obs > t_change) & (t_obs < t_change + delta_t))
+    idx_otu = np.flatnonzero((t_otu > t_change) & (t_otu < t_change + delta_t))
+    considered = np.flatnonzero(rel[idx_otu].max(0) > 0)
+    otu_interp = interpolate_biomass(t_obs, b["biomass"], t_otu, rel)
+    D, sin = lin(t_obs, b["dilution_rate"]), prev(t_obs, b["s_in"])
+    t0, tF = t_obs[idx[0]], t_obs[idx[-1]]
+    # Invariant Z1' = -D (Z1 - s_in), Z1(t0) = s_in(t0)
+    sol = solve_ivp(lambda t, z: -D(t) * (z - sin(t)), (t0, tF), [b["s_in"][idx[0]]],
+                    method="LSODA", t_eval=t_obs[idx], rtol=1e-8, atol=1e-10, max_step=1.0)
+    Z1 = sol.y[0]
+    W = lin(t_otu, otu_interp[:, considered])(t_obs[idx]).T
+    xG1 = Z1 - b["S1"][idx]
+    xG2 = Z1 - b["S1"][idx] - b["S2"][idx]
+    return dict(W=W, xG1=xG1, xG2=xG2, considered=considered, n_otu=rel.shape[1],
+                t_obs=t_obs, t_otu=t_otu, otu_interp=otu_interp, time_steps_index=idx)
 
 
 def interpolate_biomass(t_obs, biomass, t_otu, otu_rel):
@@ -106,13 +133,20 @@ def build_tracking_problem(t_obs, s_in, S, dilution_rate, t_otu, otu_abs,
     return TrackingProblem(model, z, x0, t0, tf, t_otu, bf, t_obs, S)
 
 
-def problem_from_classification_mat(path, **kw) -> TrackingProblem:
-    """Build the problem directly from a MATLAB Classification_*.mat workspace."""
+def problem_from_classification_mat(path, classification=None, **kw) -> TrackingProblem:
+    """Build the problem directly from a MATLAB Classification_*.mat workspace.
+
+    classification: optional mapping with class_AOB, class_NOB, yields_AOB, yields_NOB
+    (e.g. another reactor's results/classification_*.npz) replacing the saved ones.
+    """
     from scipy.io import loadmat
     import warnings
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         c = loadmat(path, squeeze_me=True)
+    if classification is not None:
+        for k in ("class_AOB", "class_NOB", "yields_AOB", "yields_NOB"):
+            c[k] = np.asarray(classification[k], float)
     S = np.column_stack([c["S1"], c["S2"], c["S3"]])
     return build_tracking_problem(
         c["t_obs"].astype(float), c["s_in"].astype(float), S, c["dilution_rate"].astype(float),
